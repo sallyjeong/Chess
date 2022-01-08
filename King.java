@@ -7,8 +7,8 @@ public class King extends Piece {
 
 	private boolean castle = false;
 	
-	public King(boolean w, boolean m, int p, BufferedImage i, int s) {
-		super(w, m, p, i, s);
+	public King(boolean w, boolean m, int p, int s) {
+		super(w, m, p, s);
 	}
 	
 	public boolean isCastled() {

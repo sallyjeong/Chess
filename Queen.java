@@ -4,8 +4,8 @@ import java.awt.image.BufferedImage;
 
 public class Queen extends Piece {
 
-	public Queen(boolean w, boolean m, int p, BufferedImage i, int s) {
-		super(w, m, p, i, s);
+	public Queen(boolean w, boolean m, int p, int s) {
+		super(w, m, p, s);
 	}
 
 	@Override

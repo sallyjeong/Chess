@@ -5,8 +5,8 @@ import java.awt.image.BufferedImage;
 
 public class Knight extends Piece {
 
-	public Knight(boolean w, boolean m, int p, BufferedImage i, int s) {
-		super(w, m, p, i, s);
+	public Knight(boolean w, boolean m, int p, int s) {
+		super(w, m, p, s);
 	}
 
 	@Override
