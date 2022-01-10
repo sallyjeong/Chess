@@ -7,7 +7,7 @@ import javax.swing.JPanel;
 
 public class tester {
 
-	static Board test;
+	static Board test = new Board();
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -17,7 +17,7 @@ public class tester {
 		frame.setVisible(true);
 		frame.getContentPane().add(v);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-		test = new Board();
+		
 	}
 
 	

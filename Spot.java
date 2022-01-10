@@ -20,17 +20,25 @@ public class Spot implements Drawable {
 
 	@Override
 	public void draw(Graphics g) {
-		//just testing
+		g.setColor(this.colour);
+		g.fillRect(column*this.LENGTH, row*this.LENGTH, this.LENGTH, this.LENGTH);
 		if(this.piece!=null) {
-			g.setColor(Color.BLACK);
-			g.fillRect(row*LENGTH, column*LENGTH, LENGTH, LENGTH);
-		}else {
-			g.setColor(this.colour);
-			g.fillRect(row*LENGTH, column*LENGTH, LENGTH, LENGTH);
+			if(this.piece.isWhite()) {
+				g.drawImage(this.piece.getImage()[0], column*this.LENGTH, row*this.LENGTH, this.LENGTH, this.LENGTH, null);
+			}else {
+				g.drawImage(this.piece.getImage()[1], column*this.LENGTH, row*this.LENGTH, this.LENGTH, this.LENGTH, null);
+			}
 		}
-
 	} 
 
+	public void addPiece(Piece p) {
+		this.piece = p;
+	}
+	
+	public void removePiece() {
+		this.piece = null;
+	}
+	
 	public Piece getPiece() {
 		return this.piece;
 	}

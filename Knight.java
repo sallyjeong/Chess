@@ -1,7 +1,9 @@
 package chessproject;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Knight extends Piece {
 
@@ -11,8 +13,12 @@ public class Knight extends Piece {
 
 	@Override
 	public void loadImage() {
-		// TODO Auto-generated method stub
-		
+		try {
+			this.setImage(ImageIO.read(new File("files\\06_classic2\\w-knight2.png")), 0);
+			this.setImage(ImageIO.read(new File("files\\06_classic2\\b-knight2.png")), 1);
+		} catch (IOException e) {
+			System.out.println("error loading sprite");
+		}
 	}
 
 
