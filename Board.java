@@ -16,7 +16,6 @@ public class Board implements Drawable {
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
 				String tempId = (char)('a'+j) + ((8-i)+"");
-				System.out.println(tempId);
 				if((i+j)%2==0) {
 					board[i][j] = new Spot(i, j, tempId, null, whiteSquare);
 				}else {
@@ -56,5 +55,9 @@ public class Board implements Drawable {
 				board[i][j].draw(g);
 			}
 		}
+	}
+	
+	public Spot[][] getBoard() {
+		return this.board;
 	}
 }

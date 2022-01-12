@@ -17,7 +17,13 @@ public class tester {
 		frame.setVisible(true);
 		frame.getContentPane().add(v);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-		
+		Game game = new Game();
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				System.out.print(game.isThreatenedSpot(true, test.getBoard()[i][j], test));
+			}
+			System.out.println();
+		}
 	}
 
 	
