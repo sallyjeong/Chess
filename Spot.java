@@ -9,6 +9,7 @@ public class Spot implements Drawable {
 	private String id;
 	private Piece piece;
 	private Color colour;
+	private boolean highlighted, clicked;
 
 	public Spot(int r, int c, String id, Piece p, Color co) {
 		this.row = r;
@@ -20,7 +21,11 @@ public class Spot implements Drawable {
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(this.colour);
+		if(this.clicked) {
+			g.setColor(Color.green);
+		}else {
+			g.setColor(this.colour);
+		}
 		g.fillRect(column*this.LENGTH, row*this.LENGTH, this.LENGTH, this.LENGTH);
 		if(this.piece!=null) {
 			if(this.piece.isWhite()) {
@@ -28,9 +33,16 @@ public class Spot implements Drawable {
 			}else {
 				g.drawImage(this.piece.getImage()[1], column*this.LENGTH, row*this.LENGTH, this.LENGTH, this.LENGTH, null);
 			}
+		}else if(this.highlighted) {
+			g.setColor(Color.green);
+			g.fillOval(column*this.LENGTH+LENGTH/2-5, row*this.LENGTH+LENGTH/2-5, 10, 10);
 		}
 	} 
-
+	
+	public String getID() {
+		return this.id;
+	}
+	
 	public int getRow() {
 		return this.row;
 	}
@@ -49,5 +61,13 @@ public class Spot implements Drawable {
 	
 	public Piece getPiece() {
 		return this.piece;
+	}
+	
+	public void setHighlight(boolean b) {
+		this.highlighted = b;
+	}
+	
+	public void setClicked(boolean b) {
+		this.clicked = b;
 	}
 }
