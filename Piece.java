@@ -1,5 +1,3 @@
-package chessproject;
-
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
@@ -60,23 +58,24 @@ public abstract class Piece {
 	}
 	
 	public void checkCol(int row, int col, Spot[][] board){
-		boolean blocked= false;
+		boolean blockedFront= false, blockedBack= false;
 		Spot curSpot; Piece curPiece;
-		for(int r= row-1; r>=0 && !blocked; r--){
+		for(int r= row-1; r>=0 && !blockedFront; r--){
 			curSpot= board[r][col]; curPiece= curSpot.getPiece();
 			if(curPiece!=null){
 				if(curPiece.isWhite() !=  this.white) possibleMoves.add(curSpot);
-				blocked= true;
+				blockedFront= true;
 			}
 			else{
 				possibleMoves.add(curSpot);
 			}
 		}
-		for(int r= row+1; r<8 && !blocked; r++){
+
+		for(int r= row+1; r<8 && !blockedBack; r++){
 			curSpot= board[r][col]; curPiece= curSpot.getPiece();
 			if(curPiece!=null){
 				if(curPiece.isWhite() !=  this.white) possibleMoves.add(curSpot);
-				blocked= true;
+				blockedBack= true;
 			}
 			else{
 				possibleMoves.add(curSpot);
@@ -85,23 +84,24 @@ public abstract class Piece {
 	}
 
 	public void checkRow(int row, int col, Spot[][] board){
-		boolean blocked= false;
+		boolean blockedFront= false, blockedBack= false;
 		Spot curSpot; Piece curPiece;
-		for(int c= col-1; c>=0 && !blocked; c--){
+		for(int c= col-1; c>=0 && !blockedFront; c--){
 			curSpot= board[row][c]; curPiece= curSpot.getPiece();
 			if(curPiece!=null){
 				if(curPiece.isWhite() !=  this.white) possibleMoves.add(curSpot);
-				blocked= true;
+				blockedFront= true;
 			}
 			else{
 				possibleMoves.add(curSpot);
 			}
 		}
-		for(int c= col+1; c<8 && !blocked; c++){
+
+		for(int c= col+1; c<8 && !blockedBack; c++){
 			curSpot= board[row][c]; curPiece= curSpot.getPiece();
 			if(curPiece!=null){
 				if(curPiece.isWhite() !=  this.white) possibleMoves.add(curSpot);
-				blocked= true;
+				blockedBack= true;
 			}
 			else{
 				possibleMoves.add(curSpot);
@@ -115,15 +115,15 @@ public abstract class Piece {
 	}
 	
 	private void checkMajorDiag(int row, int col, Spot[][] board){
-		boolean blocked= false;
+		boolean blockedFront= false, blockedBack= false;
 		Spot curSpot; Piece curPiece;
 
 		int r= row-1; int c= col-1;
-		while(r >=0 && c >=0 && !blocked){
+		while(r >=0 && c >=0 && !blockedFront){
 			curSpot= board[r][c]; curPiece= curSpot.getPiece();
 			if(curPiece!=null){
 				if(curPiece.isWhite() !=  this.white) possibleMoves.add(curSpot);
-				blocked= true;
+				blockedFront= true;
 			}
 			else{
 				possibleMoves.add(curSpot);
@@ -132,29 +132,29 @@ public abstract class Piece {
 			c--;
 		}
 		r= row+1; c= col+1;
-		while(r < 8 && c  < 8 && !blocked) {
+		while(r < 8 && c  < 8 && !blockedBack) {
 			curSpot= board[r][c]; curPiece= curSpot.getPiece();
 			if(curPiece!=null){
 				if(curPiece.isWhite() !=  this.white) possibleMoves.add(curSpot);
-				blocked= true;
+				blockedBack= true;
 			}
 			else{
 				possibleMoves.add(curSpot);
 			}
-			r--;
-			c--;
+			r++;
+			c++;
 		}
 	}
 	
 	private void checkMinorDiag(int row, int col, Spot[][] board){
-		boolean blocked= false;
+		boolean blockedFront= false, blockedBack= false;
 		Spot curSpot; Piece curPiece;
 		int r= row-1; int c= col+1;
-		while(r >=0 && c <8 && !blocked){
+		while(r >=0 && c <8 && !blockedFront){
 			curSpot= board[r][c]; curPiece= curSpot.getPiece();
 			if(curPiece!=null){
 				if(curPiece.isWhite() !=  this.white) possibleMoves.add(curSpot);
-				blocked= true;
+				blockedFront= true;
 			}
 			else{
 				possibleMoves.add(curSpot);
@@ -164,11 +164,11 @@ public abstract class Piece {
 		}
 
 		r= row+1; c= col-1;
-		while(c >=0 && r<8 && !blocked){
+		while(c >=0 && r<8 && !blockedBack){
 			curSpot= board[r][c]; curPiece= curSpot.getPiece();
 			if(curPiece!=null){
 				if(curPiece.isWhite() !=  this.white) possibleMoves.add(curSpot);
-				blocked= true;
+				blockedBack= true;
 			}
 			else{
 				possibleMoves.add(curSpot);
