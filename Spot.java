@@ -1,4 +1,3 @@
-package chessproject;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -31,16 +30,19 @@ public class Spot implements Drawable {
 		}
 	} 
 
-	public int getRow() {
-		return this.row;
-	}
-	
-	public int getColumn() {
-		return this.column;
-	}
-	
 	public void addPiece(Piece p) {
 		this.piece = p;
+	}
+
+	public String getID(){
+		return id;
+	}
+
+	public int getRow(){
+		return row;
+	}
+	public int getCol(){
+		return column;
 	}
 	
 	public void removePiece() {
@@ -50,4 +52,7 @@ public class Spot implements Drawable {
 	public Piece getPiece() {
 		return this.piece;
 	}
+
+
+
 }
