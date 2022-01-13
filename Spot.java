@@ -5,22 +5,33 @@ import java.awt.Graphics;
 
 public class Spot implements Drawable {
 	private final int LENGTH = 50;
+	private final Color clickedColour = Color.green, capturedColour = Color.lightGray;
+	
+	private Color defaultColour;
 	private int row, column;
 	private String id;
 	private Piece piece;
-	private Color colour;
+	private boolean highlighted, clicked;
 
 	public Spot(int r, int c, String id, Piece p, Color co) {
 		this.row = r;
 		this.column = c;
 		this.id = id;
 		this.piece = p;
-		this.colour = co;
+		this.defaultColour = co;
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(this.colour);
+		//colors for the tile underneath
+		if(this.clicked) {
+			g.setColor(Color.green);
+		//can be captured
+		}else if(this.piece!=null && this.highlighted) {
+			g.setColor(capturedColour);
+		}else {
+			g.setColor(this.defaultColour);
+		}
 		g.fillRect(column*this.LENGTH, row*this.LENGTH, this.LENGTH, this.LENGTH);
 		if(this.piece!=null) {
 			if(this.piece.isWhite()) {
@@ -28,9 +39,16 @@ public class Spot implements Drawable {
 			}else {
 				g.drawImage(this.piece.getImage()[1], column*this.LENGTH, row*this.LENGTH, this.LENGTH, this.LENGTH, null);
 			}
+		}else if(this.highlighted) {
+			g.setColor(Color.green);
+			g.fillOval(column*this.LENGTH+LENGTH/2-5, row*this.LENGTH+LENGTH/2-5, 10, 10);
 		}
 	} 
-
+	
+	public String getID() {
+		return this.id;
+	}
+	
 	public int getRow() {
 		return this.row;
 	}
@@ -49,5 +67,13 @@ public class Spot implements Drawable {
 	
 	public Piece getPiece() {
 		return this.piece;
+	}
+	
+	public void setHighlight(boolean b) {
+		this.highlighted = b;
+	}
+	
+	public void setClicked(boolean b) {
+		this.clicked = b;
 	}
 }
