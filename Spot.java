@@ -25,7 +25,7 @@ public class Spot implements Drawable {
 	public void draw(Graphics g) {
 		//colors for the tile underneath
 		if(this.clicked) {
-			g.setColor(Color.green);
+			g.setColor(clickedColour);
 		//can be captured
 		}else if(this.piece!=null && this.highlighted) {
 			g.setColor(capturedColour);
