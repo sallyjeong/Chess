@@ -2,12 +2,10 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
 
 public class Server {
     final String LOCAL_HOST = "127.0.0.1";
-    final int PORT = 5000;
+    final int PORT = 6000;
 
     ServerSocket serverSocket;//server socket for connection
     //ArrayList<ClientHandler> connections = new ArrayList<ClientHandler>();
@@ -23,15 +21,18 @@ public class Server {
         try {
             serverSocket = new ServerSocket(PORT);
             System.out.println("Waiting for connections");
-            while (true) {
+            while (!serverSocket.isClosed()) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Server-Client connection made");
-                clientCounter++;
-                System.out.println("Client #"+clientCounter);
-                ServerHandler serverHandler = new ServerHandler(clientSocket, clientCounter);
-                connections.add(serverHandler);
-                Thread thread = new Thread (serverHandler);
-                thread.run();
+
+                Thread thread = new Thread(new ClientHandler(clientSocket));
+                thread.start();
+//                clientCounter++;
+//                System.out.println("Client #"+clientCounter);
+//                ServerHandler serverHandler = new ServerHandler(clientSocket, clientCounter);
+//                connections.add(serverHandler);
+//                Thread thread = new Thread (serverHandler);
+//                thread.start();
 
             }
         } catch (IOException e) {
@@ -86,7 +87,7 @@ public class Server {
 //                        break;
 //                    }
 //58:37
-                break;
+                    break;
                 }
 //                for (int i = 0; i<connections.size(); i++){
 //                    connections.get(i).closeConnection();
@@ -116,5 +117,3 @@ public class Server {
     }
 
 }
-
-//------------------------------------------------------------------------------

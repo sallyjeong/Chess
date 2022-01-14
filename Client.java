@@ -1,44 +1,88 @@
 //imports for network communication
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 // remember to call closeConnection after the game ends/client leaves (IN SERVER CLASS)
 class Client {
-    final String LOCAL_HOST = "127.0.0.1";
-    final int PORT = 5000;
     private ClientHandler connection;
+    final String LOCAL_HOST = "127.0.0.1";
+    final int PORT = 6000;
+    private String username;
+    private Socket socket;
+    private BufferedReader dataIn;
+    private BufferedWriter dataOut;
+
     private boolean myTurn = false; // more like a variable part of Player
 
-    Socket clientSocket;      //client socket for connection
-    //BufferedReader input;     //reader for the input stream
-    //PrintWriter output;       //writer for the output stream
-    //boolean running = true;   //program status
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        System.out.println("Enter a username");
+        String username = input.nextLine();
+        Client client = new Client(username);
 
-    public static void main (String[] args) {
-        Client client = new Client();
-        client.connectToServer();
+        System.out.println("Start chatting");
+        client.listenForMessage();
+        client.sendMessage();
+        // client.connectToServer();
         // client.startReceivingMoves();
 
         // client.go();
     }
 
-    public Client() {
-        //create a socket (try-catch required) and attempt a connection to the local IP address
-//        System.out.println("Attempting to establish a connection ...");
-//        try {
-//            clientSocket = new Socket(LOCAL_HOST, PORT);    //create and bind a socket, and request connection
-//            InputStreamReader stream= new InputStreamReader(clientSocket.getInputStream());
-//            input = new BufferedReader(stream);
-//            output = new PrintWriter(clientSocket.getOutputStream());
-//        } catch (IOException e) {
-//            System.out.println("Connection to Server Failed");
-//            e.printStackTrace();
-//        }
-//        System.out.println("Connection to server established!");
+    public Client(String username) {
+        try {
+            socket = new Socket(LOCAL_HOST, PORT);
+            //in = new DataInputStream(socket.getInputStream());
+            dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream())); // will this work with the server though
+            dataOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.username = username;
+            // ^^ replace with some jtextfield input
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void connectToServer() {
-        connection = new ClientHandler();
+       // connection = new ClientHandler();
+    }
+
+    public void sendMessage() {
+
+        try {
+            dataOut.write(username);
+            dataOut.newLine();
+            dataOut.flush();
+
+            Scanner input = new Scanner(System.in);
+            while (socket.isConnected()) {
+                String message = input.nextLine(); //replace with jtextfield input
+                dataOut.write(username + ": " + message);
+                dataOut.newLine();
+                dataOut.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void listenForMessage() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String messageReceived;
+                while (socket.isConnected()) {
+                    try {
+                        messageReceived = dataIn.readLine();
+                        System.out.println(messageReceived); // display message (maybe store chat in a multiline string
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        });
     }
 
 //    public void startReceivingMoves() {
@@ -62,108 +106,4 @@ class Client {
         // call another method to actually use the move String for graphics and board updates
         myTurn = true; //?
     }
-
-    // Client Connection Inner Class
-    private class ClientHandler {
-        private Socket socket;
-        private DataInputStream in;
-        BufferedReader dataIn;
-        private DataOutputStream dataOut;
-
-        public ClientHandler() {
-            System.out.println("Attempting to establish a connection ...");
-            try {
-                socket = new Socket(LOCAL_HOST, PORT);
-                in = new DataInputStream(socket.getInputStream());
-                dataIn = new BufferedReader(new InputStreamReader(in));
-//                dataIn = new DataInputStream(socket.getInputStream());
-                dataOut = new DataOutputStream(socket.getOutputStream());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Connection to server established!");
-        }
-
-        // call this in the mouselistener after action
-        public void sendMove(String move) {
-            try {
-                dataOut.writeChars(move);
-                dataOut.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            myTurn = false;
-            // this will deal with the player being able to make multiple pre-moves until they decide
-            // ^^ essentially everything looks normal for them but they just have to wait until
-            // they receive a move before sending?
-
-            Thread thread = new Thread(new Runnable() {
-                public void run() {
-                    updateTurn();
-                }
-            });
-            thread.start();
-        }
-        public String receiveMove() {
-            String move = "";
-            try {
-                move = dataIn.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return move;
-        }
-        public void closeConnection() {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-//    public void inputListener(){
-//        //Scanner
-//        while(running) {
-//            try {
-//                if (input.ready()) {                        //check for an incoming messge
-//                    String msg = input.readLine();          //read the message
-//                    System.out.println("Message from the server: " + msg);
-//                    running = false;                        //change the status to end the client program
-//                }
-//            } catch (IOException e) {
-//                System.out.println("Failed to receive message from the server.");
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//
-//    public void go() {
-//
-//        output.println("Hi. I am a basic client!");         //send a message to the server
-//        output.flush();                                     //flush the output stream to make sure the message
-//        //was sent but not kept in the buffer (very important!)
-//        //wait for response from the server
-//        while(running){
-//            try {
-//                if (input.ready()) {                        //check for an incoming messge
-//                    String msg = input.readLine();          //read the message
-//                    System.out.println("Message from the server: " + msg);
-//                    running = false;                        //change the status to end the client program
-//                }
-//            }catch (IOException e) {
-//                System.out.println("Failed to receive message from the server.");
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        //after completing the communication close all streams and sockets
-//        try {
-//            input.close();
-//            output.close();
-//            clientSocket.close();
-//        }catch (Exception e) {
-//            System.out.println("Failed to close stream or/and socket.");
-//        }
-//    }
 }
