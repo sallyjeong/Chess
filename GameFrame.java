@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.JScrollBar;
 import javax.swing.JButton;
+import javax.swing.border.EtchedBorder;
 
 public class GameFrame extends JFrame {
 
@@ -42,6 +43,7 @@ public class GameFrame extends JFrame {
 		contentPane.setLayout(null);
 		
 		JPanel boardPanel = new JPanel();
+		boardPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		boardPanel.setBounds(674, 56, 576, 576); // 576/8 = 72
 		contentPane.add(boardPanel);
 		
