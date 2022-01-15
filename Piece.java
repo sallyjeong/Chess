@@ -55,6 +55,14 @@ public abstract class Piece {
 		return this.col;
 	}
 	
+	public boolean getMoved() {
+		return this.moved;
+	}
+	
+	public void setMoved(boolean b) {
+		this.moved = b;
+	}
+	
 	public void addMove(Spot s) {
 		this.possibleMoves.add(s);
 	}
