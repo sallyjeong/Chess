@@ -42,9 +42,9 @@ public class Server {
                 this.socket = socket;
                 dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream())); // will this work with the server though
                 dataOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                this.username = dataIn.readLine(); // first thing sent is username
+//                this.username = dataIn.readLine(); // first thing sent is username
                 clientHandlers.add(this);
-                broadcastMessage(username + " HAS ENTERED");
+          //      broadcastMessage(username + " HAS ENTERED");
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,7 +60,24 @@ public class Server {
                 try {
                     message = dataIn.readLine();
                     broadcastMessage(message);
+                    if (dataIn.ready()){
+                        String clientInput = dataIn.readLine(); // = get input thing
+                        char choice = clientInput.charAt(0);
+                        String string = clientInput.substring(1);
+                        if (choice=='1'){
+                            if (validUsername(string)){
+                                this.username = string;
+                                dataOut.write("success. welcome "+ this.username);
+                            }else{
+                                dataOut.write("error. not a valid username - must only contain letters/numbers OR username is in use");
+                                //print (not a valid username. your username must not include special characters or your username is already used
+                            }
+                        }
+                        if (choice == '2'){
 
+                        }
+
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                     break;
@@ -86,6 +103,19 @@ public class Server {
         public void remove() {
             clientHandlers.remove(this);
             broadcastMessage(username + "has left");
+        }
+
+        public boolean validUsername(String username){
+            if (username.matches("[a-zA-Z0-9]*")){
+                return false;
+            }
+
+            for (ClientHandler clientHandler : clientHandlers){
+                if (clientHandler.username.equals(username)){
+                    return false;
+                }
+            }
+            return true;
         }
 
         public void closeConnection() {
