@@ -1,4 +1,3 @@
-package chessproject;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -61,8 +60,10 @@ public class Spot implements Drawable {
 		this.piece = p;
 	}
 	
-	public void removePiece() {
+	public Piece removePiece() {
+		Piece p= piece;
 		this.piece = null;
+		return p;
 	}
 	
 	public Piece getPiece() {
