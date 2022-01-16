@@ -4,8 +4,6 @@ import java.net.*;
 import java.util.ArrayList;
 
 public class Server {
-    final String LOCAL_HOST = "127.0.0.1";
-    final int PORT = 6000;
     public ServerSocket serverSocket;//server socket for connection
     public ArrayList<ClientHandler> clientHandlers = new ArrayList<>(); //maybe set
 
@@ -15,7 +13,7 @@ public class Server {
 
     public Server() {
         try {
-            serverSocket = new ServerSocket(PORT);
+            serverSocket = new ServerSocket(Constants.PORT);
             System.out.println("Waiting for connections");
             while (!serverSocket.isClosed()) {
                 Socket clientSocket = serverSocket.accept();
@@ -61,23 +59,25 @@ public class Server {
                         // System.out.println("client: " + clientInput);
                         char type = totalInput.charAt(0);
                         String clientInput = totalInput.substring(1);
-                        if (type == Client.chatData) {
+                        if (type == Constants.CHAT_DATA) {
                             // System.out.println("chat data!!");
-                            broadcastMessage(clientInput);
-                        } else if (type == Client.moveData){
+                            broadcastMessage(Constants.CHAT_DATA + clientInput);
+                        } else if (type == Constants.MOVE_DATA){
                             // send movement stuff
-                        } else if (type == Client.usernameData) {
+                            // broadcastMessage(Constants.moveData + "theactualmove");
+
+                        } else if (type == Constants.USERNAME_DATA) {
                             // System.out.println("username data !!");
                             if (validUsername(clientInput)) {
                                 this.username = clientInput;
                                 //can change to a new popupData char?
-                                dataOut.write(Client.chatData + "success. welcome " + this.username);
+                                dataOut.write(Constants.CHAT_DATA + "success. welcome " + this.username);
                                 dataOut.newLine();
                                 dataOut.flush();
-                                broadcastMessage(this.username + " has joined the chat");
+                                broadcastMessage(Constants.CHAT_DATA + this.username + " has joined the chat");
                             } else {
                                 //can change to a new popupData char?
-                                dataOut.write(Client.chatData + Client.usernameError);
+                                dataOut.write(Constants.CHAT_DATA + Constants.USERNAME_ERROR);
                                 dataOut.newLine();
                                 dataOut.flush();
                                 // is this a bad way to use constant? because i don't wanna "hard code" the message
@@ -99,7 +99,7 @@ public class Server {
             for (ClientHandler clientHandler : clientHandlers) {
                 try {
                     if (!clientHandler.username.equals(username)) {
-                        clientHandler.dataOut.write(Client.chatData + msg);
+                        clientHandler.dataOut.write(msg);
                         clientHandler.dataOut.newLine();
                         clientHandler.dataOut.flush();
                     }
@@ -115,13 +115,13 @@ public class Server {
         }
 
         public boolean validUsername(String user){
+            if (!user.matches("[a-zA-Z0-9]*")){
+                return false;
+            }
             for (ClientHandler clientHandler : clientHandlers){
                 if (clientHandler.username.equals(user)){
                     return false;
                 }
-            }
-            if (!user.matches("[a-zA-Z0-9]*")){
-                return false;
             }
             return true;
         }
