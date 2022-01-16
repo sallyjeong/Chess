@@ -31,7 +31,7 @@ public class Server {
     }
 
     private class ClientHandler implements Runnable { //not sure if client handler is the best name?
-        private String username;
+        private String username = " ";
         private Socket socket;
         private BufferedReader dataIn;
         private BufferedWriter dataOut;
@@ -57,20 +57,29 @@ public class Server {
             while (socket.isConnected()) {
                 try {
                     if (dataIn.ready()) {
-                        String clientInput = dataIn.readLine(); // = get input thing
-                        char choice = clientInput.charAt(0);
-                        String clientUsername = clientInput.substring(1);
-                        if (choice=='1') {
+                        String totalInput = dataIn.readLine(); // = get input thing
+                        // System.out.println("client: " + clientInput);
+                        char type = totalInput.charAt(0);
+                        String clientInput = totalInput.substring(1);
+                        if (type == Client.chatData) {
+                            // System.out.println("chat data!!");
                             broadcastMessage(clientInput);
-                        } else if (choice == '2'){
-                            // do movement stuff
-                        } else if (choice == '3') {
-                            if (validUsername(clientUsername)) {
-                                this.username = clientUsername;
-                                dataOut.write("success. welcome " + this.username);
+                        } else if (type == Client.moveData){
+                            // send movement stuff
+                        } else if (type == Client.usernameData) {
+                            // System.out.println("username data !!");
+                            if (validUsername(clientInput)) {
+                                this.username = clientInput;
+                                //can change to a new popupData char?
+                                dataOut.write(Client.chatData + "success. welcome " + this.username);
+                                dataOut.newLine();
+                                dataOut.flush();
                                 broadcastMessage(this.username + " has joined the chat");
                             } else {
-                                dataOut.write(Client.usernameError);
+                                //can change to a new popupData char?
+                                dataOut.write(Client.chatData + Client.usernameError);
+                                dataOut.newLine();
+                                dataOut.flush();
                                 // is this a bad way to use constant? because i don't wanna "hard code" the message
 
                                 //print (not a valid username. your username must not include special characters or your username is already used
@@ -90,7 +99,7 @@ public class Server {
             for (ClientHandler clientHandler : clientHandlers) {
                 try {
                     if (!clientHandler.username.equals(username)) {
-                        clientHandler.dataOut.write(msg);
+                        clientHandler.dataOut.write(Client.chatData + msg);
                         clientHandler.dataOut.newLine();
                         clientHandler.dataOut.flush();
                     }
@@ -105,15 +114,14 @@ public class Server {
             broadcastMessage(username + "has left");
         }
 
-        public boolean validUsername(String username){
-            if (username.matches("[a-zA-Z0-9]*")){
-                return false;
-            }
-
+        public boolean validUsername(String user){
             for (ClientHandler clientHandler : clientHandlers){
-                if (clientHandler.username.equals(username)){
+                if (clientHandler.username.equals(user)){
                     return false;
                 }
+            }
+            if (!user.matches("[a-zA-Z0-9]*")){
+                return false;
             }
             return true;
         }
