@@ -3,6 +3,9 @@ package chessproject;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -14,22 +17,6 @@ import javax.swing.JComboBox;
 public class CreatePrivateRoomFrame extends JFrame {
 
 	private JPanel contentPane;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					CreatePrivateRoomFrame frame = new CreatePrivateRoomFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
@@ -62,5 +49,23 @@ public class CreatePrivateRoomFrame extends JFrame {
 		JComboBox colourChoices = new JComboBox();
 		colourChoices.setBounds(134, 85, 121, 27);
 		contentPane.add(colourChoices);
+	}
+	
+	public void generateCode (){
+		int min = 97; // 'a'
+		int max = 123; // 'z + 1'
+		Random random = new Random();
+		String generatedCode = "";
+		List roomCodes = new ArrayList();
+		
+		do {
+			for (int i = 0; i < 8; i++) {
+				int number = random.nextInt (max - min) + min;//random.ints (startLimit, endLimit);
+				//String generatedLetter = ((char)number).toString();
+				char letter = (char)number;
+				generatedCode = generatedCode + letter;
+				}
+			roomCodes.add(generatedCode);
+		}while(!roomCodes.contains(generatedCode));
 	}
 }
