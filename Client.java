@@ -5,47 +5,61 @@ import java.util.Scanner;
 
 // remember to call closeConnection after the game ends/client leaves (IN SERVER CLASS)
 class Client {
-    final String LOCAL_HOST = "127.0.0.1";
-    final int PORT = 6000;
     private String username;
     private Socket socket;
     private BufferedReader dataIn;
     private BufferedWriter dataOut;
 
     public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-        System.out.println("Enter a username");
-        String username = input.nextLine();
-        Client client = new Client(username);
-
-        System.out.println("Start chatting " + username);
+        Client client = new Client();
         client.listenForMessage();
         client.sendMessage();
     }
 
-    public Client(String username) {
+    public Client() {
         try {
-            socket = new Socket(LOCAL_HOST, PORT);
+            socket = new Socket(Constants.LOCAL_HOST, Constants.PORT);
             dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream())); // will this work with the server though
             dataOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            this.username = username;
-            // ^^ replace with some jtextfield input
+            this.askForUsername();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void askForUsername() {
+        Scanner input = new Scanner(System.in);
+        System.out.println("Enter a username");
+        this.username = input.next();
+        sendUsername();
+    }
+
+    public void sendUsername() {
+        try {
+            dataOut.write(Constants.USERNAME_DATA + username);
+            //System.out.println("username written");
+            dataOut.newLine();
+            dataOut.flush();
+
+            //if (dataIn.ready()) { // only works when this part is commented out
+                String result = dataIn.readLine();
+                System.out.println(result.substring(1));
+                while (result.equals(Constants.CHAT_DATA + Constants.USERNAME_ERROR)) { // never runs ;-;
+                    askForUsername();
+                }
+            //}
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void sendMessage() {
-
         try {
-            dataOut.write(username);
-            dataOut.newLine();
-            dataOut.flush();
-
             Scanner input = new Scanner(System.in);
             while (socket.isConnected()) {
                 String message = input.nextLine(); //replace with jtextfield input
-                dataOut.write(username + ": " + message);
+                dataOut.write(Constants.CHAT_DATA + username + ": " + message);
                 dataOut.newLine();
                 dataOut.flush();
             }
@@ -54,15 +68,20 @@ class Client {
         }
     }
 
-    public void listenForMessage() {
+    public void listenForMessage() { // this will be the place you determine what type of data it is?
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String messageReceived;
                 while (socket.isConnected()) {
                     try {
-                        messageReceived = dataIn.readLine();
-                        System.out.println(messageReceived); // display message (maybe store chat in a multiline string
+                        String data = dataIn.readLine();
+                        char type = data.charAt(0);
+                        // check the char stuff
+                        if (type == Constants.CHAT_DATA) {
+                            System.out.println(data.substring(1)); // display message (maybe store chat in a multiline string
+                        } else if (type == Constants.MOVE_DATA) {
+                            // run a diff method that digests the move lmao
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

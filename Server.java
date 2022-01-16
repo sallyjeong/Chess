@@ -4,11 +4,8 @@ import java.net.*;
 import java.util.ArrayList;
 
 public class Server {
-    ArrayList<ClientHandler> clientHandlers = new ArrayList<>(); //maybe set
-    final String LOCAL_HOST = "127.0.0.1";
-    final int PORT = 6000;
-
-    ServerSocket serverSocket;//server socket for connection
+    public ServerSocket serverSocket;//server socket for connection
+    public ArrayList<ClientHandler> clientHandlers = new ArrayList<>(); //maybe set
 
     public static void main(String[] args) {
         Server server = new Server();
@@ -16,11 +13,12 @@ public class Server {
 
     public Server() {
         try {
-            serverSocket = new ServerSocket(PORT);
+            serverSocket = new ServerSocket(Constants.PORT);
             System.out.println("Waiting for connections");
             while (!serverSocket.isClosed()) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Server-Client connection made");
+
                 ClientHandler clientHandler = new ClientHandler(clientSocket);
                 Thread thread = new Thread(clientHandler);
                 thread.start();
@@ -31,7 +29,7 @@ public class Server {
     }
 
     private class ClientHandler implements Runnable { //not sure if client handler is the best name?
-        private String username;
+        private String username = " ";
         private Socket socket;
         private BufferedReader dataIn;
         private BufferedWriter dataOut;
@@ -54,27 +52,38 @@ public class Server {
 
         @Override
         public void run() {
-            String message;
-            // the demo had while outside try catch and then break in the catch so..?
             while (socket.isConnected()) {
                 try {
-                    message = dataIn.readLine();
-                    broadcastMessage(message);
-                    if (dataIn.ready()){
-                        String clientInput = dataIn.readLine(); // = get input thing
-                        char choice = clientInput.charAt(0);
-                        String string = clientInput.substring(1);
-                        if (choice=='1'){
-                            if (validUsername(string)){
-                                this.username = string;
-                                dataOut.write("success. welcome "+ this.username);
-                            }else{
-                                dataOut.write("error. not a valid username - must only contain letters/numbers OR username is in use");
+                    if (dataIn.ready()) {
+                        String totalInput = dataIn.readLine(); // = get input thing
+                        // System.out.println("client: " + clientInput);
+                        char type = totalInput.charAt(0);
+                        String clientInput = totalInput.substring(1);
+                        if (type == Constants.CHAT_DATA) {
+                            // System.out.println("chat data!!");
+                            broadcastMessage(Constants.CHAT_DATA + clientInput);
+                        } else if (type == Constants.MOVE_DATA){
+                            // send movement stuff
+                            // broadcastMessage(Constants.moveData + "theactualmove");
+
+                        } else if (type == Constants.USERNAME_DATA) {
+                            // System.out.println("username data !!");
+                            if (validUsername(clientInput)) {
+                                this.username = clientInput;
+                                //can change to a new popupData char?
+                                dataOut.write(Constants.CHAT_DATA + "success. welcome " + this.username);
+                                dataOut.newLine();
+                                dataOut.flush();
+                                broadcastMessage(Constants.CHAT_DATA + this.username + " has joined the chat");
+                            } else {
+                                //can change to a new popupData char?
+                                dataOut.write(Constants.CHAT_DATA + Constants.USERNAME_ERROR);
+                                dataOut.newLine();
+                                dataOut.flush();
+                                // is this a bad way to use constant? because i don't wanna "hard code" the message
+
                                 //print (not a valid username. your username must not include special characters or your username is already used
                             }
-                        }
-                        if (choice == '2'){
-
                         }
 
                     }
@@ -105,15 +114,14 @@ public class Server {
             broadcastMessage(username + "has left");
         }
 
-        public boolean validUsername(String username){
-            if (username.matches("[a-zA-Z0-9]*")){
-                return false;
-            }
-
+        public boolean validUsername(String user){
             for (ClientHandler clientHandler : clientHandlers){
-                if (clientHandler.username.equals(username)){
+                if (clientHandler.username.equals(user)){
                     return false;
                 }
+            }
+            if (!user.matches("[a-zA-Z0-9]*")){
+                return false;
             }
             return true;
         }
