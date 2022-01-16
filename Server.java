@@ -4,11 +4,10 @@ import java.net.*;
 import java.util.ArrayList;
 
 public class Server {
-    ArrayList<ClientHandler> clientHandlers = new ArrayList<>(); //maybe set
     final String LOCAL_HOST = "127.0.0.1";
     final int PORT = 6000;
-
-    ServerSocket serverSocket;//server socket for connection
+    public ServerSocket serverSocket;//server socket for connection
+    public ArrayList<ClientHandler> clientHandlers = new ArrayList<>(); //maybe set
 
     public static void main(String[] args) {
         Server server = new Server();
@@ -21,6 +20,7 @@ public class Server {
             while (!serverSocket.isClosed()) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Server-Client connection made");
+
                 ClientHandler clientHandler = new ClientHandler(clientSocket);
                 Thread thread = new Thread(clientHandler);
                 thread.start();
@@ -54,27 +54,27 @@ public class Server {
 
         @Override
         public void run() {
-            String message;
-            // the demo had while outside try catch and then break in the catch so..?
             while (socket.isConnected()) {
                 try {
-                    message = dataIn.readLine();
-                    broadcastMessage(message);
-                    if (dataIn.ready()){
+                    if (dataIn.ready()) {
                         String clientInput = dataIn.readLine(); // = get input thing
                         char choice = clientInput.charAt(0);
-                        String string = clientInput.substring(1);
-                        if (choice=='1'){
-                            if (validUsername(string)){
-                                this.username = string;
-                                dataOut.write("success. welcome "+ this.username);
-                            }else{
-                                dataOut.write("error. not a valid username - must only contain letters/numbers OR username is in use");
+                        String clientUsername = clientInput.substring(1);
+                        if (choice=='1') {
+                            broadcastMessage(clientInput);
+                        } else if (choice == '2'){
+                            // do movement stuff
+                        } else if (choice == '3') {
+                            if (validUsername(clientUsername)) {
+                                this.username = clientUsername;
+                                dataOut.write("success. welcome " + this.username);
+                                broadcastMessage(this.username + " has joined the chat");
+                            } else {
+                                dataOut.write(Client.usernameError);
+                                // is this a bad way to use constant? because i don't wanna "hard code" the message
+
                                 //print (not a valid username. your username must not include special characters or your username is already used
                             }
-                        }
-                        if (choice == '2'){
-
                         }
 
                     }
