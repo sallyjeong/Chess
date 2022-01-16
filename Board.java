@@ -2,10 +2,15 @@ package chessproject;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Iterator;
 import java.util.Set;
 
 public class Board implements Drawable {
+
+	final int LENGTH = 50;
+
 	private Spot[][] board;
+	private King whiteKing, blackKing;
 
 	public Board() {
 		this.create();
@@ -18,52 +23,88 @@ public class Board implements Drawable {
 			for(int j=0; j<8; j++) {
 				String tempId = (char)('a'+j) + ((8-i)+"");
 				if((i+j)%2==0) {
-					board[i][j] = new Spot(i, j, tempId, null, whiteSquare);
+					board[i][j] = new Spot(i, j, tempId, null, whiteSquare, LENGTH);
 				}else {
-					board[i][j] = new Spot(i, j, tempId, null, blackSquare);
+					board[i][j] = new Spot(i, j, tempId, null, blackSquare, LENGTH);
 				}
 			}
 		}
 
-				board[0][0].addPiece(new Rook(false, false, 5, 0, 0, 0));
-				board[0][1].addPiece(new Knight(false, false, 3, 0, 0, 1));
-				board[0][2].addPiece(new Bishop(false, false, 3, 0, 0, 2));
-				board[0][3].addPiece(new Queen(false, false, 9, 0, 0, 3));
-				board[0][4].addPiece(new King(false, false, 1000, 0, 0, 4));
-				board[0][5].addPiece(new Bishop(false, false, 3, 0, 0, 5));
-				board[0][6].addPiece(new Knight(false, false, 3, 0, 0, 6));
-				board[0][7].addPiece(new Rook(false, false, 5, 0, 0, 7));
-				for(int i=0; i<8; i++) {
-					board[1][i].addPiece(new Pawn(false, false, 1, 0, 1, i));
-				}
-				for(int i=0; i<8; i++) {
-					board[6][i].addPiece(new Pawn(true, false, 1, 0, 6, i));
-				}
-				board[7][0].addPiece(new Rook(true, false, 5, 0, 7, 0));
-				board[7][1].addPiece(new Knight(true, false, 3, 0, 7, 1));
-				board[7][2].addPiece(new Bishop(true, false, 3, 0, 7, 2));
-				board[7][3].addPiece(new Queen(true, false, 9, 0, 7, 3));
-				board[7][4].addPiece(new King(true, false, 1000, 0, 7, 4));
-				board[7][5].addPiece(new Bishop(true, false, 3, 0, 7, 5));
-				board[7][6].addPiece(new Knight(true, false, 3, 0, 7, 6));
-				board[7][7].addPiece(new Rook(true, false, 5, 0, 7, 7));
+		board[0][0].addPiece(new Rook(false, false, 5, 0, 0, 0));
+		board[0][1].addPiece(new Knight(false, false, 3, 0, 0, 1));
+		board[0][2].addPiece(new Bishop(false, false, 3, 0, 0, 2));
+		board[0][3].addPiece(new Queen(false, false, 9, 0, 0, 3));
+		blackKing = new King(false, false, 1000, 0, 0, 4);
+		board[0][4].addPiece(blackKing);
+		board[0][5].addPiece(new Bishop(false, false, 3, 0, 0, 5));
+		board[0][6].addPiece(new Knight(false, false, 3, 0, 0, 6));
+		board[0][7].addPiece(new Rook(false, false, 5, 0, 0, 7));
+		for(int i=0; i<8; i++) {
+			board[1][i].addPiece(new Pawn(false, false, 1, 0, 1, i));
+		}
+		for(int i=0; i<8; i++) {
+			board[6][i].addPiece(new Pawn(true, false, 1, 0, 6, i));
+		}
+		board[7][0].addPiece(new Rook(true, false, 5, 0, 7, 0));
+		board[7][1].addPiece(new Knight(true, false, 3, 0, 7, 1));
+		board[7][2].addPiece(new Bishop(true, false, 3, 0, 7, 2));
+		board[7][3].addPiece(new Queen(true, false, 9, 0, 7, 3));
+		whiteKing = new King(true, false, 1000, 0, 7, 4);
+		board[7][4].addPiece(whiteKing);
+		board[7][5].addPiece(new Bishop(true, false, 3, 0, 7, 5));
+		board[7][6].addPiece(new Knight(true, false, 3, 0, 7, 6));
+		board[7][7].addPiece(new Rook(true, false, 5, 0, 7, 7));
 		
-				board[4][4].addPiece(new Bishop(true, false, 9, 0, 4, 4));
-				Set<Spot> validM= board[4][4].getPiece().validMoves(this);
-				board[4][4].setClicked(true);
-				System.out.println(validM.size());
+		getPseudoLegal(true);
 		
-				for(Spot s: validM){
-					s.setHighlight(true);
-					System.out.print(s.getID() + '\t');
+	}
+
+	public void getPseudoLegal(boolean white) {
+		long startTime = System.currentTimeMillis();
+		Set<Spot> validM;
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				if(board[i][j].getPiece()!=null && board[i][j].getPiece().isWhite()==white) {
+					validM = board[i][j].getPiece().validMoves(this);
+					filterPseudoLegalMoves(board[i][j].getPiece().isWhite(), validM, board[i][j]);
 				}
+			}
+		}
+		long endTime = System.currentTimeMillis();
+		System.out.println((endTime-startTime));
+	}
+
+	private void filterPseudoLegalMoves(boolean w, Set<Spot> validMoves, Spot originalS){
+		Iterator<Spot> itr= validMoves.iterator();
+
+		while(itr.hasNext()){
+			Spot s= itr.next();
+			Piece curPiece= originalS.removePiece();
+			if(curPiece instanceof King) {
+				curPiece.setRow(s.getRow()); curPiece.setCol(s.getColumn());
+			}
+			Piece newPiece= s.removePiece();
+			s.addPiece(curPiece);
+			if(kingInCheck(w)) itr.remove();
+			//undo
+			s.addPiece(newPiece); 
+			originalS.addPiece(curPiece);
+			if(curPiece instanceof King) {
+				curPiece.setRow(originalS.getRow()); curPiece.setCol(originalS.getColumn());
+			}
+		}
+
+	}
 
 
 
-
-		board[1][4].addPiece(new King(true, true, 1000, 0, 1, 4));
-		board[4][4].addPiece(new Rook(false, true, 1000, 0, 4, 4));
-		System.out.println(isThreatenedSpot(true, board[4][4]));
+	public boolean kingInCheck(boolean w){
+		if(w){
+			return isThreatenedSpot(w, board[whiteKing.getRow()][whiteKing.getCol()]);
+		}
+		else{
+			return isThreatenedSpot(w, board[blackKing.getRow()][blackKing.getCol()]);
+		}
 	}
 
 	public boolean isThreatenedSpot(boolean whiteThreatened, Spot threatenedSpot) {
@@ -127,14 +168,14 @@ public class Board implements Drawable {
 		}
 		return false;
 	}
-
+	
 	private boolean isRCValid(int row, int col) {
 		if(row<0 || row>7 || col<0 || col>7) {
 			return false;
 		}
 		return true;
 	}
-
+	
 	@Override
 	public void draw(Graphics g) {
 		for(int i=0; i<8; i++) {

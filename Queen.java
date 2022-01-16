@@ -23,10 +23,10 @@ public class Queen extends Piece {
 	}
 
 	@Override
-	public Set<Spot> validMoves(Spot[][] board) {
-
+	public Set<Spot> validMoves(Board b) {
+		Spot[][] board = b.getBoard();
+		this.getMoveList().clear();
 		int row= getRow(); int col= getCol();
-
 		checkRow(row, col, board);
 		checkCol(row, col, board);
 		checkDiags(row, col, board);

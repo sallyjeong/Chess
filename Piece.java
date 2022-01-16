@@ -7,14 +7,14 @@ import java.util.Set;
 
 public abstract class Piece {
 	private boolean white;
-	private boolean moved; 
+	private boolean moved;
 	private int points;
 	private HashSet<Spot> possibleMoves;
 	private int symbol;
 	private BufferedImage image[] = new BufferedImage[2];
 	private boolean captured = false;
 	private int row, col;
-	
+
 	public Piece(boolean w, boolean m, int p, int s, int r, int c) {
 		this.white = w;
 		this.moved = m;
@@ -23,26 +23,26 @@ public abstract class Piece {
 		this.row = r;
 		this.col = c;
 		possibleMoves = new HashSet<Spot>();
-		
+
 		loadImage();
 	}
-	
+
 	public abstract void loadImage();
-	
-	public abstract Set<Spot> validMoves(Spot[][] board);	
+
+	public abstract Set<Spot> validMoves(Board board);
 
 	public BufferedImage[] getImage() {
 		return this.image;
 	}
-	
+
 	public void setImage(BufferedImage img, int ind) {
 		this.image[ind] = img;
 	}
-	
+
 	public boolean isWhite() {
 		return this.white;
 	}
-	
+
 	public HashSet<Spot> getMoveList() {
 		return this.possibleMoves;
 	}
@@ -50,19 +50,27 @@ public abstract class Piece {
 	public int getRow() {
 		return this.row;
 	}
-	
+
 	public int getCol() {
 		return this.col;
+	}
+
+	public void setRow(int r) {
+		this.row = r;
+	}
+	
+	public void setCol(int c) {
+		this.col = c;
 	}
 	
 	public boolean getMoved() {
 		return this.moved;
 	}
-	
+
 	public void setMoved(boolean b) {
 		this.moved = b;
 	}
-	
+
 	public void addMove(Spot s) {
 		this.possibleMoves.add(s);
 	}
@@ -118,12 +126,12 @@ public abstract class Piece {
 			}
 		}
 	}
-	
+
 	public void checkDiags(int row, int col, Spot[][] board){
 		checkMajorDiag(row, col, board);
 		checkMinorDiag(row, col, board);
 	}
-	
+
 	private void checkMajorDiag(int row, int col, Spot[][] board){
 		boolean blockedFront= false, blockedBack= false;
 		Spot curSpot; Piece curPiece;
@@ -155,7 +163,7 @@ public abstract class Piece {
 			c++;
 		}
 	}
-	
+
 	private void checkMinorDiag(int row, int col, Spot[][] board){
 		boolean blockedFront= false, blockedBack= false;
 		Spot curSpot; Piece curPiece;
@@ -187,7 +195,13 @@ public abstract class Piece {
 			c--;
 		}
 	}
+	
+	public void displayValidMoves(boolean b) {
+		for(Spot s: possibleMoves){
+			s.setHighlight(b);
+		}
+	}
 
-	
-	
+
+
 }

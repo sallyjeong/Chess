@@ -26,10 +26,13 @@ public class Pawn extends Piece {
 	}
 
 	@Override
-	public Set<Spot> validMoves(Spot[][] board) {
+	public Set<Spot> validMoves(Board b) {
+		setEnPassant(false);
+		Spot[][] board = b.getBoard();
 		int row= getRow(); int col= getCol();
 
 		Set<Spot> validMoves= getMoveList();
+		validMoves.clear();
 		Spot curSpot;
 
 		if(isWhite()){
@@ -38,7 +41,6 @@ public class Pawn extends Piece {
 				validMoves.add(curSpot);
 				if(!getMoved() && (board[row-2][col].getPiece()== null)){
 					validMoves.add(board[row-2][col]);
-					setMoved(true);
 					setEnPassant(true);
 				}
 			}
@@ -55,7 +57,7 @@ public class Pawn extends Piece {
 					validMoves.add(curSpot);
 				}
 			}
-			
+			//enpassant
 			if(row==3) {
 				if(col-1>=0) {
 					curSpot = board[row][col-1];
@@ -78,7 +80,6 @@ public class Pawn extends Piece {
 				validMoves.add(curSpot);
 				if(!getMoved() && (board[row+2][col].getPiece()== null)){
 					validMoves.add(board[row+2][col]);
-					setMoved(true);
 					setEnPassant(true);
 				}
 			}
@@ -95,7 +96,7 @@ public class Pawn extends Piece {
 					validMoves.add(curSpot);
 				}
 			}
-			
+			//enpassant
 			if(row==4) {
 				if(col-1>=0) {
 					curSpot = board[row][col-1];
