@@ -26,10 +26,7 @@ import javax.swing.JSplitPane;
 public class HomeFrame extends JFrame {
 
 	private JPanel contentPane;
-
-	/**
-	 * Launch the application.
-	 */
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -47,6 +44,8 @@ public class HomeFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public HomeFrame() {
+		//setting up the frame
+		JFrame frame = this;
 		setTitle("HomeFrame");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1313, 715);
@@ -55,6 +54,7 @@ public class HomeFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		//main panel with instructions and settings
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBackground(new Color(255, 255, 255));
 		mainPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -62,23 +62,35 @@ public class HomeFrame extends JFrame {
 		contentPane.add(mainPanel);
 		mainPanel.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Chess");
-		lblNewLabel.setBounds(71, 10, 40, 16);
-		lblNewLabel.setFont(new Font("Apple Braille", Font.PLAIN, 13));
-		mainPanel.add(lblNewLabel);
+		//chess label 
+		JLabel chessLabel = new JLabel("Chess");
+		chessLabel.setBounds(71, 10, 40, 16);
+		chessLabel.setFont(new Font("Apple Braille", Font.PLAIN, 13));
+		mainPanel.add(chessLabel);
 		
+		//instructions button
 		JButton instructionsButton = new JButton("Instructions");
 		instructionsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				new InstructionsFrame();
 			}
 		});
 		instructionsButton.setBounds(27, 133, 134, 45);
 		mainPanel.add(instructionsButton);
 		
+		//settings button
 		JButton settingsButton = new JButton("Settings");
+		settingsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				new SettingsFrame();
+			}
+		});
 		settingsButton.setBounds(26, 65, 134, 45);
 		mainPanel.add(settingsButton);
 		
+		//lobby panel
 		JPanel lobbyPanel = new JPanel();
 		lobbyPanel.setBackground(new Color(255, 255, 255));
 		lobbyPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -86,6 +98,7 @@ public class HomeFrame extends JFrame {
 		contentPane.add(lobbyPanel);
 		lobbyPanel.setLayout(null);
 		
+		//lobby label 
 		JLabel lobbyLabel = new JLabel("Lobbies");
 		lobbyLabel.setBounds(175, 10, 57, 16);
 		lobbyPanel.add(lobbyLabel);
@@ -94,6 +107,7 @@ public class HomeFrame extends JFrame {
 		separator.setBounds(3, 30, 1086, 12);
 		lobbyPanel.add(separator);
 		
+		//public label
 		JLabel publicLabel = new JLabel("Public ");
 		publicLabel.setBounds(15, 43, 61, 16);
 		lobbyPanel.add(publicLabel);
@@ -102,19 +116,31 @@ public class HomeFrame extends JFrame {
 		separator_1.setBounds(3, 203, 1086, 12);
 		lobbyPanel.add(separator_1);
 		
-		JButton openServer = new JButton("put variable for open server");
-		openServer.setHorizontalAlignment(SwingConstants.LEFT);
-		openServer.setBounds(7, 69, 437, 23);
-		lobbyPanel.add(openServer);
+		JButton enterRoomButton = new JButton("put variable for open server");
+		enterRoomButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				// new ();    new frame here 
+			}
+		});
+		enterRoomButton.setHorizontalAlignment(SwingConstants.LEFT);
+		enterRoomButton.setBounds(7, 69, 437, 23);
+		lobbyPanel.add(enterRoomButton);
 		
 		JSeparator separator_1_1 = new JSeparator();
 		separator_1_1.setBounds(3, 276, 1086, 12);
 		lobbyPanel.add(separator_1_1);
 		
-		JButton openServer_1 = new JButton("put variable for open server");
-		openServer_1.setHorizontalAlignment(SwingConstants.LEFT);
-		openServer_1.setBounds(7, 100, 437, 23);
-		lobbyPanel.add(openServer_1);
+		JButton enterRoomButton2 = new JButton("put variable for open server");
+		enterRoomButton2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				// new ();    new frame here 
+			}
+		});
+		enterRoomButton2.setHorizontalAlignment(SwingConstants.LEFT);
+		enterRoomButton2.setBounds(7, 100, 437, 23);
+		lobbyPanel.add(enterRoomButton2);
 		
 		JLabel statusLabel = new JLabel("STATUS");
 		statusLabel.setBounds(456, 43, 61, 16);
@@ -126,97 +152,138 @@ public class HomeFrame extends JFrame {
 		status.setBounds(456, 72, 61, 16);
 		lobbyPanel.add(status);
 		
-		JLabel status_1 = new JLabel("var");
-		status_1.setHorizontalAlignment(SwingConstants.CENTER);
-		status_1.setForeground(new Color(50, 205, 50));
-		status_1.setBounds(456, 102, 61, 16);
-		lobbyPanel.add(status_1);
+		JLabel status1 = new JLabel("var");
+		status1.setHorizontalAlignment(SwingConstants.CENTER);
+		status1.setForeground(new Color(50, 205, 50));
+		status1.setBounds(456, 102, 61, 16);
+		lobbyPanel.add(status1);
 		
 		JButton playButton = new JButton("Enter matchmaking");
 		playButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				new FindingRoomFrame();
 			}
 		});
 		playButton.setBackground(SystemColor.windowBorder);
 		playButton.setBounds(13, 160, 1062, 40);
 		lobbyPanel.add(playButton);
 		
+		//private label
 		JLabel privateLabel = new JLabel("Private");
 		privateLabel.setBounds(19, 220, 61, 16);
 		lobbyPanel.add(privateLabel);
 		
-		JButton codeLabel = new JButton("Enter code");
-		codeLabel.setBounds(11, 241, 510, 29);
-		lobbyPanel.add(codeLabel);
-		
-		JButton roomLabel = new JButton("Create room");
-		roomLabel.addActionListener(new ActionListener() {
+		//enter room code button (for private room)
+		JButton enterCodeButton = new JButton("Enter code");
+		enterCodeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				new PrivateRoomCodeFrame();
 			}
 		});
-		roomLabel.setBounds(565, 241, 510, 29);
-		lobbyPanel.add(roomLabel);
+		enterCodeButton.setBounds(11, 241, 510, 29);
+		lobbyPanel.add(enterCodeButton);
 		
-		JButton openServer_1_1 = new JButton("put variable for open server");
-		openServer_1_1.addActionListener(new ActionListener() {
+		JButton createRoomLabel = new JButton("Create room");
+		createRoomLabel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				new CreatePrivateRoomFrame();
+				
 			}
 		});
-		openServer_1_1.setHorizontalAlignment(SwingConstants.LEFT);
-		openServer_1_1.setBounds(7, 130, 437, 23);
-		lobbyPanel.add(openServer_1_1);
+		createRoomLabel.setBounds(565, 241, 510, 29);
+		lobbyPanel.add(createRoomLabel);
 		
-		JLabel status_1_1 = new JLabel("var");
-		status_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		status_1_1.setForeground(new Color(50, 205, 50));
-		status_1_1.setBounds(456, 132, 61, 16);
-		lobbyPanel.add(status_1_1);
+		JButton enterRoomButton3 = new JButton("put variable for open server");
+		enterRoomButton3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				// new ();
+			}
+		});
+		enterRoomButton3.setHorizontalAlignment(SwingConstants.LEFT);
+		enterRoomButton3.setBounds(7, 130, 437, 23);
+		lobbyPanel.add(enterRoomButton3);
 		
+		JLabel status2 = new JLabel("var");
+		status2.setHorizontalAlignment(SwingConstants.CENTER);
+		status2.setForeground(new Color(50, 205, 50));
+		status2.setBounds(456, 132, 61, 16);
+		lobbyPanel.add(status2);
+		
+		// playing computer label 
 		JLabel computerLabel = new JLabel("Computer");
 		computerLabel.setBounds(19, 290, 96, 16);
 		lobbyPanel.add(computerLabel);
 		
-		JButton playButton_1 = new JButton("Play computer");
-		playButton_1.setBackground(SystemColor.windowBorder);
-		playButton_1.setBounds(15, 315, 1060, 24);
-		lobbyPanel.add(playButton_1);
+		//play computer button
+		JButton playComputerButton = new JButton("Play computer");
+		playComputerButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				new PlayComputerFrame();
+			}
+		});
+		playComputerButton.setBackground(SystemColor.windowBorder);
+		playComputerButton.setBounds(15, 315, 1060, 24);
+		lobbyPanel.add(playComputerButton);
 		
-		JButton openServer_2 = new JButton("put variable for open server");
-		openServer_2.setHorizontalAlignment(SwingConstants.LEFT);
-		openServer_2.setBounds(565, 69, 437, 23);
-		lobbyPanel.add(openServer_2);
+		JButton enterRoomButton4 = new JButton("put variable for open server");
+		enterRoomButton4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				// new ();
+			}
+		});
+		enterRoomButton4.setHorizontalAlignment(SwingConstants.LEFT);
+		enterRoomButton4.setBounds(565, 69, 437, 23);
+		lobbyPanel.add(enterRoomButton4);
 		
-		JButton openServer_1_2 = new JButton("put variable for open server");
-		openServer_1_2.setHorizontalAlignment(SwingConstants.LEFT);
-		openServer_1_2.setBounds(565, 100, 437, 23);
-		lobbyPanel.add(openServer_1_2);
+		JButton enterRoomButton5 = new JButton("put variable for open server");
+		enterRoomButton5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				// new ();
+			}
+		});
+		enterRoomButton5.setHorizontalAlignment(SwingConstants.LEFT);
+		enterRoomButton5.setBounds(565, 100, 437, 23);
+		lobbyPanel.add(enterRoomButton5);
 		
-		JButton openServer_1_1_1 = new JButton("put variable for open server");
-		openServer_1_1_1.setHorizontalAlignment(SwingConstants.LEFT);
-		openServer_1_1_1.setBounds(565, 130, 437, 23);
-		lobbyPanel.add(openServer_1_1_1);
+		JButton enterRoomButton6 = new JButton("put variable for open server");
+		enterRoomButton6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				// new ();
+			}
+		});
+		enterRoomButton6.setHorizontalAlignment(SwingConstants.LEFT);
+		enterRoomButton6.setBounds(565, 130, 437, 23);
+		lobbyPanel.add(enterRoomButton6);
 		
-		JLabel statusLabel_1 = new JLabel("STATUS");
-		statusLabel_1.setBounds(1014, 43, 61, 16);
-		lobbyPanel.add(statusLabel_1);
+		JLabel status3 = new JLabel("STATUS");
+		status3.setBounds(1014, 43, 61, 16);
+		lobbyPanel.add(status3);
 		
-		JLabel status_2 = new JLabel("var");
-		status_2.setHorizontalAlignment(SwingConstants.CENTER);
-		status_2.setForeground(Color.RED);
-		status_2.setBounds(1014, 72, 61, 16);
-		lobbyPanel.add(status_2);
+		JLabel status4 = new JLabel("var");
+		status4.setHorizontalAlignment(SwingConstants.CENTER);
+		status4.setForeground(Color.RED);
+		status4.setBounds(1014, 72, 61, 16);
+		lobbyPanel.add(status4);
 		
-		JLabel status_1_2 = new JLabel("var");
-		status_1_2.setHorizontalAlignment(SwingConstants.CENTER);
-		status_1_2.setForeground(new Color(50, 205, 50));
-		status_1_2.setBounds(1014, 102, 61, 16);
-		lobbyPanel.add(status_1_2);
+		JLabel status5 = new JLabel("var");
+		status5.setHorizontalAlignment(SwingConstants.CENTER);
+		status5.setForeground(new Color(50, 205, 50));
+		status5.setBounds(1014, 102, 61, 16);
+		lobbyPanel.add(status5);
 		
-		JLabel status_1_1_1 = new JLabel("var");
-		status_1_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		status_1_1_1.setForeground(new Color(50, 205, 50));
-		status_1_1_1.setBounds(1014, 132, 61, 16);
-		lobbyPanel.add(status_1_1_1);
+		JLabel status6 = new JLabel("var");
+		status6.setHorizontalAlignment(SwingConstants.CENTER);
+		status6.setForeground(new Color(50, 205, 50));
+		status6.setBounds(1014, 132, 61, 16);
+		lobbyPanel.add(status6);
 		
 		JSeparator separator_2 = new JSeparator();
 		separator_2.setOrientation(SwingConstants.VERTICAL);

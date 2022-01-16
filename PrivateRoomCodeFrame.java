@@ -2,21 +2,21 @@ package chessproject;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.JButton;
 
 public class PrivateRoomCodeFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField codeText;
-
-	/**
-	 * Launch the application.
-	 */
+	private JButton doneButton;
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -34,6 +34,7 @@ public class PrivateRoomCodeFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public PrivateRoomCodeFrame() {
+		JFrame frame = this;
 		setTitle("Enter room code");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 292, 200);
@@ -43,12 +44,22 @@ public class PrivateRoomCodeFrame extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel enterCodeLabel = new JLabel("Room code:");
-		enterCodeLabel.setBounds(43, 71, 79, 16);
+		enterCodeLabel.setBounds(36, 52, 79, 16);
 		contentPane.add(enterCodeLabel);
 		
 		codeText = new JTextField();
-		codeText.setBounds(124, 66, 140, 26);
+		codeText.setBounds(117, 47, 140, 26);
 		contentPane.add(codeText);
 		codeText.setColumns(10);
+		
+		doneButton = new JButton("Done");
+		doneButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				// new ();    new frame here 
+			}
+		});
+		doneButton.setBounds(36, 92, 221, 29);
+		contentPane.add(doneButton);
 	}
 }

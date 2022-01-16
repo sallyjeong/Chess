@@ -3,19 +3,18 @@ package chessproject;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
 
 public class InvalidUserFrame extends JFrame {
 
 	private JPanel contentPane;
-
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -33,6 +32,7 @@ public class InvalidUserFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public InvalidUserFrame() {
+		JFrame frame = this;
 		setTitle("Invalid username");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 292, 200);
@@ -43,8 +43,18 @@ public class InvalidUserFrame extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel invalidUser = new JLabel("Invalid username. Try again.");
-		invalidUser.setBounds(51, 68, 177, 16);
+		invalidUser.setBounds(58, 51, 177, 16);
 		contentPane.add(invalidUser);
+		
+		JButton doneButton = new JButton("Okay");
+		doneButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				// new ();    new frame here 
+			}
+		});
+		doneButton.setBounds(58, 87, 177, 29);
+		contentPane.add(doneButton);
 	}
 
 }

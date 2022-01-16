@@ -2,21 +2,22 @@ package chessproject;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
 
 public class EnterUsernameFrame extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField usernameValue;
+	private JButton btnNewButton;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -34,6 +35,7 @@ public class EnterUsernameFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public EnterUsernameFrame() {
+		JFrame frame = this;
 		setTitle("Enter username");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 292, 200);
@@ -43,13 +45,23 @@ public class EnterUsernameFrame extends JFrame {
 		contentPane.setLayout(null);
 		
 		JLabel username = new JLabel("Username:");
-		username.setBounds(43, 71, 79, 16);
+		username.setBounds(44, 55, 79, 16);
 		contentPane.add(username);
 		
 		usernameValue = new JTextField();
-		usernameValue.setBounds(117, 66, 130, 26);
+		usernameValue.setBounds(118, 50, 130, 26);
 		contentPane.add(usernameValue);
 		usernameValue.setColumns(10);
+		
+		JButton doneButton = new JButton("Done");
+		doneButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				// new ();    new frame here 
+			}
+		});
+		doneButton.setBounds(44, 92, 204, 29);
+		contentPane.add(doneButton);
 		
 		
 	}

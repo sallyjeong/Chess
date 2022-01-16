@@ -2,6 +2,8 @@ package chessproject;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -14,10 +16,6 @@ import javax.swing.border.EtchedBorder;
 public class GameFrame extends JFrame {
 
 	private JPanel contentPane;
-
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -35,6 +33,7 @@ public class GameFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public GameFrame() {
+		JFrame frame = this;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1313, 715);
 		contentPane = new JPanel();
@@ -58,14 +57,32 @@ public class GameFrame extends JFrame {
 		contentPane.add(chatPanel);
 		
 		JButton drawButton = new JButton("Draw");
+		drawButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				// new ();    new frame here 
+			}
+		});
 		drawButton.setBounds(52, 56, 172, 29);
 		contentPane.add(drawButton);
 		
 		JButton surrenderButton = new JButton("Surrender");
+		surrenderButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				// new ();    new frame here 
+			}
+		});
 		surrenderButton.setBounds(246, 56, 172, 29);
 		contentPane.add(surrenderButton);
 		
 		JButton leaveButton = new JButton("Leave game");
+		leaveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				frame.dispose();
+				// new ();    new frame here 
+			}
+		});
 		leaveButton.setBounds(444, 56, 172, 29);
 		contentPane.add(leaveButton);
 	}
