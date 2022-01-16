@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class Spot implements Drawable {
-	private final int LENGTH = 50;
+
 	private final Color clickedColour = Color.green, capturedColour = Color.lightGray;
 	
 	private Color defaultColour;
@@ -12,13 +12,15 @@ public class Spot implements Drawable {
 	private String id;
 	private Piece piece;
 	private boolean highlighted, clicked;
+	private int length;
 
-	public Spot(int r, int c, String id, Piece p, Color co) {
+	public Spot(int r, int c, String id, Piece p, Color co, int l) {
 		this.row = r;
 		this.column = c;
 		this.id = id;
 		this.piece = p;
 		this.defaultColour = co;
+		this.length = l;
 	}
 
 	@Override
@@ -32,16 +34,16 @@ public class Spot implements Drawable {
 		}else {
 			g.setColor(this.defaultColour);
 		}
-		g.fillRect(column*this.LENGTH, row*this.LENGTH, this.LENGTH, this.LENGTH);
+		g.fillRect(column*this.length, row*this.length, this.length, this.length);
 		if(this.piece!=null) {
 			if(this.piece.isWhite()) {
-				g.drawImage(this.piece.getImage()[0], column*this.LENGTH, row*this.LENGTH, this.LENGTH, this.LENGTH, null);
+				g.drawImage(this.piece.getImage()[0], column*this.length, row*this.length, this.length, this.length, null);
 			}else {
-				g.drawImage(this.piece.getImage()[1], column*this.LENGTH, row*this.LENGTH, this.LENGTH, this.LENGTH, null);
+				g.drawImage(this.piece.getImage()[1], column*this.length, row*this.length, this.length, this.length, null);
 			}
 		}else if(this.highlighted) {
 			g.setColor(Color.green);
-			g.fillOval(column*this.LENGTH+LENGTH/2-5, row*this.LENGTH+LENGTH/2-5, 10, 10);
+			g.fillOval(column*this.length+length/2-5, row*this.length+length/2-5, 10, 10);
 		}
 	} 
 	
@@ -61,8 +63,10 @@ public class Spot implements Drawable {
 		this.piece = p;
 	}
 	
-	public void removePiece() {
+	public Piece removePiece() {
+		Piece p= piece;
 		this.piece = null;
+		return p;
 	}
 	
 	public Piece getPiece() {
@@ -73,7 +77,12 @@ public class Spot implements Drawable {
 		this.highlighted = b;
 	}
 	
+	public boolean isClicked() {
+		return this.clicked;
+	}
+	
 	public void setClicked(boolean b) {
 		this.clicked = b;
 	}
+
 }

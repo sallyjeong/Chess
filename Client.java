@@ -1,3 +1,5 @@
+package chessproject;
+
 //imports for network communication
 import java.io.*;
 import java.net.*;

@@ -23,12 +23,14 @@ public class Knight extends Piece {
 	}
 
 	@Override
-	public Set<Spot> validMoves(Spot[][] board) {
+	public Set<Spot> validMoves(Board b) {
+		Spot[][] board = b.getBoard();
 		int[] rowIncrements= {-2, -1, -2, -1, 1, 2, 1, 2};
 		int[] colIncrements= {-1, -2 , 1, 2, -2, -1, 2, 1};
 		int row= getRow(); int col= getCol();
 
 		Set<Spot> validMoves= getMoveList();
+		validMoves.clear();
 		Spot curSpot;
 		for(int i=0; i< 8; i++){
 			int r= row+ rowIncrements[i]; int c= col+ colIncrements[i];

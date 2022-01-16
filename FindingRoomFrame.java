@@ -6,8 +6,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import java.awt.Color;
 
-public class InstructionsFrame extends JFrame {
+public class FindingRoomFrame extends JFrame {
 
 	private JPanel contentPane;
 
@@ -18,7 +20,7 @@ public class InstructionsFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					InstructionsFrame frame = new InstructionsFrame();
+					FindingRoomFrame frame = new FindingRoomFrame();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -30,13 +32,19 @@ public class InstructionsFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public InstructionsFrame() {
+	public FindingRoomFrame() {
+		setTitle("Finding match");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1313, 715);
+		setBounds(100, 100, 292, 200);
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(238, 238, 238));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel connectionStatus = new JLabel("var (connecting)");
+		connectionStatus.setBounds(95, 65, 106, 16);
+		contentPane.add(connectionStatus);
 	}
 
 }

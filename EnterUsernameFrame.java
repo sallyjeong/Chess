@@ -4,12 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-public class InstructionsFrame extends JFrame {
+public class EnterUsernameFrame extends JFrame {
 
 	private JPanel contentPane;
+	private JTextField usernameValue;
 
 	/**
 	 * Launch the application.
@@ -18,7 +21,7 @@ public class InstructionsFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					InstructionsFrame frame = new InstructionsFrame();
+					EnterUsernameFrame frame = new EnterUsernameFrame();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -30,13 +33,24 @@ public class InstructionsFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public InstructionsFrame() {
+	public EnterUsernameFrame() {
+		setTitle("Enter username");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1313, 715);
+		setBounds(100, 100, 292, 200);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel username = new JLabel("Username:");
+		username.setBounds(43, 71, 79, 16);
+		contentPane.add(username);
+		
+		usernameValue = new JTextField();
+		usernameValue.setBounds(117, 66, 130, 26);
+		contentPane.add(usernameValue);
+		usernameValue.setColumns(10);
+		
+		
 	}
-
 }

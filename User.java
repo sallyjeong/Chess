@@ -1,3 +1,5 @@
+package chessproject;
+
 public class User{
     String username;
 
