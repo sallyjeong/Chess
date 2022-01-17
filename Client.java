@@ -24,19 +24,17 @@ public class Client {
 
             String result;
 
-            //for username --
+            //for username
             do {
-                askForUsername();
-                sendUsername();
-                result = dataIn.readLine().substring(1);
+                askForData(Constants.USERNAME_DATA);
+                result = verifyData(Constants.USERNAME_DATA);
                 System.out.println("USERNAME CREATION: " + result); // output to user abt success/failure
             } while (result.equals(Constants.USERNAME_ERROR));
 
             //for joining a private room
             do {
-                askForRoom();
-                sendRoom();
-                result = dataIn.readLine().substring(1);
+                askForData(Constants.JOIN_PRIV_ROOM_DATA);
+                result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
                 System.out.println("JOIN ROOM: " + result); // output to user abt success/failure
             } while (result.equals(Constants.JOIN_ROOM_ERROR));
 
@@ -48,41 +46,38 @@ public class Client {
         sendMessage();
     }
 
-
-    public void askForUsername() {
+    public void askForData(char type) {
         Scanner input = new Scanner(System.in);
-        System.out.println("Enter a username");
-        this.username = input.next();
+        if (type == Constants.USERNAME_DATA) {
+            System.out.println("Enter a username: ");
+            username = input.next();
+        } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
+            System.out.println("Enter a room code: ");
+            room = input.next().toLowerCase();
+        }
     }
 
-    public void sendUsername() {
+    // not sure if we merge sendMessage/sendMove stuff with this or not
+    public String verifyData(char type) {
+        String result = "";
         try {
-            dataOut.write(Constants.USERNAME_DATA + username);
+            if (type == Constants.USERNAME_DATA) {
+                dataOut.write(type + username);
+            } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
+                dataOut.write(type + room);
+            }
             dataOut.newLine();
             dataOut.flush();
+
+            result = dataIn.readLine().substring(1);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return result;
     }
 
     public void setRoom(String room) { // assuming they click into public room/create the private room
         this.room = room;
-    }
-
-    public void askForRoom() { // called when they try to join a private game - for the room code
-        Scanner input = new Scanner(System.in);
-        System.out.println("Enter a room code: ");
-        room = input.next().toLowerCase();
-    }
-
-    public void sendRoom() {
-        try {
-            dataOut.write(Constants.JOIN_PRIV_ROOM_DATA + room);
-            dataOut.newLine();
-            dataOut.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void quickMatch() {
@@ -141,11 +136,21 @@ public class Client {
                             //@kat
                             //wasnt really sure on what to do for this part
                             //so i left it blank for now
+
+                            /**
+                             * @sally i think we don't need this stuff here because
+                             * 1) does client side need to take in these input?
+                             * 2) these are like 1-time inputs
+                             *    but this method is constantly waiting to receive info
+                             *    that would update the game (like chat and move)
+                             *    so tbh i don't even think they need to be here?
+                             */
                         }else if (type == Constants.CREATE_ROOM_DATA){
 
                         }else if (type == Constants.QUICK_MATCH_DATA){
 
                         }
+                        // might need a leave room?
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

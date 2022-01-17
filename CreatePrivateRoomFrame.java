@@ -39,9 +39,6 @@ public class CreatePrivateRoomFrame extends JFrame {
      * Create the frame.
      */
     public CreatePrivateRoomFrame() {
-        // for testing
-        roomCodes.add("123");
-        // testing section done
         JFrame frame = this;
         code=generateCode();
 

@@ -17,6 +17,10 @@ public class Server {
     }
 
     public Server() {
+        // for room testing
+        rooms.put("123", new ArrayList<ClientHandler>());
+        rooms.put("abc", new ArrayList<ClientHandler>());
+        // end room testing
         try {
             serverSocket = new ServerSocket(Constants.PORT);
             System.out.println("Waiting for connections");
@@ -58,73 +62,51 @@ public class Server {
         public void run() {
             while (socket.isConnected()) {
                 try {
-                    //if (dataIn.ready()) {
-                        String input = dataIn.readLine(); // = get input thing
-                        // System.out.println("client: " + clientInput);
-                        char type = input.charAt(0);
-                        input = input.substring(1);
-                        System.out.println("TYPE: " + type);
-                        System.out.println("INPUT: " + input);
-                        if (type == Constants.CHAT_DATA) {
-                            // System.out.println("chat data!!");
-                            broadcastMessage(Constants.CHAT_DATA + input);
-                        } else if (type == Constants.MOVE_DATA){
-                            // send movement stuff
-                            // broadcastMessage(Constants.moveData + "theactualmove");
+                    String input = dataIn.readLine(); // = get input thing
+                    char type = input.charAt(0);
+                    input = input.substring(1);
+                    //System.out.println("TYPE: " + type);
+                    //System.out.println("INPUT: " + input);
+                    if (type == Constants.CHAT_DATA) {
+                        broadcastMessage(Constants.CHAT_DATA + input);
+                    } else if (type == Constants.MOVE_DATA){
+                        // send movement stuff
+                        // broadcastMessage(Constants.moveData + "theactualmove");
 
-                        } else if (type == Constants.USERNAME_DATA) {
-                            // System.out.println("username data !!");
-                            if (validUsername(input)) {
-                                username = input;
-                                //can change to a new popupData char?
-                                dataOut.write(Constants.CHAT_DATA + "success. welcome " + username);
-                                dataOut.newLine();
-                                dataOut.flush();
-                            } else {
-                                //can change to a new popupData char?
-                                dataOut.write(Constants.CHAT_DATA + Constants.USERNAME_ERROR);
-                                dataOut.newLine();
-                                dataOut.flush();
-                            }
-                        }else if (type == Constants.JOIN_PRIV_ROOM_DATA){ //join private room
-                            System.out.println("join room processed");
-                            if (rooms.containsKey(input)){
-                                System.out.println("contains");
-                                rooms.put(input, new ArrayList<ClientHandler>());
-                                rooms.get(input).add(this);
-                                room = input;
-                                dataOut.write(Constants.CHAT_DATA + "success. welcome " + username);
-                                dataOut.newLine();
-                                dataOut.flush();
-                                broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
+                    } else if (type == Constants.USERNAME_DATA) {
+                        // System.out.println("username data !!");
+                        if (validUsername(input)) {
+                            username = input;
+                            //can change to a new popupData char?
+                            writeData(Constants.CHAT_DATA + "success. welcome " + username);
+                        } else {
+                            //can change to a new popupData char?
+                            writeData(Constants.CHAT_DATA + Constants.USERNAME_ERROR);
+                        }
+                    }else if (type == Constants.JOIN_PRIV_ROOM_DATA){ //join private room
+                        if (rooms.containsKey(input)){
+                            rooms.get(input).add(this);
+                            room = input;
+                            writeData(Constants.CHAT_DATA + "success. welcome " + username);
+                            broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
 
-                            }else{
-                                System.out.println("nah nah watch out");
-                                dataOut.write(Constants.JOIN_PRIV_ROOM_DATA + Constants.JOIN_ROOM_ERROR);
-                                dataOut.newLine();
-                                dataOut.flush();
-                            }
-                        }else if (type == Constants.CREATE_ROOM_DATA) { //join private room
-                            String roomCode = CreatePrivateRoomFrame.roomCodes.get(CreatePrivateRoomFrame.roomCodes.size()-1);
-                            rooms.put(roomCode, new ArrayList<ClientHandler>());
-                            rooms.get(roomCode).add(this);
-                            dataOut.write(roomCode); //CREATE_ROOM_DATA -- add this before roomcode?
-                            dataOut.newLine();
-                            dataOut.flush();
-                            room = roomCode;
+                        }else{
+                            writeData(Constants.JOIN_PRIV_ROOM_DATA + Constants.JOIN_ROOM_ERROR);
+                        }
+                    }else if (type == Constants.CREATE_ROOM_DATA) { //join private room
+                        String roomCode = CreatePrivateRoomFrame.roomCodes.get(CreatePrivateRoomFrame.roomCodes.size()-1);
+                        rooms.put(roomCode, new ArrayList<ClientHandler>());
+                        rooms.get(roomCode).add(this);
+                        room = roomCode;
+                        writeData(roomCode); //CREATE_ROOM_DATA -- add this before roomcode?
 
-                        }else if (type== Constants.QUICK_MATCH_DATA){ //public room
-                            if (quickMatch.isEmpty()){
-                                dataOut.write(Constants.QUICK_MATCH_WAIT);
-                                dataOut.newLine();
-                                dataOut.flush();
-                                quickMatch.add(this);
-
+                    }else if (type== Constants.QUICK_MATCH_DATA){ //public room
+                        if (quickMatch.isEmpty()){
+                            writeData(Constants.QUICK_MATCH_WAIT);
+                            quickMatch.add(this);
                                 //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
-                            }
-                        } //else if clicking into a public room??
-
-                   // }
+                        }
+                    } //else if clicking into a public room??
                 } catch (IOException e) {
                     e.printStackTrace();
                     break;
@@ -132,6 +114,15 @@ public class Server {
             }
         }
 
+        public void writeData(String data) {
+            try {
+                dataOut.write(data);
+                dataOut.newLine();
+                dataOut.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         public void broadcastMessage(String msg) { //change for rooms, make leaveroom method,
             ArrayList<ClientHandler> roomMembers = rooms.get(this.room);
             if (roomMembers.size() > 1) {
