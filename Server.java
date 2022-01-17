@@ -1,6 +1,6 @@
-//imports for network communication
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+package chessproject;
 
+//imports for network communication
 import java.io.*;
 import java.lang.reflect.Array;
 import java.net.*;
@@ -41,60 +41,65 @@ public class Server {
         private BufferedWriter dataOut;
 
         public ClientHandler(Socket socket) {
-            System.out.println("Attempting to establish a connection ...");
+            //System.out.println("Attempting to establish a connection ...");
             try {
                 this.socket = socket;
                 dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream())); // will this work with the server though
                 dataOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                clientHandlers.add(this);
+                clientHandlers.add(this); // replace with a method to
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("Connection to server established!");
+            //System.out.println("Connection to server established!");
         }
 
         @Override
         public void run() {
             while (socket.isConnected()) {
                 try {
-                    if (dataIn.ready()) {
-                        String totalInput = dataIn.readLine(); // = get input thing
+                    //if (dataIn.ready()) {
+                        String input = dataIn.readLine(); // = get input thing
                         // System.out.println("client: " + clientInput);
-                        char type = totalInput.charAt(0);
-                        String clientInput = totalInput.substring(1);
+                        char type = input.charAt(0);
+                        input = input.substring(1);
+                        System.out.println("TYPE: " + type);
+                        System.out.println("INPUT: " + input);
                         if (type == Constants.CHAT_DATA) {
                             // System.out.println("chat data!!");
-                            broadcastMessage(Constants.CHAT_DATA + clientInput);
+                            broadcastMessage(Constants.CHAT_DATA + input);
                         } else if (type == Constants.MOVE_DATA){
                             // send movement stuff
                             // broadcastMessage(Constants.moveData + "theactualmove");
 
                         } else if (type == Constants.USERNAME_DATA) {
                             // System.out.println("username data !!");
-                            if (validUsername(clientInput)) {
-                                this.username = clientInput;
+                            if (validUsername(input)) {
+                                username = input;
                                 //can change to a new popupData char?
-                                dataOut.write(Constants.CHAT_DATA + "success. welcome " + this.username);
+                                dataOut.write(Constants.CHAT_DATA + "success. welcome " + username);
                                 dataOut.newLine();
                                 dataOut.flush();
-                                broadcastMessage(Constants.CHAT_DATA + this.username + " has joined the chat");
                             } else {
                                 //can change to a new popupData char?
                                 dataOut.write(Constants.CHAT_DATA + Constants.USERNAME_ERROR);
                                 dataOut.newLine();
                                 dataOut.flush();
-                                // is this a bad way to use constant? because i don't wanna "hard code" the message
-
-                                //print (not a valid username. your username must not include special characters or your username is already used
                             }
                         }else if (type == Constants.JOIN_PRIV_ROOM_DATA){ //join private room
-                            if (rooms.containsKey(clientInput)){
-                                rooms.put(clientInput, new ArrayList<ClientHandler>());
-                                rooms.get(clientInput).add(this);
-                                room = clientInput;
+                            System.out.println("join room processed");
+                            if (rooms.containsKey(input)){
+                                System.out.println("contains");
+                                rooms.put(input, new ArrayList<ClientHandler>());
+                                rooms.get(input).add(this);
+                                room = input;
+                                dataOut.write(Constants.CHAT_DATA + "success. welcome " + username);
+                                dataOut.newLine();
+                                dataOut.flush();
+                                broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
 
                             }else{
+                                System.out.println("nah nah watch out");
                                 dataOut.write(Constants.JOIN_PRIV_ROOM_DATA + Constants.JOIN_ROOM_ERROR);
                                 dataOut.newLine();
                                 dataOut.flush();
@@ -119,7 +124,7 @@ public class Server {
                             }
                         } //else if clicking into a public room??
 
-                    }
+                   // }
                 } catch (IOException e) {
                     e.printStackTrace();
                     break;
@@ -129,15 +134,17 @@ public class Server {
 
         public void broadcastMessage(String msg) { //change for rooms, make leaveroom method,
             ArrayList<ClientHandler> roomMembers = rooms.get(this.room);
-            for (ClientHandler member : roomMembers) {
-                try {
-                    if ((!member.username.equals(username)) && (!member.username.equals(" "))) {
-                        member.dataOut.write(msg);
-                        member.dataOut.newLine();
-                        member.dataOut.flush();
+            if (roomMembers.size() > 1) {
+                for (ClientHandler member : roomMembers) {
+                    try {
+                        if ((!member.username.equals(username)) && (!member.username.equals(" "))) {
+                            member.dataOut.write(msg);
+                            member.dataOut.newLine();
+                            member.dataOut.flush();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
         }

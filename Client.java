@@ -1,3 +1,5 @@
+package chessproject;
+
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
@@ -12,8 +14,6 @@ public class Client {
 
     public static void main(String[] args) {
         Client client = new Client();
-        client.listenForUpdates();
-        client.sendMessage();
     }
 
     public Client() {
@@ -28,41 +28,26 @@ public class Client {
             do {
                 askForUsername();
                 sendUsername();
-                result = dataIn.readLine();
-                System.out.println(result.substring(1)); // output to user abt success/failure
-            } while (result.equals(Constants.CHAT_DATA + Constants.USERNAME_ERROR));
+                result = dataIn.readLine().substring(1);
+                System.out.println("USERNAME CREATION: " + result); // output to user abt success/failure
+            } while (result.equals(Constants.USERNAME_ERROR));
 
             //for joining a private room
             do {
-                dataOut.write(Constants.JOIN_PRIV_ROOM_DATA);
-                dataOut.newLine();
-                dataOut.flush();
                 askForRoom();
-                result = dataIn.readLine();
-                System.out.println(result.substring(1)); // output to user abt success/failure
-            } while (result.equals(Constants.CHAT_DATA + Constants.JOIN_ROOM_ERROR));
-
-
-            //for creating a private room
-            dataOut.write(Constants.CREATE_ROOM_DATA);
-            dataOut.newLine();
-            dataOut.flush();
-            result = dataIn.readLine();
-            setRoom(result);
-            System.out.println(result.substring(1)); // output room code
-
-            //join quick match
-            dataOut.write(Constants.QUICK_MATCH_DATA);
-            dataOut.newLine();
-            dataOut.flush();
-            result = dataIn.readLine();
-            //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
-
+                sendRoom();
+                result = dataIn.readLine().substring(1);
+                System.out.println("JOIN ROOM: " + result); // output to user abt success/failure
+            } while (result.equals(Constants.JOIN_ROOM_ERROR));
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        listenForUpdates();
+        sendMessage();
     }
+
 
     public void askForUsername() {
         Scanner input = new Scanner(System.in);
@@ -86,20 +71,43 @@ public class Client {
 
     public void askForRoom() { // called when they try to join a private game - for the room code
         Scanner input = new Scanner(System.in);
-        System.out.println("Enter a room");
-        this.room = input.next();
-        this.room.toLowerCase();
+        System.out.println("Enter a room code: ");
+        room = input.next().toLowerCase();
     }
 
-//    public void sendRoom() {
-//        try {
-//            dataOut.write(Constants.JOIN_PRIV_ROOM_DATA + room);
-//            dataOut.newLine();
-//            dataOut.flush();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public void sendRoom() {
+        try {
+            dataOut.write(Constants.JOIN_PRIV_ROOM_DATA + room);
+            dataOut.newLine();
+            dataOut.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void quickMatch() {
+        try {
+            dataOut.write(Constants.QUICK_MATCH_DATA);
+            dataOut.newLine();
+            dataOut.flush();
+            String result = dataIn.readLine();
+            //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void createRoom() {
+        try {
+            dataOut.write(Constants.CREATE_ROOM_DATA);
+            dataOut.newLine();
+            dataOut.flush();
+            String result = dataIn.readLine();
+            room = result.substring(1);
+            System.out.println("YOUR ROOM CODE IS: " + room); // output room code
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void sendMessage() {
         try {
