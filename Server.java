@@ -1,16 +1,19 @@
-package chessproject;
-
 //imports for network communication
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+
 import java.io.*;
+import java.lang.reflect.Array;
 import java.net.*;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Server {
     public ServerSocket serverSocket;//server socket for connection
     public ArrayList<ClientHandler> clientHandlers = new ArrayList<>(); //maybe set
-
+    public Map <String, ArrayList<ClientHandler>> rooms = new HashMap<>();
+    public Queue<ClientHandler> quickMatch = new LinkedList<>();
     public static void main(String[] args) {
         Server server = new Server();
+
     }
 
     public Server() {
@@ -32,6 +35,7 @@ public class Server {
 
     private class ClientHandler implements Runnable { //not sure if client handler is the best name?
         private String username = " ";
+        private String room = ""; //i need this for broadcast -- theres prob a better idea
         private Socket socket;
         private BufferedReader dataIn;
         private BufferedWriter dataOut;
@@ -42,9 +46,7 @@ public class Server {
                 this.socket = socket;
                 dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream())); // will this work with the server though
                 dataOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-//                this.username = dataIn.readLine(); // first thing sent is username
                 clientHandlers.add(this);
-          //      broadcastMessage(username + " HAS ENTERED");
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -86,7 +88,36 @@ public class Server {
 
                                 //print (not a valid username. your username must not include special characters or your username is already used
                             }
-                        }
+                        }else if (type == Constants.JOIN_PRIV_ROOM_DATA){ //join private room
+                            if (rooms.containsKey(clientInput)){
+                                rooms.put(clientInput, new ArrayList<ClientHandler>());
+                                rooms.get(clientInput).add(this);
+                                room = clientInput;
+
+                            }else{
+                                dataOut.write(Constants.JOIN_PRIV_ROOM_DATA + Constants.JOIN_ROOM_ERROR);
+                                dataOut.newLine();
+                                dataOut.flush();
+                            }
+                        }else if (type == Constants.CREATE_ROOM_DATA) { //join private room
+                            String roomCode = CreatePrivateRoomFrame.roomCodes.get(CreatePrivateRoomFrame.roomCodes.size()-1);
+                            rooms.put(roomCode, new ArrayList<ClientHandler>());
+                            rooms.get(roomCode).add(this);
+                            dataOut.write(roomCode); //CREATE_ROOM_DATA -- add this before roomcode?
+                            dataOut.newLine();
+                            dataOut.flush();
+                            room = roomCode;
+
+                        }else if (type== Constants.QUICK_MATCH_DATA){ //public room
+                            if (quickMatch.isEmpty()){
+                                dataOut.write(Constants.QUICK_MATCH_WAIT);
+                                dataOut.newLine();
+                                dataOut.flush();
+                                quickMatch.add(this);
+
+                                //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
+                            }
+                        } //else if clicking into a public room??
 
                     }
                 } catch (IOException e) {
@@ -96,11 +127,26 @@ public class Server {
             }
         }
 
+        public void broadcastMessage(String msg) { //change for rooms, make leaveroom method,
+            ArrayList<ClientHandler> roomMembers = rooms.get(this.room);
+            for (ClientHandler member : roomMembers) {
+                try {
+                    if ((!member.username.equals(username)) && (!member.username.equals(" "))) {
+                        member.dataOut.write(msg);
+                        member.dataOut.newLine();
+                        member.dataOut.flush();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
-        public void broadcastMessage(String msg) {
+        public void broadcastMessageToAll(String msg) { //change for rooms, make leaveroom method,
+
             for (ClientHandler clientHandler : clientHandlers) {
                 try {
-                    if (!clientHandler.username.equals(username)) {
+                    if ((!clientHandler.username.equals(username)) && (!clientHandler.username.equals(" "))) {
                         clientHandler.dataOut.write(msg);
                         clientHandler.dataOut.newLine();
                         clientHandler.dataOut.flush();
@@ -146,77 +192,3 @@ public class Server {
         }
     }
 }
-
-//    class ServerHandler extends Thread{
-//        private Socket socket;
-//        private DataInputStream in;
-//        BufferedReader input;
-//        private DataOutputStream output;
-//
-//        private int playerID;
-//        //create a socket with the local IP address (try-catch required) and wait for connection request
-//
-//        public ServerHandler(Socket s, int id){
-////            this.socket = s;
-////            this.playerID = id;
-//            socket = s;
-//            playerID = id;
-//
-//            try{
-////                input = new DataInputStream(socket.getInputStream());
-//                in = new DataInputStream(socket.getInputStream());
-//                input = new BufferedReader(new InputStreamReader(in));
-//                output = new DataOutputStream(socket.getOutputStream());
-//                System.out.println("input and output stream connected");
-//            }catch (IOException e){
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        public void run(){
-//            try{
-//                System.out.println("before write int");
-//                output.writeInt(playerID);
-//                output.flush();
-//                System.out.println("after flush");
-//                /* need to modify this while loop for chess */
-//                while (true){ //true
-////                    if (playerID ==1){
-////                        player1Input= input.readLine();
-////                        System.out.println();
-////                        connections.get(0).sendMove("a","b");
-////                    }
-////                    if (playerID==32323){ // if smth happens or put it as a while loop condition
-////                        break;
-////                    }
-////58:37
-//                    break;
-//                }
-////                for (int i = 0; i<connections.size(); i++){
-////                    connections.get(i).closeConnection();
-////                }
-//            }catch(IOException e){
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        public void sendMove(String startPos, String endPos){
-//            try{
-//                output.writeChars(startPos+" "+endPos);
-//                output.flush();
-//            }catch (IOException e){
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        public void closeConnection(){
-//            try{
-//                socket.close();
-//                System.out.println("Socket closed.");
-//            }catch(IOException e){
-//                e.printStackTrace();
-//            }
-//        }
-//    }
-//
-//}
