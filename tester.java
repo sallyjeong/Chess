@@ -1,5 +1,3 @@
-package chessproject;
-
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -11,13 +9,11 @@ import javax.swing.JPanel;
 public class tester {
 
 	static Game game;
-	static Player curPlayer;
 	static Player p1, p2;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		p1 = new Player(true, true); p2 = new Player(false, true);
-		curPlayer = p1;
 		game = new Game(p1, p2);
 		
 		JFrame frame = new JFrame();
@@ -54,9 +50,11 @@ public class tester {
 					if(spot.getPiece()==null) {
 						return;
 					}else {
-						spot.setClicked(true);
-						spot.getPiece().displayValidMoves(true);
-						source = spot;
+						if (game.getTurn().isWhite() == spot.getPiece().isWhite()) {
+							spot.setClicked(true);
+							spot.getPiece().displayValidMoves(true);
+							source = spot;
+						}
 					}
 				}else {
 					if(spot.equals(source)) {

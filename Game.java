@@ -1,5 +1,3 @@
-package chessproject;
-
 import java.util.ArrayList;
 
 public class Game {
@@ -101,5 +99,9 @@ public class Game {
 	public Board getBoard() {
 		return this.board;
 	}
-	
+
+
+	public Player getTurn() {
+		return turn;
+	}
 }
