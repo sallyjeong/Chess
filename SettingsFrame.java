@@ -34,12 +34,13 @@ public class SettingsFrame extends JFrame {
     public SettingsFrame() {
         setTitle("Settings");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
         setBounds(100, 100, 1313, 715);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(new BorderLayout(0, 0));
+
+        setVisible(true);
     }
 
 }

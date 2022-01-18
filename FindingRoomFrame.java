@@ -28,8 +28,8 @@ public class FindingRoomFrame extends JFrame {
      * Create the frame.
      */
     public FindingRoomFrame() {
+        // maybe replace with a pop up
         setTitle("Finding match");
-        setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 292, 200);
         contentPane = new JPanel();
@@ -41,6 +41,7 @@ public class FindingRoomFrame extends JFrame {
         JLabel connectionStatus = new JLabel("var (connecting)");
         connectionStatus.setBounds(95, 65, 106, 16);
         contentPane.add(connectionStatus);
+        setVisible(true);
     }
 
 }

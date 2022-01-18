@@ -31,9 +31,10 @@ public class GameFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public GameFrame() { // take in param to decide which way to display the board!!
+    public GameFrame() {
+        // take in param to decide which way to display the board!!
+        // take in param to see if its spectator or player (e.g. surrender button not available for spectators)
         JFrame frame = this;
-        setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1313, 715);
         contentPane = new JPanel();
@@ -74,6 +75,7 @@ public class GameFrame extends JFrame {
         surrenderButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+                // send to new page, remove user from the room
                 // new ();    new frame here
             }
         });
@@ -84,10 +86,12 @@ public class GameFrame extends JFrame {
         leaveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+                // remove the user from game (if player, do the same thing as surrender)
                 // new ();    new frame here
             }
         });
         leaveButton.setBounds(444, 56, 172, 29);
         contentPane.add(leaveButton);
+        setVisible(true);
     }
 }

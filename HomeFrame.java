@@ -33,7 +33,6 @@ public class HomeFrame extends JFrame {
             public void run() {
                 try {
                     HomeFrame frame = new HomeFrame();
-                    frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -211,7 +210,7 @@ public class HomeFrame extends JFrame {
         createRoomLabel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new EnterUsernameFrame();
+                // new EnterUsernameFrame(); create client to get ONLY username input
                 new CreatePrivateRoomFrame(); // this frame never works for kat lmao
             }
         });
@@ -295,5 +294,7 @@ public class HomeFrame extends JFrame {
         separator3.setOrientation(SwingConstants.VERTICAL);
         separator3.setBounds(529, 69, 12, 84);
         lobbyPanel.add(separator3);
+
+        setVisible(true);
     }
 }

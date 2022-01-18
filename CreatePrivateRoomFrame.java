@@ -22,18 +22,18 @@ public class CreatePrivateRoomFrame extends JFrame {
     String code;
 
     private JPanel contentPane;
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    CreatePrivateRoomFrame frame = new CreatePrivateRoomFrame();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+//    public static void main(String[] args) {
+//        EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                try {
+//                    CreatePrivateRoomFrame frame = new CreatePrivateRoomFrame();
+//                    frame.setVisible(true);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
 
     /**
      * Create the frame.
@@ -87,6 +87,7 @@ public class CreatePrivateRoomFrame extends JFrame {
             }
         });
         contentPane.add(doneButton);
+        setVisible(true);
     }
 
     public String generateCode (){

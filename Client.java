@@ -18,6 +18,7 @@ public class Client {
     }
 
     public Client() {
+        new GameFrame();
         try {
             socket = new Socket(Constants.LOCAL_HOST, Constants.PORT);
             dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -45,15 +46,13 @@ public class Client {
 
         listenForUpdates();
         sendMessage();
-
-        GameFrame gameFrame = new GameFrame();
     }
 
     public void askForData(char type) {
         if (type == Constants.USERNAME_DATA) {
             JOptionPane popUp = new JOptionPane();
             username = popUp.showInputDialog("Enter a username: ");
-            popUp.getRootFrame().dispose(); // doesn't actually do anything though
+            //popUp.getRootFrame().dispose(); // doesn't actually do anything though
 
         } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
             JOptionPane popUp = new JOptionPane();

@@ -22,7 +22,6 @@ public class PlayComputerFrame extends JFrame {
     public PlayComputerFrame() {
         JFrame frame = this;
         setTitle("Play Computer");
-        setVisible(true);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 292, 200);
@@ -59,5 +58,7 @@ public class PlayComputerFrame extends JFrame {
         });
         doneButton.setBounds(57, 118, 208, 29);
         contentPane.add(doneButton);
+
+        setVisible(true);
     }
 }
