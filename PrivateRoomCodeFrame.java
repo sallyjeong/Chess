@@ -17,6 +17,7 @@ public class PrivateRoomCodeFrame extends JFrame {
     private JPanel contentPane;
     private JTextField codeText;
     private JButton doneButton;
+    private String roomEntered;
 
 //    public static void main(String[] args) {
 //        EventQueue.invokeLater(new Runnable() {
@@ -57,10 +58,15 @@ public class PrivateRoomCodeFrame extends JFrame {
         doneButton = new JButton("Done");
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                roomEntered = codeText.getText();
                 frame.dispose();
             }
         });
         doneButton.setBounds(36, 92, 221, 29);
         contentPane.add(doneButton);
+    }
+
+    public String getRoomEntered() {
+        return roomEntered.toLowerCase();
     }
 }

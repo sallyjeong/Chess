@@ -1,5 +1,6 @@
 package chessproject;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
@@ -28,14 +29,14 @@ public class Client {
             do {
                 askForData(Constants.USERNAME_DATA);
                 result = verifyData(Constants.USERNAME_DATA);
-                System.out.println("USERNAME CREATION: " + result); // output to user abt success/failure
+                JOptionPane.showMessageDialog(null, "USERNAME CREATION: " + result); // output to user abt success/failure
             } while (result.equals(Constants.USERNAME_ERROR));
 
             //for joining a private room
             do {
                 askForData(Constants.JOIN_PRIV_ROOM_DATA);
                 result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
-                System.out.println("JOIN ROOM: " + result); // output to user abt success/failure
+                JOptionPane.showMessageDialog(null, "JOIN ROOM: " + result);
             } while (result.equals(Constants.JOIN_ROOM_ERROR));
 
         } catch (IOException e) {
@@ -45,19 +46,19 @@ public class Client {
         listenForUpdates();
         sendMessage();
 
-        // create GameFrame with param for black POV or white POV
+        GameFrame gameFrame = new GameFrame();
     }
 
     public void askForData(char type) {
-        Scanner input = new Scanner(System.in);
         if (type == Constants.USERNAME_DATA) {
-            // create a EnterUsernameFrame
-            System.out.println("Enter a username: ");
-            username = input.next();
+            JOptionPane popUp = new JOptionPane();
+            username = popUp.showInputDialog("Enter a username: ");
+            popUp.getRootFrame().dispose(); // doesn't actually do anything though
+
         } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
-            // create a PrivateRoomCode Frame
-            System.out.println("Enter a room code: ");
-            room = input.next().toLowerCase();
+            JOptionPane popUp = new JOptionPane();
+            room = popUp.showInputDialog("Enter a room code: ");
+
         }
     }
 

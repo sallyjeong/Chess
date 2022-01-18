@@ -40,17 +40,17 @@ public class PlayComputerFrame extends JFrame {
         contentPane.add(levelLabel);
 
         String[] colours = {"black", "white", "random"};
-		JComboBox colourChoices = new JComboBox<>(colours);//use this one for drop down list
+        JComboBox colourChoices = new JComboBox<>(colours);//use this one for drop down list
         //JComboBox colourChoices = new JComboBox();
         colourChoices.setBounds(130, 30, 125, 27);
         contentPane.add(colourChoices);
 
         String[] levels = {"easy", "medium", "hard"};
-		JComboBox difficulty = new JComboBox<>(levels);//use this one for drop down list
+        JComboBox difficulty = new JComboBox<>(levels);//use this one for drop down list
         //JComboBox difficulty = new JComboBox();
         difficulty.setBounds(130, 75, 125, 27);
         contentPane.add(difficulty);
-        
+
         JButton doneButton = new JButton("Done");
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

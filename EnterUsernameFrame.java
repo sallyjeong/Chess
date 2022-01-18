@@ -16,9 +16,10 @@ public class EnterUsernameFrame extends JFrame {
 
     private JPanel contentPane;
     private JTextField usernameValue;
-    private JButton btnNewButton;
+    private String usernameEntered;
+    private boolean closed = false;
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
 //        EventQueue.invokeLater(new Runnable() {
 //            public void run() {
 //                try {
@@ -29,12 +30,12 @@ public class EnterUsernameFrame extends JFrame {
 //                }
 //            }
 //        });
-    }
+//    }
 
     /**
      * Create the frame.
      */
-    public EnterUsernameFrame(String roomCode) {
+    public EnterUsernameFrame() {
         JFrame frame = this;
         setTitle("Enter username");
         setVisible(true);
@@ -57,6 +58,8 @@ public class EnterUsernameFrame extends JFrame {
         JButton doneButton = new JButton("Done");
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                usernameEntered = usernameValue.getText();
+                closed = true;
                 frame.dispose();
                 // new ();    new frame here
             }
@@ -65,5 +68,13 @@ public class EnterUsernameFrame extends JFrame {
         doneButton.setBounds(44, 92, 204, 29);
         contentPane.add(doneButton);
 
+    }
+
+    public String getUsernameEntered() {
+        return usernameEntered;
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 }

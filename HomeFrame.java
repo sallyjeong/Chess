@@ -121,7 +121,7 @@ public class HomeFrame extends JFrame {
         enterRoomButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                String roomCode = "123"; // set the variable String roomCode based on the open server
+                String roomCode = "ahh"; // set the variable String roomCode based on the open server
                 // create a Client with existing roomCode variable
 
                 // new EnterUsernameFrame(roomCode);
@@ -184,7 +184,7 @@ public class HomeFrame extends JFrame {
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new FindingRoomFrame();
+                new FindingRoomFrame(); // could also maybe replace with JOptionPanes
             }
         });
         playButton.setBackground(SystemColor.windowBorder);
@@ -201,8 +201,7 @@ public class HomeFrame extends JFrame {
         enterCodeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                // create Client with NO roomCode
-                // create new PrivateRoomCodeFrame() in Client to get and store the variable;
+                new Client();
             }
         });
         enterCodeButton.setBounds(11, 241, 510, 29);
@@ -212,7 +211,8 @@ public class HomeFrame extends JFrame {
         createRoomLabel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new CreatePrivateRoomFrame();
+                new EnterUsernameFrame();
+                new CreatePrivateRoomFrame(); // this frame never works for kat lmao
             }
         });
         createRoomLabel.setBounds(565, 241, 510, 29);
@@ -231,6 +231,7 @@ public class HomeFrame extends JFrame {
                 new PlayComputerFrame();
             }
         });
+
         playComputerButton.setBackground(SystemColor.windowBorder);
         playComputerButton.setBounds(15, 315, 1060, 24);
         lobbyPanel.add(playComputerButton);
