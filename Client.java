@@ -18,7 +18,13 @@ public class Client {
     }
 
     public Client() {
-        new GameFrame();
+        GameFrame thisGame = new GameFrame();
+        // add variable to see if the game has been closed/left
+        // send msg to client handler to remove the person from that room
+        // do we want spectators to be able to go look at another room?
+        // is there a way to detect if X was clicked and to remove the user when that happens?
+        // otherwise a lot of null threads and all past usernames can't be used
+
         try {
             socket = new Socket(Constants.LOCAL_HOST, Constants.PORT);
             dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
