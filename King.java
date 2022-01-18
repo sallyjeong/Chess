@@ -1,3 +1,5 @@
+package chessproject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
@@ -19,8 +21,8 @@ public class King extends Piece {
 	@Override
 	public void loadImage() {
 		try {
-			this.setImage(ImageIO.read(new File("06_classic2\\w-king2.png")), 0);
-			this.setImage(ImageIO.read(new File("06_classic2\\b-king2.png")), 1);
+			this.setImage(ImageIO.read(new File("files\\06_classic2\\w-king2.png")), 0);
+			this.setImage(ImageIO.read(new File("files\\06_classic2\\b-king2.png")), 1);
 		} catch (IOException e) {
 			System.out.println("error loading sprite");
 		}
@@ -47,13 +49,7 @@ public class King extends Piece {
 			}
 		}
 
-		if(isWhite() ){
-			if(getRow()==7){canCastle(b);}
-		}
-		else{
-			if(getRow()==0){canCastle(b);}
-		}
-
+		canCastle(b);
 		
 		return super.getMoveList();
 
