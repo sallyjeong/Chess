@@ -44,14 +44,18 @@ public class Client {
 
         listenForUpdates();
         sendMessage();
+
+        // create GameFrame with param for black POV or white POV
     }
 
     public void askForData(char type) {
         Scanner input = new Scanner(System.in);
         if (type == Constants.USERNAME_DATA) {
+            // create a EnterUsernameFrame
             System.out.println("Enter a username: ");
             username = input.next();
         } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
+            // create a PrivateRoomCode Frame
             System.out.println("Enter a room code: ");
             room = input.next().toLowerCase();
         }

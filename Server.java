@@ -128,6 +128,9 @@ public class Server {
             if (roomMembers.size() > 1) {
                 for (ClientHandler member : roomMembers) {
                     try {
+                        // some should only send to opponent/players and not spectators
+                        // ^^ first 2 ClientHandlers of a room (HashMap) will be the players
+                        // so we can differentiate sending data this way
                         if ((!member.username.equals(username)) && (!member.username.equals(" "))) {
                             member.dataOut.write(msg);
                             member.dataOut.newLine();

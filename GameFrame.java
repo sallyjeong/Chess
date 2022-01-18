@@ -15,75 +15,79 @@ import javax.swing.border.EtchedBorder;
 
 public class GameFrame extends JFrame {
 
-	private JPanel contentPane;
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					GameFrame frame = new GameFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+    private JPanel contentPane;
+//    public static void main(String[] args) {
+//        EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                try {
+//                    GameFrame frame = new GameFrame();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
 
-	/**
-	 * Create the frame.
-	 */
-	public GameFrame() {
-		JFrame frame = this;
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1313, 715);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		JPanel boardPanel = new JPanel();
-		boardPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		boardPanel.setBounds(674, 56, 576, 576); // 576/8 = 72
-		contentPane.add(boardPanel);
-		
-		JPanel movesPanel = new JPanel();
-		movesPanel.setBorder(new TitledBorder(null, "Moves", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		movesPanel.setBounds(52, 118, 564, 237);
-		contentPane.add(movesPanel);
-		
-		JPanel chatPanel = new JPanel();
-		chatPanel.setBorder(new TitledBorder(null, "Chat", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		chatPanel.setBounds(52, 395, 564, 237);
-		contentPane.add(chatPanel);
-		
-		JButton drawButton = new JButton("Draw");
-		drawButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-				// new ();    new frame here 
-			}
-		});
-		drawButton.setBounds(52, 56, 172, 29);
-		contentPane.add(drawButton);
-		
-		JButton surrenderButton = new JButton("Surrender");
-		surrenderButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-				// new ();    new frame here 
-			}
-		});
-		surrenderButton.setBounds(246, 56, 172, 29);
-		contentPane.add(surrenderButton);
-		
-		JButton leaveButton = new JButton("Leave game");
-		leaveButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				frame.dispose();
-				// new ();    new frame here 
-			}
-		});
-		leaveButton.setBounds(444, 56, 172, 29);
-		contentPane.add(leaveButton);
-	}
+    /**
+     * Create the frame.
+     */
+    public GameFrame() { // take in param to decide which way to display the board!!
+        JFrame frame = this;
+        setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 1313, 715);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        JPanel boardPanel = new JPanel();
+        boardPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+        boardPanel.setBounds(674, 56, 576, 576); // 576/8 = 72
+        contentPane.add(boardPanel);
+
+        JPanel movesPanel = new JPanel();
+        movesPanel.setBorder(new TitledBorder(null, "Moves", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+        movesPanel.setBounds(52, 118, 564, 237);
+        contentPane.add(movesPanel);
+
+        JPanel chatPanel = new JPanel();
+        chatPanel.setBorder(new TitledBorder(null, "Chat", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+        chatPanel.setBounds(52, 395, 564, 237);
+        contentPane.add(chatPanel);
+
+        JButton drawButton = new JButton("Draw");
+        drawButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                // send information to other user
+                // (request to opponent and not spectators)
+                // ^^ first 2 ClientHandlers of a room (HashMap) will be the players
+                // so we can differentiate sending data this way
+                // new ();    new frame here
+            }
+        });
+        drawButton.setBounds(52, 56, 172, 29);
+        contentPane.add(drawButton);
+
+        JButton surrenderButton = new JButton("Surrender");
+        surrenderButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                // new ();    new frame here
+            }
+        });
+        surrenderButton.setBounds(246, 56, 172, 29);
+        contentPane.add(surrenderButton);
+
+        JButton leaveButton = new JButton("Leave game");
+        leaveButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                // new ();    new frame here
+            }
+        });
+        leaveButton.setBounds(444, 56, 172, 29);
+        contentPane.add(leaveButton);
+    }
 }
