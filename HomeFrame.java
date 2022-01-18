@@ -181,32 +181,32 @@ public class HomeFrame extends JFrame {
         playComputerButton.setBackground(SystemColor.windowBorder);
         playComputerButton.setBounds(23, 539, 825, 80);
         lobbyPanel.add(playComputerButton);
-        
+
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setVisible(true);
         scrollPane.setBounds(22, 82, 510, 129);
-        lobbyPanel.add(scrollPane);       
+        lobbyPanel.add(scrollPane);
         scrollPane.setBackground(new Color(143, 188, 143));
-        
+
         String categories[] = { "Household", "Office", "Extended Family",
                 "Company (US)", "Company (World)", "Team", "Will",
                 "Birthday Card List", "High School", "Country", "Continent",
                 "Planet" };
         JList list = new JList(categories);
         scrollPane.setViewportView(list);
-        
+
         JLabel lblNewLabel = new JLabel("Spectate public lobbies");
         scrollPane.setColumnHeaderView(lblNewLabel);
-        
-        JButton confirmbUTTON = new JButton("Spectate");
-        confirmbUTTON.setForeground(new Color(143, 188, 143));
-        confirmbUTTON.setBackground(new Color(143, 188, 143));
-        confirmbUTTON.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		frame.dispose();
-        	}
+
+        JButton confirmButton = new JButton("Spectate");
+        confirmButton.setForeground(new Color(143, 188, 143));
+        confirmButton.setBackground(new Color(143, 188, 143));
+        confirmButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+            }
         });
-        confirmbUTTON.setBounds(560, 114, 278, 65);
-        lobbyPanel.add(confirmbUTTON);
+        confirmButton.setBounds(560, 114, 278, 65);
+        lobbyPanel.add(confirmButton);
     }
 }
