@@ -30,14 +30,29 @@ public class Client {
             do {
                 askForData(Constants.USERNAME_DATA);
                 result = verifyData(Constants.USERNAME_DATA);
-                JOptionPane.showMessageDialog(null, "USERNAME CREATION: " + result); // output to user abt success/failure
+                // int n = stuff below
+                JOptionPane.showOptionDialog(null, result,
+                        "USERNAME CREATION",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+                        null, null, null); // output to user abt success/failure
+//                if (n == JOptionPane.OK_OPTION) {
+//                    System.out.println("OK CHOSEN");
+//                    // System.exit(0); appare
+//                } else { // cancel or exit
+//                    System.out.println("OK NOT CHOSEN");
+//                    // System.exit(0);
+//                }
+
             } while (result.equals(Constants.USERNAME_ERROR));
 
             //for joining a private room
             do {
                 askForData(Constants.JOIN_PRIV_ROOM_DATA);
                 result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
-                JOptionPane.showMessageDialog(null, "JOIN ROOM: " + result);
+                JOptionPane.showOptionDialog(null, result,
+                        "JOIN ROOM",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+                        null, null, null); // output to user abt success/failure
             } while (result.equals(Constants.JOIN_ROOM_ERROR));
 
         } catch (IOException e) {
@@ -49,14 +64,21 @@ public class Client {
     }
 
     public void askForData(char type) {
+        // do smth about the cancel/X buttons?
+            // right now it just takes input as null if cancel is pressed and goes in an endless loop for room
+            // and username gets saved as literally "null"
+
         if (type == Constants.USERNAME_DATA) {
-            JOptionPane popUp = new JOptionPane();
-            username = popUp.showInputDialog("Enter a username: ");
+            // username = JOptionPane.showInputDialog("Enter a username: ");
+            username = JOptionPane.showInputDialog(null, "Enter a username: ",
+                    "USERNAME CREATION", JOptionPane.PLAIN_MESSAGE);
+            // can use other constructor to add custom Icon as well
+
             //popUp.getRootFrame().dispose(); // doesn't actually do anything though
 
         } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
-            JOptionPane popUp = new JOptionPane();
-            room = popUp.showInputDialog("Enter a room code: ");
+            room = JOptionPane.showInputDialog(null, "Enter a room code: ",
+                    "JOIN ROOM", JOptionPane.PLAIN_MESSAGE);
 
         }
     }
