@@ -148,8 +148,7 @@ public class HomeFrame extends JFrame {
         enterCodeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                // create Client with NO roomCode
-                // create new PrivateRoomCodeFrame() in Client to get and store the variable;
+                new Client(false);
             }
         });
         enterCodeButton.setBounds(22, 384, 407, 80);
@@ -159,7 +158,7 @@ public class HomeFrame extends JFrame {
         createRoomLabel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new CreatePrivateRoomFrame();
+                new Client(true);
             }
         });
         createRoomLabel.setBounds(469, 384, 373, 80);

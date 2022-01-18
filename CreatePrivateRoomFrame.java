@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
@@ -18,7 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JButton;
 
 public class CreatePrivateRoomFrame extends JFrame {
-    public static List<String> roomCodes = new ArrayList<String>(); //possibly make it private and add getters/setters
+    public static HashSet<String> roomCodes = new HashSet<String>(); //possibly make it private and add getters/setters
     String code;
 
     private JPanel contentPane;
@@ -40,7 +41,6 @@ public class CreatePrivateRoomFrame extends JFrame {
      */
     public CreatePrivateRoomFrame() {
         JFrame frame = this;
-        code=generateCode();
 
         setTitle("Creating private room");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,37 +74,39 @@ public class CreatePrivateRoomFrame extends JFrame {
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 //add the generated code to the list of room codes
-                roomCodes.add(code);
                 frame.dispose();
                 // new ();    new frame here
             }
         });
         doneButton.setBounds(33, 112, 222, 29);
-        doneButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                // new ();    new frame here
-            }
-        });
+//        doneButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                frame.dispose();
+//                // new ();    new frame here
+//            }
+//        });
         contentPane.add(doneButton);
         setVisible(true);
     }
 
-    public String generateCode (){
+    public String generateCode () {
+        System.out.println("method called");
         int min = 97; // 'a'
         int max = 123; // 'z + 1'
         Random random = new Random();
         String generatedCode = "";
 
         do {
+            generatedCode = "";
             for (int i = 0; i < 8; i++) {
                 int number = random.nextInt (max - min) + min;//random.ints (startLimit, endLimit);
                 //String generatedLetter = ((char)number).toString();
                 char letter = (char)number;
                 generatedCode += letter;
             }
+            roomCodes.add(generatedCode);
+        } while(!roomCodes.contains(generatedCode));
 
-        }while(!roomCodes.contains(generatedCode));
         return generatedCode;
     }
 

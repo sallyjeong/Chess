@@ -94,11 +94,11 @@ public class Server {
                             writeData(Constants.JOIN_PRIV_ROOM_DATA + Constants.JOIN_ROOM_ERROR);
                         }
                     }else if (type == Constants.CREATE_ROOM_DATA) { //join private room
-                        String roomCode = CreatePrivateRoomFrame.roomCodes.get(CreatePrivateRoomFrame.roomCodes.size()-1);
-                        rooms.put(roomCode, new ArrayList<ClientHandler>());
-                        rooms.get(roomCode).add(this);
-                        room = roomCode;
-                        writeData(roomCode); //CREATE_ROOM_DATA -- add this before roomcode?
+                        //String roomCode = CreatePrivateRoomFrame.roomCodes.get(CreatePrivateRoomFrame.roomCodes.size()-1);
+                        rooms.put(input, new ArrayList<ClientHandler>());
+                        rooms.get(input).add(this);
+                        room = input;
+                        writeData(Constants.CHAT_DATA + "room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
 
                     }else if (type== Constants.QUICK_MATCH_DATA){ //public room
                         if (quickMatch.isEmpty()){

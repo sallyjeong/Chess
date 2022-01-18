@@ -13,12 +13,11 @@ public class Client {
     private BufferedReader dataIn;
     private BufferedWriter dataOut;
 
-    public static void main(String[] args) {
-        Client client = new Client();
-    }
+//    public static void main(String[] args) {
+//        Client client = new Client();
+//    }
 
-    public Client() {
-        GameFrame thisGame = new GameFrame();
+    public Client(boolean createRoom) {
         // add variable to see if the game has been closed/left
         // send msg to client handler to remove the person from that room
         // do we want spectators to be able to go look at another room?
@@ -36,30 +35,26 @@ public class Client {
             do {
                 askForData(Constants.USERNAME_DATA);
                 result = verifyData(Constants.USERNAME_DATA);
-                // int n = stuff below
-                JOptionPane.showOptionDialog(null, result,
-                        "USERNAME CREATION",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-                        null, null, null); // output to user abt success/failure
-//                if (n == JOptionPane.OK_OPTION) {
-//                    System.out.println("OK CHOSEN");
-//                    // System.exit(0); appare
-//                } else { // cancel or exit
-//                    System.out.println("OK NOT CHOSEN");
-//                    // System.exit(0);
-//                }
+                System.out.println("USERNAME CREATION: " + result);
 
             } while (result.equals(Constants.USERNAME_ERROR));
 
-            //for joining a private room
-            do {
-                askForData(Constants.JOIN_PRIV_ROOM_DATA);
-                result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
-                JOptionPane.showOptionDialog(null, result,
-                        "JOIN ROOM",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
-                        null, null, null); // output to user abt success/failure
-            } while (result.equals(Constants.JOIN_ROOM_ERROR));
+            if (createRoom == true) {
+                CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
+                room = roomFrame.generateCode();
+                result = verifyData(Constants.CREATE_ROOM_DATA);
+                System.out.println("ROOM CREATION: " + result);
+
+            } else {
+                //for joining a private room
+                do {
+                    askForData(Constants.JOIN_PRIV_ROOM_DATA);
+                    result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
+                    System.out.println("JOIN ROOM: " + result);
+                } while (result.equals(Constants.JOIN_ROOM_ERROR));
+            }
+
+            GameFrame thisGame = new GameFrame();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -74,19 +69,17 @@ public class Client {
             // right now it just takes input as null if cancel is pressed and goes in an endless loop for room
             // and username gets saved as literally "null"
 
-        if (type == Constants.USERNAME_DATA) {
-            // username = JOptionPane.showInputDialog("Enter a username: ");
-            username = JOptionPane.showInputDialog(null, "Enter a username: ",
-                    "USERNAME CREATION", JOptionPane.PLAIN_MESSAGE);
-            // can use other constructor to add custom Icon as well
+            Scanner input = new Scanner(System.in);
+            if (type == Constants.USERNAME_DATA) {
+                // create a EnterUsernameFrame
+                System.out.println("Enter a username: ");
+                username = input.next();
+            } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
+                // create a PrivateRoomCode Frame
+                System.out.println("Enter a room code: ");
+                room = input.next().toLowerCase();
+            }
 
-            //popUp.getRootFrame().dispose(); // doesn't actually do anything though
-
-        } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
-            room = JOptionPane.showInputDialog(null, "Enter a room code: ",
-                    "JOIN ROOM", JOptionPane.PLAIN_MESSAGE);
-
-        }
     }
 
     // not sure if we merge sendMessage/sendMove stuff with this or not
@@ -95,7 +88,8 @@ public class Client {
         try {
             if (type == Constants.USERNAME_DATA) {
                 dataOut.write(type + username);
-            } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
+                // maybe combine both below into an
+            } else if ((type == Constants.JOIN_PRIV_ROOM_DATA) || (type == Constants.CREATE_ROOM_DATA)) {
                 dataOut.write(type + room);
             }
             dataOut.newLine();
