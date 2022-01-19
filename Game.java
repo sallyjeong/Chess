@@ -9,7 +9,7 @@ public class Game {
 	private boolean gameOver;
 	private Player turn;
 	private Board board;
-	private int 50moveRule = 0;
+	private int moveRule = 0;
 
 	public Game(Player p1, Player p2) {
 		players[0] = p1;
@@ -93,11 +93,11 @@ public class Game {
 		}
 		
 		if (board.kingInCheck(player.isWhite()) == true) {
-			this.50moveRule = 0;
+			this.moveRule = 0;
 		} else {
-			this.50moveRule++;
+			this.moveRule++;
 		}
-		if (50moveRule == 100) {
+		if (moveRule == 100) {
 		      //gameState is changed to DRAW;
 		}
 		
