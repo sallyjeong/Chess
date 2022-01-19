@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 public class Rook extends Piece {
 
-	public Rook(boolean w, boolean m, int p, int s, int r, int c) {
+	public Rook(boolean w, boolean m, int p, char s, int r, int c) {
 		super(w, m, p, s, r, c);
 	}
 

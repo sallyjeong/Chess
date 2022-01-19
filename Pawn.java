@@ -10,7 +10,7 @@ public class Pawn extends Piece {
 
 	private boolean enPassant;
 
-	public Pawn(boolean w, boolean m, int p, int s, int r, int c) {
+	public Pawn(boolean w, boolean m, int p, char s, int r, int c) {
 		super(w, m, p, s, r, c);
 	}
 

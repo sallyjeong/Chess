@@ -30,37 +30,36 @@ public class Board implements Drawable {
 			}
 		}
 
-		board[0][0].addPiece(new Rook(false, false, 5, 0, 0, 0));
-		board[0][1].addPiece(new Knight(false, false, 3, 0, 0, 1));
-		board[0][2].addPiece(new Bishop(false, false, 3, 0, 0, 2));
-		board[0][3].addPiece(new Queen(false, false, 9, 0, 0, 3));
-		blackKing = new King(false, false, 1000, 0, 0, 4);
+		board[0][0].addPiece(new Rook(false, false, 5, 'R', 0, 0));
+		board[0][1].addPiece(new Knight(false, false, 3, 'N', 0, 1));
+		board[0][2].addPiece(new Bishop(false, false, 3, 'B', 0, 2));
+		board[0][3].addPiece(new Queen(false, false, 9, 'Q', 0, 3));
+		blackKing = new King(false, false, 1000, 'K', 0, 4);
 		board[0][4].addPiece(blackKing);
-		board[0][5].addPiece(new Bishop(false, false, 3, 0, 0, 5));
-		board[0][6].addPiece(new Knight(false, false, 3, 0, 0, 6));
-		board[0][7].addPiece(new Rook(false, false, 5, 0, 0, 7));
+		board[0][5].addPiece(new Bishop(false, false, 3, 'B', 0, 5));
+		board[0][6].addPiece(new Knight(false, false, 3, 'N', 0, 6));
+		board[0][7].addPiece(new Rook(false, false, 5, 'R', 0, 7));
 		for(int i=0; i<8; i++) {
-			board[1][i].addPiece(new Pawn(false, false, 1, 0, 1, i));
+			board[1][i].addPiece(new Pawn(false, false, 1, '\u0000', 1, i));
 		}
 		for(int i=0; i<8; i++) {
-			board[6][i].addPiece(new Pawn(true, false, 1, 0, 6, i));
+			board[6][i].addPiece(new Pawn(true, false, 1, '\u0000', 6, i));
 		}
-		board[7][0].addPiece(new Rook(true, false, 5, 0, 7, 0));
-		board[7][1].addPiece(new Knight(true, false, 3, 0, 7, 1));
-		board[7][2].addPiece(new Bishop(true, false, 3, 0, 7, 2));
-		board[7][3].addPiece(new Queen(true, false, 9, 0, 7, 3));
-		whiteKing = new King(true, false, 1000, 0, 7, 4);
+		board[7][0].addPiece(new Rook(true, false, 5, 'R', 7, 0));
+		board[7][1].addPiece(new Knight(true, false, 3, 'N', 7, 1));
+		board[7][2].addPiece(new Bishop(true, false, 3, 'B', 7, 2));
+		board[7][3].addPiece(new Queen(true, false, 9, 'Q', 7, 3));
+		whiteKing = new King(true, false, 1000, 'K', 7, 4);
 		board[7][4].addPiece(whiteKing);
-		board[7][5].addPiece(new Bishop(true, false, 3, 0, 7, 5));
-		board[7][6].addPiece(new Knight(true, false, 3, 0, 7, 6));
-		board[7][7].addPiece(new Rook(true, false, 5, 0, 7, 7));
+		board[7][5].addPiece(new Bishop(true, false, 3, 'B', 7, 5));
+		board[7][6].addPiece(new Knight(true, false, 3, 'N', 7, 6));
+		board[7][7].addPiece(new Rook(true, false, 5, 'R', 7, 7));
 		
 		getPseudoLegal(true);
 		
 	}
 
 	public void getPseudoLegal(boolean white) {
-		long startTime = System.currentTimeMillis();
 		Set<Spot> validM;
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
@@ -70,8 +69,6 @@ public class Board implements Drawable {
 				}
 			}
 		}
-		long endTime = System.currentTimeMillis();
-		System.out.println((endTime-startTime));
 	}
 
 	private void filterPseudoLegalMoves(boolean w, Set<Spot> validMoves, Spot originalS){

@@ -1,3 +1,5 @@
+package chessproject;
+
 import java.util.ArrayList;
 
 public class Game {
@@ -26,7 +28,6 @@ public class Game {
 	}
 
 	private boolean makeMove(Move move) {
-		System.out.println(move.getStart().getRow()+" "+move.getStart().getColumn()+" "+move.getEnd().getRow()+" "+move.getEnd().getColumn());
 		Piece sourcePiece = move.getStart().getPiece();
 		Player player = move.getPlayer();
 		
@@ -90,18 +91,20 @@ public class Game {
 			this.turn = players[0];
 		}
 		
+		printMoveList();
+		
 		return true;
 		
 	}
 	
-	
+	public void printMoveList() {
+		for(int i=0; i<pastMoves.size(); i++) {
+			System.out.println(pastMoves.get(i).toString());
+		}
+	}
 	
 	public Board getBoard() {
 		return this.board;
 	}
-
-
-	public Player getTurn() {
-		return turn;
-	}
+	
 }

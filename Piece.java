@@ -10,12 +10,12 @@ public abstract class Piece {
 	private boolean moved;
 	private int points;
 	private HashSet<Spot> possibleMoves;
-	private int symbol;
+	private char symbol;
 	private BufferedImage image[] = new BufferedImage[2];
 	private boolean captured = false;
 	private int row, col;
 
-	public Piece(boolean w, boolean m, int p, int s, int r, int c) {
+	public Piece(boolean w, boolean m, int p, char s, int r, int c) {
 		this.white = w;
 		this.moved = m;
 		this.points = p;
@@ -73,6 +73,10 @@ public abstract class Piece {
 
 	public void addMove(Spot s) {
 		this.possibleMoves.add(s);
+	}
+	
+	public char getSymbol() {
+		return this.symbol;
 	}
 	
 	public void checkCol(int row, int col, Spot[][] board){
