@@ -1,4 +1,4 @@
-package chessproject;
+
 
 import java.util.ArrayList;
 
@@ -9,7 +9,6 @@ public class Game {
 	private boolean gameOver;
 	private Player turn;
 	private Board board;
-	private int moveRule = 0;
 
 	public Game(Player p1, Player p2) {
 		players[0] = p1;
@@ -23,12 +22,13 @@ public class Game {
 		}
 	}
 	
-	public boolean playerMove(Player player, Spot start, Spot end) {
+	public boolean playerMove(Player player, Spot start, Spot end) throws InterruptedException {
 		Move move = new Move(player, start, end);
 		return makeMove(move);
 	}
 
-	private boolean makeMove(Move move) {
+	private boolean makeMove(Move move) throws InterruptedException {
+	//	System.out.println(move.getStart().getRow()+" "+move.getStart().getColumn()+" "+move.getEnd().getRow()+" "+move.getEnd().getColumn());
 		Piece sourcePiece = move.getStart().getPiece();
 		Player player = move.getPlayer();
 		
@@ -45,6 +45,32 @@ public class Game {
 		move.getStart().removePiece();
 		sourcePiece.setMoved(true);
 		sourcePiece.setRow(move.getEnd().getRow()); sourcePiece.setCol(move.getEnd().getColumn());
+
+		Thread t= Thread.currentThread();
+
+
+		if (sourcePiece instanceof Pawn) {
+			boolean isWhite= sourcePiece.isWhite();
+			int lastRow=0;
+			if(!isWhite){
+				lastRow+= 7;
+			}
+
+
+			if(sourcePiece.getRow() == lastRow){
+
+				PromotionFrame p= new PromotionFrame();
+
+
+				int choice= p.getChoice();
+
+					if(choice == 1){
+						move.getEnd().addPiece(new Queen(isWhite, false, 9, 0, sourcePiece.getRow(), sourcePiece.getCol()));
+					}
+
+			}
+
+		}
 		
 		if(move.isCastlingMove()) {
 			Piece movingRook;
@@ -92,35 +118,18 @@ public class Game {
 			this.turn = players[0];
 		}
 		
-		if (board.kingInCheck(player.isWhite()) == true) {
-			this.moveRule = 0;
-		} else {
-			this.moveRule++;
-		}
-		if (moveRule == 100) {
-		      //gameState is changed to DRAW;
-		}
-		
-		if (board.isCheckmateOrStalemate(player.isWhite()) == 1) {
-			//gameState is changed to CHECKMATE
-		} else if (board.isCheckmateOrStalemate(player.isWhite()) == 2) {
-			//gameState is changed to DRAW
-		}
-		
-		printMoveList();
-		
 		return true;
 		
 	}
 	
-	public void printMoveList() {
-		for(int i=0; i<pastMoves.size(); i++) {
-			System.out.println(pastMoves.get(i).toString());
-		}
-	}
+	
 	
 	public Board getBoard() {
 		return this.board;
 	}
-	
+
+
+	public Player getTurn() {
+		return turn;
+	}
 }
