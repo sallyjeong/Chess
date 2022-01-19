@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.HashSet;
 
 public class Board implements Drawable {
 
@@ -93,16 +94,39 @@ public class Board implements Drawable {
 
 	}
 
+	/*0 is not stalemate or checkmate, 1 is checkmate, 2 is stalemate.
+	  * Function is created as such because checkmate and stalemate checks are the same.
+	  */
+	 public int isCheckmateOrStalemate(boolean w) { 
+	     Set<Spot> completeSet = new HashSet<Spot>();
+	     for(int i=0; i<8; i++) {
+		 for(int j=0; j<8; j++) {
+		     if(board[i][j].getPiece()!=null && board[i][j].getPiece().isWhite()== w) {
+			 Set<Spot> s = board[i][j].getPiece().getMoveList();
+			 completeSet.addAll(s);
+		     }
+		 }
+	     }
+	     if (kingInCheck(w) == true) {
+		 if (completeSet == null) {
+		     return 1;
+		 }
+	     } else {
+		 if (completeSet == null) {
+		     return 2;
+		 }
+	     }
+	     return 0;
+	 }
 
-
-	public boolean kingInCheck(boolean w){
-		if(w){
-			return isThreatenedSpot(w, board[whiteKing.getRow()][whiteKing.getCol()]);
+		public boolean kingInCheck(boolean w){
+			if(w){
+				return isThreatenedSpot(w, board[whiteKing.getRow()][whiteKing.getCol()]);
+			}
+			else{
+				return isThreatenedSpot(w, board[blackKing.getRow()][blackKing.getCol()]);
+			}
 		}
-		else{
-			return isThreatenedSpot(w, board[blackKing.getRow()][blackKing.getCol()]);
-		}
-	}
 
 	public boolean isThreatenedSpot(boolean whiteThreatened, Spot threatenedSpot) {
 
