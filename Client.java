@@ -12,6 +12,7 @@ public class Client {
     private Socket socket;
     private BufferedReader dataIn;
     private BufferedWriter dataOut;
+    private EnterUsernameFrame enterUsernameFrame;
 
 //    public static void main(String[] args) {
 //        Client client = new Client();
@@ -30,12 +31,19 @@ public class Client {
             dataOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
             String result;
+            enterUsernameFrame = new EnterUsernameFrame();
 
             //for username
             do {
                 askForData(Constants.USERNAME_DATA);
+                System.out.println("asked");
                 result = verifyData(Constants.USERNAME_DATA);
                 System.out.println("USERNAME CREATION: " + result);
+
+                if (result.equals(Constants.USERNAME_ERROR)) {
+                    new InvalidUserFrame();
+                    System.out.println("invalid frame called");
+                }
 
             } while (result.equals(Constants.USERNAME_ERROR));
 
@@ -72,8 +80,12 @@ public class Client {
             Scanner input = new Scanner(System.in);
             if (type == Constants.USERNAME_DATA) {
                 // create a EnterUsernameFrame
-                System.out.println("Enter a username: ");
-                username = input.next();
+//                System.out.println("Enter a username: ");
+//                username = input.next();
+                do {
+                    username = enterUsernameFrame.getUsernameEntered();
+                } while (!enterUsernameFrame.isClosed());
+
             } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
                 // create a PrivateRoomCode Frame
                 System.out.println("Enter a room code: ");
