@@ -1,9 +1,8 @@
 package chessproject;
 
-import java.util.HashMap;
 
 public class Constants {
-    public static final String LOCAL_HOST = "127.0.0.1";
+    public static final String HOST = "127.0.0.1";
     public static final int PORT = 6000;
     public static final String USERNAME_ERROR = "error. not a valid username - must only contain letters/numbers OR username is in use";
     public static final String JOIN_ROOM_ERROR = "error. this room does not exist"; //for private room
