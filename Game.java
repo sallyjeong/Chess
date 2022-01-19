@@ -101,9 +101,9 @@ public class Game {
 		      //gameState is changed to DRAW;
 		}
 		
-		if (isCheckmateOrStalemate(player.isWhite()) == 1) {
+		if (board.isCheckmateOrStalemate(player.isWhite()) == 1) {
 			//gameState is changed to CHECKMATE
-		} else if (isCheckmateOrStalemate(player.isWhite()) == 2) {
+		} else if (board.isCheckmateOrStalemate(player.isWhite()) == 2) {
 			//gameState is changed to DRAW
 		}
 		
