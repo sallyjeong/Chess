@@ -9,6 +9,7 @@ public class Game {
 	private boolean gameOver;
 	private Player turn;
 	private Board board;
+	private int 50moveRule = 0;
 
 	public Game(Player p1, Player p2) {
 		players[0] = p1;
@@ -89,6 +90,21 @@ public class Game {
 			this.turn = players[1];
 		}else {
 			this.turn = players[0];
+		}
+		
+		if (board.kingInCheck(player.isWhite()) == true) {
+			this.50moveRule = 0;
+		} else {
+			this.50moveRule++;
+		}
+		if (50moveRule == 100) {
+		      //gameState is changed to DRAW;
+		}
+		
+		if (isCheckmateOrStalemate(player.isWhite()) == 1) {
+			//gameState is changed to CHECKMATE
+		} else if (isCheckmateOrStalemate(player.isWhite()) == 2) {
+			//gameState is changed to DRAW
 		}
 		
 		printMoveList();
