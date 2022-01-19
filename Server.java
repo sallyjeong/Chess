@@ -65,8 +65,9 @@ public class Server {
                     String input = dataIn.readLine(); // = get input thing
                     char type = input.charAt(0);
                     input = input.substring(1);
-                    //System.out.println("TYPE: " + type);
-                    //System.out.println("INPUT: " + input);
+
+                    System.out.println("TYPE: " + type);
+                    System.out.println("INPUT: " + input);
                     if (type == Constants.CHAT_DATA) {
                         broadcastMessage(Constants.CHAT_DATA + input);
                     } else if (type == Constants.MOVE_DATA){
@@ -75,6 +76,7 @@ public class Server {
 
                     } else if (type == Constants.USERNAME_DATA) {
                         // System.out.println("username data !!");
+                        System.out.println("server - else if username data");
                         if (validUsername(input)) {
                             username = input;
                             //can change to a new popupData char?
@@ -104,7 +106,7 @@ public class Server {
                         if (quickMatch.isEmpty()){
                             writeData(Constants.QUICK_MATCH_WAIT);
                             quickMatch.add(this);
-                                //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
+                            //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
                         }
                     } //else if clicking into a public room??
                 } catch (IOException e) {
@@ -164,12 +166,19 @@ public class Server {
         }
 
         public boolean validUsername(String user){
+            System.out.println("entered valid username method");
             for (ClientHandler clientHandler : clientHandlers){
                 if (clientHandler.username.equals(user)){
                     return false;
                 }
+                System.out.println("entered for loop");
             }
             if (!user.matches("[a-zA-Z0-9]*")){
+                System.out.println("entered 2nd if");
+                return false;
+            }
+            if ((user.equals("")) || (user.equals(null))){
+                System.out.println("user is ___" + user);
                 return false;
             }
             return true;

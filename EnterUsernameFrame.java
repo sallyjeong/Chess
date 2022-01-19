@@ -1,80 +1,87 @@
-package chessproject;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+ package chessproject;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JButton;
+ import java.awt.BorderLayout;
+ import java.awt.EventQueue;
+ import java.awt.event.ActionEvent;
+ import java.awt.event.ActionListener;
 
-public class EnterUsernameFrame extends JFrame {
+ import javax.swing.JFrame;
+ import javax.swing.JLabel;
+ import javax.swing.JPanel;
+ import javax.swing.JTextField;
+ import javax.swing.border.EmptyBorder;
+ import javax.swing.JButton;
 
-    private JPanel contentPane;
-    private JTextField usernameValue;
-    private String usernameEntered;
-    private boolean closed = false;
+ public class EnterUsernameFrame extends JFrame {
 
-//    public static void main(String[] args) {
-//        EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                try {
-//                    EnterUsernameFrame frame = new EnterUsernameFrame();
-//                    frame.setVisible(true);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
+     private JPanel contentPane;
+     private JTextField usernameValue;
+     private String usernameEntered;
+     private boolean closed = false;
 
-    /**
-     * Create the frame.
-     */
-    public EnterUsernameFrame() {
-        JFrame frame = this;
-        setTitle("Enter username");
-        setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 292, 200);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        setContentPane(contentPane);
-        contentPane.setLayout(null);
+ //    public static void main(String[] args) {
+ //        EventQueue.invokeLater(new Runnable() {
+ //            public void run() {
+ //                try {
+ //                    EnterUsernameFrame frame = new EnterUsernameFrame();
+ //                    frame.setVisible(true);
+ //                } catch (Exception e) {
+ //                    e.printStackTrace();
+ //                }
+ //            }
+ //        });
+ //    }
 
-        JLabel username = new JLabel("Username:");
-        username.setBounds(44, 55, 79, 16);
-        contentPane.add(username);
+     /**
+      * Create the frame.
+      */
+     public EnterUsernameFrame() {
+         JFrame frame = this;
+         setTitle("Enter username");
+         setVisible(true);
+         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         setBounds(100, 100, 292, 200);
+         contentPane = new JPanel();
+         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+         setContentPane(contentPane);
+         contentPane.setLayout(null);
 
-        usernameValue = new JTextField();
-        usernameValue.setBounds(118, 50, 130, 26);
-        contentPane.add(usernameValue);
-        usernameValue.setColumns(10);
+         JLabel username = new JLabel("Username:");
+         username.setBounds(44, 55, 79, 16);
+         contentPane.add(username);
 
-        JButton doneButton = new JButton("Done");
-        doneButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                usernameEntered = usernameValue.getText();
-                closed = true;
-                frame.dispose();
-                // new ();    new frame here
-            }
-        });
+         usernameValue = new JTextField();
+         usernameValue.setBounds(118, 50, 130, 26);
+         contentPane.add(usernameValue);
+         usernameValue.setColumns(10);
 
-        doneButton.setBounds(44, 92, 204, 29);
-        contentPane.add(doneButton);
+         JButton doneButton = new JButton("Done");
+         doneButton.addActionListener(new ActionListener() {
+             public void actionPerformed(ActionEvent e) {
+                 usernameEntered = usernameValue.getText();
 
-    }
+                 closed = true;
+                 frame.dispose();
+                 closed = false;
+                 // new ();    new frame here
+             }
+         });
 
-    public String getUsernameEntered() {
-        return usernameEntered;
-    }
+         doneButton.setBounds(44, 92, 204, 29);
+         contentPane.add(doneButton);
 
-    public boolean isClosed() {
-        return closed;
-    }
-}
+     }
+
+     public String getUsernameEntered() {
+         return usernameEntered;
+     }
+
+     public boolean isClosed() {
+         return closed;
+     }
+
+     public void setClosed (boolean x ) { //better vairable name
+         this.closed = x;
+     }
+ }

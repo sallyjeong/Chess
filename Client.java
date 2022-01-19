@@ -13,10 +13,11 @@ public class Client {
     private BufferedReader dataIn;
     private BufferedWriter dataOut;
     private EnterUsernameFrame enterUsernameFrame;
+    private InvalidUserFrame invalidUserFrame;
 
-//    public static void main(String[] args) {
-//        Client client = new Client();
-//    }
+    public static void main(String[] args) {
+        Client client = new Client(false);
+    }
 
     public Client(boolean createRoom) {
         // add variable to see if the game has been closed/left
@@ -31,21 +32,36 @@ public class Client {
             dataOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
             String result;
+
+
             enterUsernameFrame = new EnterUsernameFrame();
+            askForData(Constants.USERNAME_DATA);
+            enterUsernameFrame.setClosed(false);
+            result = verifyData(Constants.USERNAME_DATA);
+            System.out.println("USERNAME CREATION: " + result);
 
             //for username
-            do {
+            while (result.equals(Constants.USERNAME_ERROR)) {
+                invalidUserFrame = new InvalidUserFrame();
+                System.out.println("invalid frame called");
+
+                while (!invalidUserFrame.isClosed()) {
+                    System.out.println("invalidUserFrame is closed");
+
+                }
+
+                enterUsernameFrame = new EnterUsernameFrame();
                 askForData(Constants.USERNAME_DATA);
+                enterUsernameFrame.setClosed(false);
                 System.out.println("asked");
                 result = verifyData(Constants.USERNAME_DATA);
                 System.out.println("USERNAME CREATION: " + result);
 
                 if (result.equals(Constants.USERNAME_ERROR)) {
-                    new InvalidUserFrame();
-                    System.out.println("invalid frame called");
+
                 }
 
-            } while (result.equals(Constants.USERNAME_ERROR));
+            }
 
             if (createRoom == true) {
                 CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
@@ -74,23 +90,25 @@ public class Client {
 
     public void askForData(char type) {
         // do smth about the cancel/X buttons?
-            // right now it just takes input as null if cancel is pressed and goes in an endless loop for room
-            // and username gets saved as literally "null"
+        // right now it just takes input as null if cancel is pressed and goes in an endless loop for room
+        // and username gets saved as literally "null"
 
-            Scanner input = new Scanner(System.in);
-            if (type == Constants.USERNAME_DATA) {
-                // create a EnterUsernameFrame
+        Scanner input = new Scanner(System.in);
+        if (type == Constants.USERNAME_DATA) {
+            // create a EnterUsernameFrame
 //                System.out.println("Enter a username: ");
 //                username = input.next();
-                do {
-                    username = enterUsernameFrame.getUsernameEntered();
-                } while (!enterUsernameFrame.isClosed());
+            do {
+                username = enterUsernameFrame.getUsernameEntered();
+               // System.out.println("ASKED FOR DATA!@");
+            } while (enterUsernameFrame.isClosed()==false);
+            System.out.println(username);
 
-            } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
-                // create a PrivateRoomCode Frame
-                System.out.println("Enter a room code: ");
-                room = input.next().toLowerCase();
-            }
+        } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
+            // create a PrivateRoomCode Frame
+            System.out.println("Enter a room code: ");
+            room = input.next().toLowerCase();
+        }
 
     }
 
