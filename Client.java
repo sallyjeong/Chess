@@ -15,9 +15,9 @@ public class Client {
     private EnterUsernameFrame enterUsernameFrame;
     private InvalidUserFrame invalidUserFrame;
 
-//    public static void main(String[] args) {
-//        Client client = new Client(false);
-//    }
+    public static void main(String[] args) {
+        Client client = new Client(false);
+    }
 
     public Client(boolean createRoom) {
         // add variable to see if the game has been closed/left
@@ -27,37 +27,56 @@ public class Client {
         // otherwise a lot of null threads and all past usernames can't be used
 
         try {
-            socket = new Socket(Constants.LOCAL_HOST, Constants.PORT);
+            socket = new Socket(Constants.HOST, Constants.PORT);
             dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             dataOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-            String result;
-            
-            enterUsernameFrame = new EnterUsernameFrame();
-            askForData(Constants.USERNAME_DATA);
-            enterUsernameFrame.setClosed(false);
-            result = verifyData(Constants.USERNAME_DATA);
-            System.out.println("USERNAME CREATION: " + result);
-            //for username
-            while (result.equals(Constants.USERNAME_ERROR)) {
-                invalidUserFrame = new InvalidUserFrame();
-                System.out.println("invalid frame called");
+            String result = "";
 
-                while (!invalidUserFrame.isClosed()) {
-                    System.out.println("invalidUserFrame is closed");
-
-                }
-
+            do {
                 enterUsernameFrame = new EnterUsernameFrame();
                 askForData(Constants.USERNAME_DATA);
                 enterUsernameFrame.setClosed(false);
-                System.out.println("asked");
                 result = verifyData(Constants.USERNAME_DATA);
                 System.out.println("USERNAME CREATION: " + result);
 
-            }
+                if (result.equals(Constants.USERNAME_ERROR)) {
+                    invalidUserFrame = new InvalidUserFrame();
+                }
 
+                while (!invalidUserFrame.isClosed()) {
+//                    try {
+//                        Thread.sleep(1000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+                }
 
+            } while (result.equals(Constants.USERNAME_ERROR));
+
+//            enterUsernameFrame = new EnterUsernameFrame();
+//            askForData(Constants.USERNAME_DATA);
+//            enterUsernameFrame.setClosed(false);
+//            result = verifyData(Constants.USERNAME_DATA);
+//            System.out.println("USERNAME CREATION: " + result);
+//            //for username
+//            while (result.equals(Constants.USERNAME_ERROR)) {
+//                invalidUserFrame = new InvalidUserFrame();
+//                System.out.println("invalid frame called");
+//
+//                while (!invalidUserFrame.isClosed()) {
+//                    System.out.println("invalidUserFrame is closed");
+//
+//                }
+//
+//                enterUsernameFrame = new EnterUsernameFrame();
+//                askForData(Constants.USERNAME_DATA);
+//                enterUsernameFrame.setClosed(false);
+//                System.out.println("asked");
+//                result = verifyData(Constants.USERNAME_DATA);
+//                System.out.println("USERNAME CREATION: " + result);
+//
+//            }
 
             if (createRoom == true) {
                 CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
@@ -96,7 +115,7 @@ public class Client {
 //                username = input.next();
             do {
                 username = enterUsernameFrame.getUsernameEntered();
-               // System.out.println("ASKED FOR DATA!@");
+                // System.out.println("ASKED FOR DATA!@");
             } while (enterUsernameFrame.isClosed()==false);
             System.out.println(username);
 
@@ -105,7 +124,6 @@ public class Client {
             System.out.println("Enter a room code: ");
             room = input.next().toLowerCase();
         }
-
     }
 
     // not sure if we merge sendMessage/sendMove stuff with this or not
@@ -128,9 +146,9 @@ public class Client {
         return result;
     }
 
-    public void setRoom(String room) { // assuming they click into public room/create the private room
-        this.room = room;
-    }
+//    public void setRoom(String room) { // assuming they click into public room/create the private room
+//        this.room = room;
+//    }
 
     public void quickMatch() {
         try {
@@ -183,21 +201,6 @@ public class Client {
                             System.out.println(data.substring(1)); // display message (maybe store chat in a multiline string
                         } else if (type == Constants.MOVE_DATA) {
                             // run a diff method that digests the move lmao
-                        }else if (type==Constants.JOIN_PRIV_ROOM_DATA){
-
-                            //@kat
-                            //wasnt really sure on what to do for this part
-                            //so i left it blank for now
-
-                            /**
-                             * @sally i think we don't need this stuff here because
-                             * 1) does client side need to take in these input?
-                             * 2) these are like 1-time inputs
-                             *    but this method is constantly waiting to receive info
-                             *    that would update the game (like chat and move)
-                             *    so tbh i don't even think they need to be here?
-                             */
-                        }else if (type == Constants.CREATE_ROOM_DATA){
 
                         }else if (type == Constants.QUICK_MATCH_DATA){
 
