@@ -44,9 +44,8 @@ public class Game {
 		move.getEnd().addPiece(sourcePiece);
 		move.getStart().removePiece();
 		sourcePiece.setMoved(true);
+		int prevRow= sourcePiece.getRow(); int prevCol= sourcePiece.getCol();
 		sourcePiece.setRow(move.getEnd().getRow()); sourcePiece.setCol(move.getEnd().getColumn());
-
-		Thread t= Thread.currentThread();
 
 
 		if (sourcePiece instanceof Pawn) {
@@ -59,15 +58,38 @@ public class Game {
 
 			if(sourcePiece.getRow() == lastRow){
 
+
+
 				PromotionFrame p= new PromotionFrame();
 
+				Thread t= new Thread(p);
+				t.start();
+				while(t.isAlive()){
+
+				}
 
 				int choice= p.getChoice();
 
-					if(choice == 1){
-						move.getEnd().addPiece(new Queen(isWhite, false, 9, 0, sourcePiece.getRow(), sourcePiece.getCol()));
-					}
+				if(choice == 1){
+					move.getEnd().addPiece(new Queen(isWhite, false, 9, 'Q', sourcePiece.getRow(), sourcePiece.getCol()));
+				}
+				else if(choice == 2){
+					move.getEnd().addPiece(new Rook(isWhite, false, 9, 'Q', sourcePiece.getRow(), sourcePiece.getCol()));
+				}
+				else if(choice == 3){
+					move.getEnd().addPiece(new Bishop(isWhite, false, 9, 'B', sourcePiece.getRow(), sourcePiece.getCol()));
+				}
+				else if(choice == 4){
+					move.getEnd().addPiece(new Knight(isWhite, false, 9, 'N', sourcePiece.getRow(), sourcePiece.getCol()));
+				}
+				else{
+					//undo
+					move.getEnd().addPiece(destPiece);
+					move.getStart().addPiece(sourcePiece);
+					sourcePiece.setRow(prevRow); sourcePiece.setCol(prevCol);
+					return false;
 
+				}
 			}
 
 		}
@@ -132,4 +154,6 @@ public class Game {
 	public Player getTurn() {
 		return turn;
 	}
+
+
 }

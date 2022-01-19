@@ -1,5 +1,4 @@
 
-
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -22,6 +21,7 @@ public class PromotionFrame extends JFrame implements Runnable{
 
     private JPanel contentPane;
     private int choice;
+    private JFrame frame;
 
 
 
@@ -29,55 +29,52 @@ public class PromotionFrame extends JFrame implements Runnable{
      * Launch the application.
      */
 
-
     /**
      * Create the frame.
      */
     public PromotionFrame() {
-
-        JFrame frame= this;
-        this.setVisible(true);
+        frame= this;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 418, 462);
+        setBounds(100, 100, 261, 446);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         SpringLayout sl_contentPane = new SpringLayout();
         contentPane.setLayout(sl_contentPane);
 
-        JLabel lblNewLabel = new JLabel(new ImageIcon(new ImageIcon("06_classic2\\w-queen2.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
+        JLabel lblNewLabel = new JLabel(new ImageIcon(new ImageIcon("06_classic2\\w-queen2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
         sl_contentPane.putConstraint(SpringLayout.NORTH, lblNewLabel, 10, SpringLayout.NORTH, contentPane);
-        sl_contentPane.putConstraint(SpringLayout.WEST, lblNewLabel, 29, SpringLayout.WEST, contentPane);
-        sl_contentPane.putConstraint(SpringLayout.EAST, lblNewLabel, -283, SpringLayout.EAST, contentPane);
+        sl_contentPane.putConstraint(SpringLayout.WEST, lblNewLabel, 10, SpringLayout.WEST, contentPane);
+        sl_contentPane.putConstraint(SpringLayout.SOUTH, lblNewLabel, 92, SpringLayout.NORTH, contentPane);
         contentPane.add(lblNewLabel);
 
-        JLabel lblNewLabel_1 = new JLabel(new ImageIcon(new ImageIcon("06_classic2\\w-rook2.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        sl_contentPane.putConstraint(SpringLayout.WEST, lblNewLabel_1, 29, SpringLayout.WEST, contentPane);
-        sl_contentPane.putConstraint(SpringLayout.SOUTH, lblNewLabel, -26, SpringLayout.NORTH, lblNewLabel_1);
-        sl_contentPane.putConstraint(SpringLayout.NORTH, lblNewLabel_1, 117, SpringLayout.NORTH, contentPane);
+        JLabel lblNewLabel_1 = new JLabel(new ImageIcon(new ImageIcon("06_classic2\\w-rook2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
+        sl_contentPane.putConstraint(SpringLayout.NORTH, lblNewLabel_1, 19, SpringLayout.SOUTH, lblNewLabel);
+        sl_contentPane.putConstraint(SpringLayout.WEST, lblNewLabel_1, 10, SpringLayout.WEST, contentPane);
+        sl_contentPane.putConstraint(SpringLayout.EAST, lblNewLabel_1, -135, SpringLayout.EAST, contentPane);
         contentPane.add(lblNewLabel_1);
 
-        JLabel lblNewLabel_1_1 = new JLabel(new ImageIcon(new ImageIcon("06_classic2\\w-bishop2.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-        sl_contentPane.putConstraint(SpringLayout.WEST, lblNewLabel_1_1, 24, SpringLayout.WEST, contentPane);
-        sl_contentPane.putConstraint(SpringLayout.SOUTH, lblNewLabel_1, -11, SpringLayout.NORTH, lblNewLabel_1_1);
-        sl_contentPane.putConstraint(SpringLayout.NORTH, lblNewLabel_1_1, 209, SpringLayout.NORTH, contentPane);
+        JLabel lblNewLabel_1_1 = new JLabel(new ImageIcon(new ImageIcon("06_classic2\\w-bishop2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
+        sl_contentPane.putConstraint(SpringLayout.SOUTH, lblNewLabel_1, -17, SpringLayout.NORTH, lblNewLabel_1_1);
+        sl_contentPane.putConstraint(SpringLayout.WEST, lblNewLabel_1_1, 10, SpringLayout.WEST, contentPane);
+        sl_contentPane.putConstraint(SpringLayout.EAST, lblNewLabel_1_1, -135, SpringLayout.EAST, contentPane);
+        sl_contentPane.putConstraint(SpringLayout.NORTH, lblNewLabel_1_1, 210, SpringLayout.NORTH, contentPane);
         contentPane.add(lblNewLabel_1_1);
 
-        JLabel lblNewLabel_1_2 = new JLabel(new ImageIcon(new ImageIcon("06_classic2\\w-knight2.png").getImage().getScaledInstance(80, 80, Image.SCALE_DEFAULT)));
-
-        sl_contentPane.putConstraint(SpringLayout.SOUTH, lblNewLabel_1_1, -26, SpringLayout.NORTH, lblNewLabel_1_2);
-        sl_contentPane.putConstraint(SpringLayout.NORTH, lblNewLabel_1_2, 311, SpringLayout.NORTH, contentPane);
-        sl_contentPane.putConstraint(SpringLayout.WEST, lblNewLabel_1_2, 0, SpringLayout.WEST, lblNewLabel);
-        sl_contentPane.putConstraint(SpringLayout.SOUTH, lblNewLabel_1_2, -21, SpringLayout.SOUTH, contentPane);
-        sl_contentPane.putConstraint(SpringLayout.EAST, lblNewLabel_1_2, -283, SpringLayout.EAST, contentPane);
-        contentPane.add(lblNewLabel_1_2);
+        JLabel lblNewLabel_1_1_1 = new JLabel(new ImageIcon(new ImageIcon("06_classic2\\w-knight2.png").getImage().getScaledInstance(90	, 80, Image.SCALE_DEFAULT)));
+        sl_contentPane.putConstraint(SpringLayout.WEST, lblNewLabel_1_1_1, 10, SpringLayout.WEST, contentPane);
+        sl_contentPane.putConstraint(SpringLayout.EAST, lblNewLabel_1_1_1, -135, SpringLayout.EAST, contentPane);
+        sl_contentPane.putConstraint(SpringLayout.SOUTH, lblNewLabel_1_1, -17, SpringLayout.NORTH, lblNewLabel_1_1_1);
+        sl_contentPane.putConstraint(SpringLayout.NORTH, lblNewLabel_1_1_1, 309, SpringLayout.NORTH, contentPane);
+        sl_contentPane.putConstraint(SpringLayout.SOUTH, lblNewLabel_1_1_1, -10, SpringLayout.SOUTH, contentPane);
+        contentPane.add(lblNewLabel_1_1_1);
 
         JButton btnNewButton = new JButton("Queen");
-        sl_contentPane.putConstraint(SpringLayout.WEST, btnNewButton, 0, SpringLayout.WEST, btnNewButton);
-        sl_contentPane.putConstraint(SpringLayout.NORTH, btnNewButton, 21, SpringLayout.NORTH, contentPane);
-        sl_contentPane.putConstraint(SpringLayout.WEST, btnNewButton, 63, SpringLayout.EAST, lblNewLabel);
-        sl_contentPane.putConstraint(SpringLayout.SOUTH, btnNewButton, 0, SpringLayout.SOUTH, lblNewLabel);
-        sl_contentPane.putConstraint(SpringLayout.EAST, btnNewButton, -112, SpringLayout.EAST, contentPane);
+        sl_contentPane.putConstraint(SpringLayout.WEST, btnNewButton, 128, SpringLayout.WEST, contentPane);
+        sl_contentPane.putConstraint(SpringLayout.EAST, lblNewLabel, -28, SpringLayout.WEST, btnNewButton);
+        sl_contentPane.putConstraint(SpringLayout.NORTH, btnNewButton, 11, SpringLayout.NORTH, lblNewLabel);
+        sl_contentPane.putConstraint(SpringLayout.SOUTH, btnNewButton, -11, SpringLayout.SOUTH, lblNewLabel);
+        sl_contentPane.putConstraint(SpringLayout.EAST, btnNewButton, -17, SpringLayout.EAST, contentPane);
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 choice= 1;
@@ -86,50 +83,53 @@ public class PromotionFrame extends JFrame implements Runnable{
         });
         contentPane.add(btnNewButton);
 
-        JButton btnNewButton_2 = new JButton("New button");
-        sl_contentPane.putConstraint(SpringLayout.EAST, btnNewButton_2, 0, SpringLayout.EAST, btnNewButton_2);
-        sl_contentPane.putConstraint(SpringLayout.WEST, btnNewButton_2, 172, SpringLayout.WEST, contentPane);
-        sl_contentPane.putConstraint(SpringLayout.EAST, btnNewButton_2, -96, SpringLayout.EAST, contentPane);
-        sl_contentPane.putConstraint(SpringLayout.EAST, lblNewLabel_1, -68, SpringLayout.WEST, btnNewButton_2);
-        sl_contentPane.putConstraint(SpringLayout.SOUTH, btnNewButton_2, 0, SpringLayout.SOUTH, lblNewLabel_1);
-        sl_contentPane.putConstraint(SpringLayout.NORTH, btnNewButton_2, 50, SpringLayout.SOUTH, btnNewButton);
+        JButton btnNewButton_1 = new JButton("Rook");
+        sl_contentPane.putConstraint(SpringLayout.NORTH, btnNewButton_1, 40, SpringLayout.SOUTH, btnNewButton);
+        sl_contentPane.putConstraint(SpringLayout.WEST, btnNewButton_1, 0, SpringLayout.WEST, btnNewButton);
+        btnNewButton_1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                choice= 2;
+                frame.dispose();
+            }
+        });
+        contentPane.add(btnNewButton_1);
+
+        JButton btnNewButton_1_1 = new JButton("Bishop");
+        sl_contentPane.putConstraint(SpringLayout.NORTH, btnNewButton_1_1, 219, SpringLayout.NORTH, contentPane);
+        sl_contentPane.putConstraint(SpringLayout.SOUTH, btnNewButton_1, -35, SpringLayout.NORTH, btnNewButton_1_1);
+        sl_contentPane.putConstraint(SpringLayout.WEST, btnNewButton_1_1, 0, SpringLayout.WEST, btnNewButton);
+        sl_contentPane.putConstraint(SpringLayout.EAST, btnNewButton_1_1, -18, SpringLayout.EAST, contentPane);
+        btnNewButton_1_1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                choice= 3;
+                frame.dispose();
+            }
+        });
+        contentPane.add(btnNewButton_1_1);
+
+        JButton btnNewButton_1_1_1 = new JButton("Knight");
+        sl_contentPane.putConstraint(SpringLayout.SOUTH, btnNewButton_1_1, -36, SpringLayout.NORTH, btnNewButton_1_1_1);
+        sl_contentPane.putConstraint(SpringLayout.NORTH, btnNewButton_1_1_1, 11, SpringLayout.NORTH, lblNewLabel_1_1_1);
+        sl_contentPane.putConstraint(SpringLayout.WEST, btnNewButton_1_1_1, 0, SpringLayout.WEST, btnNewButton);
+        sl_contentPane.putConstraint(SpringLayout.SOUTH, btnNewButton_1_1_1, -20, SpringLayout.SOUTH, contentPane);
+        sl_contentPane.putConstraint(SpringLayout.EAST, btnNewButton_1_1_1, -18, SpringLayout.EAST, contentPane);
+        btnNewButton_1_1_1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                choice= 4;
+                frame.dispose();
+            }
+        });
+        contentPane.add(btnNewButton_1_1_1);
+
+        JButton btnNewButton_2 = new JButton("BACK");
+        contentPane.add(btnNewButton_2);
         btnNewButton_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                choice= 0;
                 frame.dispose();
-                choice= 2;
             }
         });
-        contentPane.add(btnNewButton_2);
 
-        JButton btnNewButton_3 = new JButton("New button");
-        sl_contentPane.putConstraint(SpringLayout.NORTH, btnNewButton_3, 40, SpringLayout.SOUTH, btnNewButton_3);
-        sl_contentPane.putConstraint(SpringLayout.EAST, lblNewLabel_1_1, -68, SpringLayout.WEST, btnNewButton_3);
-        sl_contentPane.putConstraint(SpringLayout.SOUTH, btnNewButton_3, 102, SpringLayout.SOUTH, btnNewButton_2);
-        sl_contentPane.putConstraint(SpringLayout.EAST, btnNewButton_3, 0, SpringLayout.EAST, btnNewButton_2);
-        sl_contentPane.putConstraint(SpringLayout.NORTH, btnNewButton_3, 45, SpringLayout.SOUTH, btnNewButton_2);
-        sl_contentPane.putConstraint(SpringLayout.WEST, btnNewButton_3, 0, SpringLayout.WEST, btnNewButton);
-        btnNewButton_3.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                choice= 3;
-            }
-        });
-        contentPane.add(btnNewButton_3);
-
-        JButton btnNewButton_4 = new JButton("New button");
-        sl_contentPane.putConstraint(SpringLayout.NORTH, btnNewButton_3, -40, SpringLayout.SOUTH, btnNewButton_4);
-        sl_contentPane.putConstraint(SpringLayout.EAST, lblNewLabel_1_1, -68, SpringLayout.WEST, btnNewButton_4);
-        sl_contentPane.putConstraint(SpringLayout.SOUTH, btnNewButton_3, 102, SpringLayout.SOUTH, btnNewButton_2);
-        sl_contentPane.putConstraint(SpringLayout.EAST, btnNewButton_3, 0, SpringLayout.EAST, btnNewButton_2);
-        sl_contentPane.putConstraint(SpringLayout.NORTH, btnNewButton_3, 45, SpringLayout.SOUTH, btnNewButton_2);
-        sl_contentPane.putConstraint(SpringLayout.WEST, btnNewButton_3, 0, SpringLayout.WEST, btnNewButton);
-        btnNewButton_3.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                choice= 4;
-            }
-        });
-        contentPane.add(btnNewButton_4);
     }
 
     public int getChoice() {
@@ -138,6 +138,7 @@ public class PromotionFrame extends JFrame implements Runnable{
 
     @Override
     public void run() {
+        frame.setVisible(true);
 
     }
 }
