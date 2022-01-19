@@ -23,7 +23,7 @@ public class Move {
 
 	public boolean isEnPassantMove() {
 		if(sourcePiece.getRow()>0 && sourcePiece.getRow()<7){
-			if(sourcePiece instanceof Pawn && Math.abs(end.getColumn()-start.getColumn())==1 && Math.abs(end.getRow()-start.getRow())==1) {
+			if(sourcePiece instanceof Pawn && Math.abs(end.getColumn()-start.getColumn())==1 && Math.abs(end.getRow()-start.getRow())==1 && capturedPiece==null) {
 				return true;
 			}
 		}
