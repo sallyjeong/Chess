@@ -199,7 +199,6 @@ public class HomeFrame extends JFrame {
 
         JButton confirmButton = new JButton("Spectate");
         confirmButton.setForeground(new Color(143, 188, 143));
-        confirmButton.setBackground(new Color(143, 188, 143));
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();

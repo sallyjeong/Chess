@@ -15,9 +15,9 @@ public class Client {
     private EnterUsernameFrame enterUsernameFrame;
     private InvalidUserFrame invalidUserFrame;
 
-    public static void main(String[] args) {
-        Client client = new Client(false);
-    }
+//    public static void main(String[] args) {
+//        Client client = new Client(false);
+//    }
 
     public Client(boolean createRoom) {
         // add variable to see if the game has been closed/left
@@ -32,14 +32,12 @@ public class Client {
             dataOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
             String result;
-
-
+            
             enterUsernameFrame = new EnterUsernameFrame();
             askForData(Constants.USERNAME_DATA);
             enterUsernameFrame.setClosed(false);
             result = verifyData(Constants.USERNAME_DATA);
             System.out.println("USERNAME CREATION: " + result);
-
             //for username
             while (result.equals(Constants.USERNAME_ERROR)) {
                 invalidUserFrame = new InvalidUserFrame();
@@ -57,11 +55,9 @@ public class Client {
                 result = verifyData(Constants.USERNAME_DATA);
                 System.out.println("USERNAME CREATION: " + result);
 
-                if (result.equals(Constants.USERNAME_ERROR)) {
-
-                }
-
             }
+
+
 
             if (createRoom == true) {
                 CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
