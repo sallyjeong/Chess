@@ -66,8 +66,8 @@ public class Server {
                     char type = input.charAt(0);
                     input = input.substring(1);
 
-                    System.out.println("TYPE: " + type);
-                    System.out.println("INPUT: " + input);
+                    //System.out.println("TYPE: " + type);
+                    //System.out.println("INPUT: " + input);
                     if (type == Constants.CHAT_DATA) {
                         broadcastMessage(Constants.CHAT_DATA + input);
                     } else if (type == Constants.MOVE_DATA){
@@ -76,7 +76,7 @@ public class Server {
 
                     } else if (type == Constants.USERNAME_DATA) {
                         // System.out.println("username data !!");
-                        System.out.println("server - else if username data");
+                        //System.out.println("server - else if username data");
                         if (validUsername(input)) {
                             username = input;
                             //can change to a new popupData char?
@@ -171,14 +171,14 @@ public class Server {
                 if (clientHandler.username.equals(user)){
                     return false;
                 }
-                System.out.println("entered for loop");
+                //System.out.println("ent3ered for loop");
             }
             if (!user.matches("[a-zA-Z0-9]*")){
-                System.out.println("entered 2nd if");
+                //System.out.println("entered 2nd if");
                 return false;
             }
             if ((user.equals("")) || (user.equals(null))){
-                System.out.println("user is ___" + user);
+                //System.out.println("user is ___" + user);
                 return false;
             }
             return true;

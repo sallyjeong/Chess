@@ -20,7 +20,7 @@ import javax.swing.JButton;
 
 public class CreatePrivateRoomFrame extends JFrame {
     public static HashSet<String> roomCodes = new HashSet<String>(); //possibly make it private and add getters/setters
-    String code;
+    String code = generateCode();
 
     private JPanel contentPane;
 //    public static void main(String[] args) {
@@ -108,6 +108,10 @@ public class CreatePrivateRoomFrame extends JFrame {
         } while(!roomCodes.contains(generatedCode));
 
         return generatedCode;
+    }
+
+    public String getCode () {
+        return code;
     }
 
 }

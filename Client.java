@@ -16,7 +16,7 @@ public class Client {
     private InvalidUserFrame invalidUserFrame;
 
     public static void main(String[] args) {
-        Client client = new Client(false);
+        Client client = new Client(true);
     }
 
     public Client(boolean createRoom) {
@@ -34,9 +34,7 @@ public class Client {
             String result = "";
 
             do {
-                enterUsernameFrame = new EnterUsernameFrame();
                 askForData(Constants.USERNAME_DATA);
-                enterUsernameFrame.setClosed(false);
                 result = verifyData(Constants.USERNAME_DATA);
                 System.out.println("USERNAME CREATION: " + result);
 
@@ -44,43 +42,19 @@ public class Client {
                     invalidUserFrame = new InvalidUserFrame();
                 }
 
-                while (!invalidUserFrame.isClosed()) {
-//                    try {
-//                        Thread.sleep(1000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
+                while (invalidUserFrame != null && !invalidUserFrame.isClosed()) {
+                    try {
+                        Thread.sleep(0,1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             } while (result.equals(Constants.USERNAME_ERROR));
 
-//            enterUsernameFrame = new EnterUsernameFrame();
-//            askForData(Constants.USERNAME_DATA);
-//            enterUsernameFrame.setClosed(false);
-//            result = verifyData(Constants.USERNAME_DATA);
-//            System.out.println("USERNAME CREATION: " + result);
-//            //for username
-//            while (result.equals(Constants.USERNAME_ERROR)) {
-//                invalidUserFrame = new InvalidUserFrame();
-//                System.out.println("invalid frame called");
-//
-//                while (!invalidUserFrame.isClosed()) {
-//                    System.out.println("invalidUserFrame is closed");
-//
-//                }
-//
-//                enterUsernameFrame = new EnterUsernameFrame();
-//                askForData(Constants.USERNAME_DATA);
-//                enterUsernameFrame.setClosed(false);
-//                System.out.println("asked");
-//                result = verifyData(Constants.USERNAME_DATA);
-//                System.out.println("USERNAME CREATION: " + result);
-//
-//            }
-
             if (createRoom == true) {
                 CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
-                room = roomFrame.generateCode();
+                room = roomFrame.getCode();
                 result = verifyData(Constants.CREATE_ROOM_DATA);
                 System.out.println("ROOM CREATION: " + result);
 
@@ -93,6 +67,7 @@ public class Client {
                 } while (result.equals(Constants.JOIN_ROOM_ERROR));
             }
 
+            // only create frame after the room code is entered properly
             GameFrame thisGame = new GameFrame();
 
         } catch (IOException e) {
@@ -104,20 +79,13 @@ public class Client {
     }
 
     public void askForData(char type) {
-        // do smth about the cancel/X buttons?
-        // right now it just takes input as null if cancel is pressed and goes in an endless loop for room
-        // and username gets saved as literally "null"
 
         Scanner input = new Scanner(System.in);
         if (type == Constants.USERNAME_DATA) {
-            // create a EnterUsernameFrame
-//                System.out.println("Enter a username: ");
-//                username = input.next();
+            enterUsernameFrame = new EnterUsernameFrame();
             do {
                 username = enterUsernameFrame.getUsernameEntered();
-                // System.out.println("ASKED FOR DATA!@");
             } while (enterUsernameFrame.isClosed()==false);
-            System.out.println(username);
 
         } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
             // create a PrivateRoomCode Frame
