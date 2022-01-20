@@ -20,21 +20,9 @@ import javax.swing.JButton;
 
 public class CreatePrivateRoomFrame extends JFrame {
     public static HashSet<String> roomCodes = new HashSet<String>(); //possibly make it private and add getters/setters
-    String code = generateCode();
-
+    private boolean closed = false;
+    private String code = generateCode();
     private JPanel contentPane;
-//    public static void main(String[] args) {
-//        EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                try {
-//                    CreatePrivateRoomFrame frame = new CreatePrivateRoomFrame();
-//                    frame.setVisible(true);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
 
     /**
      * Create the frame.
@@ -73,22 +61,18 @@ public class CreatePrivateRoomFrame extends JFrame {
         JButton doneButton = new JButton("Done");
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                //add the generated code to the list of room codes
+                closed = true;
                 frame.dispose();
-                // new ();    new frame here
             }
         });
         doneButton.setBounds(33, 112, 222, 29);
-//        doneButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                frame.dispose();
-//                // new ();    new frame here
-//            }
-//        });
         contentPane.add(doneButton);
         setVisible(true);
     }
 
+    public boolean isClosed() {
+        return closed;
+    }
     public String generateCode () {
         System.out.println("method called");
         int min = 97; // 'a'
