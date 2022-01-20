@@ -30,7 +30,7 @@ public class King extends Piece {
 	@Override
 	public Set<Spot> validMoves(Board b) {
 		Spot[][] board = b.getBoard();
-		if(b.isThreatenedSpot(isWhite(), board[getRow()][getCol()])) {
+		if(b.kingInCheck(isWhite())) {
 			board[getRow()][getCol()].setChecked(true);
 		}else {
 			board[getRow()][getCol()].setChecked(false);
