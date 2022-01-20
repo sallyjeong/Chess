@@ -9,9 +9,11 @@ import javax.imageio.ImageIO;
 public class Pawn extends Piece {	
 
 	private boolean enPassant;
-
-	public Pawn(boolean w, boolean m, int p, char s, int r, int c) {
+	private boolean forward;
+	
+	public Pawn(boolean w, boolean m, int p, char s, int r, int c, boolean f) {
 		super(w, m, p, s, r, c);
+		this.forward = f;
 	}
 
 	@Override
@@ -34,7 +36,7 @@ public class Pawn extends Piece {
 		validMoves.clear();
 		Spot curSpot;
 
-		if(isWhite()){
+		if(forward){
 			curSpot= board[row-1][col];
 			if(curSpot.getPiece() == null){
 				validMoves.add(curSpot);
