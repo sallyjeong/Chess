@@ -1,6 +1,7 @@
 package chessproject;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.Scanner;
@@ -16,7 +17,7 @@ public class Client {
     private InvalidUserFrame invalidUserFrame;
 
     public static void main(String[] args) {
-        Client client = new Client(true);
+        Client client = new Client(false);
     }
 
     public Client(boolean createRoom) {
@@ -55,6 +56,7 @@ public class Client {
             if (createRoom == true) {
                 CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
                 room = roomFrame.getCode();
+                // saving the result here is wrong
                 result = verifyData(Constants.CREATE_ROOM_DATA);
                 System.out.println("ROOM CREATION: " + result);
 
@@ -82,6 +84,12 @@ public class Client {
 
         Scanner input = new Scanner(System.in);
         if (type == Constants.USERNAME_DATA) {
+//            EventQueue.invokeLater(new Runnable() {
+//                public void run() {
+//                    enterUsernameFrame = new EnterUsernameFrame();
+//                }
+//            });
+
             enterUsernameFrame = new EnterUsernameFrame();
             do {
                 username = enterUsernameFrame.getUsernameEntered();
@@ -125,18 +133,6 @@ public class Client {
             dataOut.flush();
             String result = dataIn.readLine();
             //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    public void createRoom() {
-        try {
-            dataOut.write(Constants.CREATE_ROOM_DATA);
-            dataOut.newLine();
-            dataOut.flush();
-            String result = dataIn.readLine();
-            room = result.substring(1);
-            System.out.println("YOUR ROOM CODE IS: " + room); // output room code
         } catch (IOException e) {
             e.printStackTrace();
         }

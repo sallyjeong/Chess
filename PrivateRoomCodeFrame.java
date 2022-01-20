@@ -1,7 +1,5 @@
 package chessproject;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,6 +16,7 @@ public class PrivateRoomCodeFrame extends JFrame {
     private JTextField codeText;
     private JButton doneButton;
     private String roomEntered;
+    private boolean closed = false;
 
 //    public static void main(String[] args) {
 //        EventQueue.invokeLater(new Runnable() {
@@ -37,7 +36,6 @@ public class PrivateRoomCodeFrame extends JFrame {
     public PrivateRoomCodeFrame() {
         JFrame frame = this;
         setTitle("Enter room code");
-        setVisible(true);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 292, 200);
@@ -59,14 +57,23 @@ public class PrivateRoomCodeFrame extends JFrame {
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 roomEntered = codeText.getText();
+
+                closed = true;
                 frame.dispose();
+                closed = false;
             }
         });
         doneButton.setBounds(36, 92, 221, 29);
         contentPane.add(doneButton);
+
+        setVisible(true);
     }
 
     public String getRoomEntered() {
         return roomEntered.toLowerCase();
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 }

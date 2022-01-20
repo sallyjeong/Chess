@@ -166,7 +166,7 @@ public class Server {
         }
 
         public boolean validUsername(String user){
-            System.out.println("entered valid username method");
+            //System.out.println("entered valid username method");
             for (ClientHandler clientHandler : clientHandlers){
                 if (clientHandler.username.equals(user)){
                     return false;

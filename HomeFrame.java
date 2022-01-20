@@ -148,7 +148,12 @@ public class HomeFrame extends JFrame {
         enterCodeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new Client(false);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new Client(false);
+                    }
+                }).start();
             }
         });
         enterCodeButton.setBounds(22, 384, 407, 80);
@@ -158,7 +163,12 @@ public class HomeFrame extends JFrame {
         createRoomLabel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new Client(true);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new Client(true);
+                    }
+                }).start();
             }
         });
         createRoomLabel.setBounds(469, 384, 373, 80);
@@ -199,6 +209,7 @@ public class HomeFrame extends JFrame {
 
         JButton confirmButton = new JButton("Spectate");
         confirmButton.setForeground(new Color(143, 188, 143));
+        confirmButton.setBackground(new Color(143, 188, 143));
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
