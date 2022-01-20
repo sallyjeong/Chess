@@ -10,10 +10,10 @@ public class Game {
 	private Player turn;
 	private Board board;
 
-	public Game(Player p1, Player p2) {
+	public Game(boolean white, Player p1, Player p2) {
 		players[0] = p1;
 		players[1] = p2;
-		board = new Board(p1.isWhite());
+		board = new Board(white);
 		pastMoves = new ArrayList<Move>();
 		if(p1.isWhite()) {
 			this.turn = p1;
