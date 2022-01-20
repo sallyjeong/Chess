@@ -1,3 +1,5 @@
+REPLACED WITH MESSAGEFRAME
+
 
 package chessproject;
 
