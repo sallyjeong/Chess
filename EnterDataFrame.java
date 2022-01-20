@@ -57,8 +57,7 @@ public class EnterDataFrame extends JFrame {
 
                 closed = true;
                 frame.dispose();
-                closed = false;
-                // new ();    new frame here
+                //closed = false;
             }
         });
 

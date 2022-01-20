@@ -14,6 +14,7 @@ public class Client {
     private BufferedReader dataIn;
     private BufferedWriter dataOut;
     private MessageFrame messageFrame;
+    private String result = "";
 
     public static void main(String[] args) {
         Client client = new Client(false);
@@ -31,68 +32,40 @@ public class Client {
             dataIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             dataOut = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-            String result = "";
-
-            do {
-                askForData(Constants.USERNAME_DATA);
-                result = verifyData(Constants.USERNAME_DATA);
-                //System.out.println("USERNAME CREATION: " + result);
-
-                if (result.equals(Constants.USERNAME_ERROR)) {
-                    messageFrame = new MessageFrame(result);
-                }
-
-                while (messageFrame != null && !messageFrame.isClosed()) {
-                    try {
-                        Thread.sleep(0,1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            } while (result.equals(Constants.USERNAME_ERROR));
-
-            //
-
-            if (createRoom == true) {
-                CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
-                room = roomFrame.getCode();
-                verifyData(Constants.CREATE_ROOM_DATA);
-                // ^^ we don't need to store this result
-
-            } else {
-                //for joining a private room
-                do {
-                    askForData(Constants.JOIN_PRIV_ROOM_DATA);
-                    result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
-                    //System.out.println("JOIN ROOM: [" + room + "] "+ result);
-
-                    if (result.equals(Constants.JOIN_ROOM_ERROR)) {
-                        messageFrame = new MessageFrame(result);
-                    }
-
-                    while (messageFrame != null && !messageFrame.isClosed()) {
-                        try {
-                            Thread.sleep(0,1);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                } while (result.equals(Constants.JOIN_ROOM_ERROR));
-            }
-
-            // only create frame after the room code is entered properly
-            GameFrame thisGame = new GameFrame();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        getUsernameInput();
+        getRoomInput(createRoom);
+        GameFrame thisGame = new GameFrame();
+        // make sure they join as the opposite colour of existing player
+        // OR as spectator if arraylist.size() > 2 ykyk
 
         listenForUpdates();
         sendMessage();
     }
 
+    public void getUsernameInput() {
+        do {
+            askForData(Constants.USERNAME_DATA);
+            result = verifyData(Constants.USERNAME_DATA);
+            System.out.println("USERNAME CREATION: " + result);
+
+            if (result.equals(Constants.USERNAME_ERROR)) {
+                messageFrame = new MessageFrame(result);
+            }
+
+            while (messageFrame != null && !messageFrame.isClosed()) {
+                try {
+                    Thread.sleep(0,1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        } while (result.equals(Constants.USERNAME_ERROR));
+    }
     public void askForData(char type) {
         EnterDataFrame enterDataFrame = new EnterDataFrame(type);
 
@@ -106,6 +79,20 @@ public class Client {
                 room = enterDataFrame.getDataEntered();
             } while (enterDataFrame.isClosed()==false);
         }
+    }
+
+    public String askForDataCondensed(char type) {
+        EnterDataFrame enterDataFrame = new EnterDataFrame(type);
+        /**
+         * me tryna make it more efficient except it doesn't work
+         * and obviously you would set username = askForData or room = askForData
+         */
+        String data;
+        do {
+            data = enterDataFrame.getDataEntered();
+        } while (enterDataFrame.isClosed() == false);
+
+        return data;
     }
 
     // not sure if we merge sendMessage/sendMove stuff with this or not
@@ -128,9 +115,42 @@ public class Client {
         return result;
     }
 
-//    public void setRoom(String room) { // assuming they click into public room/create the private room
-//        this.room = room;
-//    }
+    public void getRoomInput(boolean createRoom) {
+        if (createRoom == false) {
+            // for joining a private room
+            do {
+                askForData(Constants.JOIN_PRIV_ROOM_DATA);
+                result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
+                //System.out.println("JOIN ROOM: [" + room + "] "+ result);
+
+                if (result.equals(Constants.JOIN_ROOM_ERROR)) {
+                    messageFrame = new MessageFrame(result);
+                }
+
+                while (messageFrame != null && !messageFrame.isClosed()) {
+                    try {
+                        Thread.sleep(0,1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            } while (result.equals(Constants.JOIN_ROOM_ERROR));
+
+        } else {
+            CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
+            room = roomFrame.getCode();
+            verifyData(Constants.CREATE_ROOM_DATA);
+
+            while (roomFrame != null && !roomFrame.isClosed()) {
+                try {
+                    Thread.sleep(0,1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     public void quickMatch() {
         try {
