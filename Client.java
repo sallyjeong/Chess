@@ -13,7 +13,6 @@ public class Client {
     private Socket socket;
     private BufferedReader dataIn;
     private BufferedWriter dataOut;
-    // private EnterUsernameFrame enterUsernameFrame;
     private MessageFrame messageFrame;
 
     public static void main(String[] args) {
@@ -37,10 +36,10 @@ public class Client {
             do {
                 askForData(Constants.USERNAME_DATA);
                 result = verifyData(Constants.USERNAME_DATA);
-                System.out.println("USERNAME CREATION: " + result);
+                //System.out.println("USERNAME CREATION: " + result);
 
                 if (result.equals(Constants.USERNAME_ERROR)) {
-                    messageFrame = new MessageFrame(Constants.USERNAME_ERROR);
+                    messageFrame = new MessageFrame(result);
                 }
 
                 while (messageFrame != null && !messageFrame.isClosed()) {
@@ -58,18 +57,18 @@ public class Client {
             if (createRoom == true) {
                 CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
                 room = roomFrame.getCode();
-                result = verifyData(Constants.CREATE_ROOM_DATA);
-                messageFrame = new MessageFrame("ROOM CREATION: " + result);
+                verifyData(Constants.CREATE_ROOM_DATA);
+                // ^^ we don't need to store this result
 
             } else {
                 //for joining a private room
                 do {
                     askForData(Constants.JOIN_PRIV_ROOM_DATA);
                     result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
-                    System.out.println("JOIN ROOM: [" + room + "] "+ result);
+                    //System.out.println("JOIN ROOM: [" + room + "] "+ result);
 
                     if (result.equals(Constants.JOIN_ROOM_ERROR)) {
-                        messageFrame = new MessageFrame(Constants.JOIN_ROOM_ERROR);
+                        messageFrame = new MessageFrame(result);
                     }
 
                     while (messageFrame != null && !messageFrame.isClosed()) {
@@ -95,25 +94,17 @@ public class Client {
     }
 
     public void askForData(char type) {
+        EnterDataFrame enterDataFrame = new EnterDataFrame(type);
 
-        Scanner input = new Scanner(System.in);
         if (type == Constants.USERNAME_DATA) {
-//            EventQueue.invokeLater(new Runnable() {
-//                public void run() {
-//                    enterUsernameFrame = new EnterUsernameFrame();
-//                }
-//            });
-
-            EnterUsernameFrame enterUsernameFrame = new EnterUsernameFrame();
             do {
-                username = enterUsernameFrame.getUsernameEntered();
-            } while (enterUsernameFrame.isClosed()==false);
+                username = enterDataFrame.getDataEntered();
+            } while (enterDataFrame.isClosed()==false);
 
         } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
-            PrivateRoomCodeFrame privateRoomCodeFrame = new PrivateRoomCodeFrame();
             do {
-                room = privateRoomCodeFrame.getRoomEntered();
-            } while (privateRoomCodeFrame.isClosed()==false);
+                room = enterDataFrame.getDataEntered();
+            } while (enterDataFrame.isClosed()==false);
         }
     }
 
