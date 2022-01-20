@@ -1,4 +1,4 @@
-//package chessproject;
+package chessproject;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,6 @@ public class Pawn extends Piece {
 
 	@Override
 	public Set<Spot> validMoves(Board b) {
-		setEnPassant(false);
 		Spot[][] board = b.getBoard();
 		int row= getRow(); int col= getCol();
 

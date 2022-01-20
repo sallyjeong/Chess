@@ -5,13 +5,13 @@ import java.awt.Graphics;
 
 public class Spot implements Drawable {
 
-	private final Color clickedColour = Color.green, capturedColour = Color.lightGray;
+	private final Color clickedColour = Color.green, capturedColour = Color.lightGray, checkedColour = Color.red;
 	
 	private Color defaultColour;
 	private int row, column;
 	private String id;
 	private Piece piece;
-	private boolean highlighted, clicked;
+	private boolean highlighted, clicked, checked;
 	private int length;
 
 	public Spot(int r, int c, String id, Piece p, Color co, int l) {
@@ -31,6 +31,8 @@ public class Spot implements Drawable {
 		//can be captured
 		}else if(this.piece!=null && this.highlighted) {
 			g.setColor(capturedColour);
+		}else if(this.checked) {
+			g.setColor(checkedColour);
 		}else {
 			g.setColor(this.defaultColour);
 		}
@@ -85,4 +87,8 @@ public class Spot implements Drawable {
 		this.clicked = b;
 	}
 
+	public void setChecked(boolean b) {
+		this.checked = b;
+	}
+	
 }

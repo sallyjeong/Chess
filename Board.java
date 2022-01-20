@@ -9,7 +9,6 @@ import java.util.HashSet;
 public class Board implements Drawable {
 
 	final int LENGTH = 50;
-	//final int LENGTH = 72;
 
 	private Spot[][] board;
 	private King whiteKing, blackKing;
@@ -56,16 +55,16 @@ public class Board implements Drawable {
 		board[7][5].addPiece(new Bishop(true, false, 3, 'B', 7, 5));
 		board[7][6].addPiece(new Knight(true, false, 3, 'N', 7, 6));
 		board[7][7].addPiece(new Rook(true, false, 5, 'R', 7, 7));
-		
-		getPseudoLegal(true);
-		
+
+		getPseudoLegal();
+
 	}
 
-	public void getPseudoLegal(boolean white) {
+	public void getPseudoLegal() {
 		Set<Spot> validM;
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
-				if(board[i][j].getPiece()!=null && board[i][j].getPiece().isWhite()==white) {
+				if(board[i][j].getPiece()!=null) {
 					validM = board[i][j].getPiece().validMoves(this);
 					filterPseudoLegalMoves(board[i][j].getPiece().isWhite(), validM, board[i][j]);
 				}
@@ -96,39 +95,49 @@ public class Board implements Drawable {
 	}
 
 	/*0 is not stalemate or checkmate, 1 is checkmate, 2 is stalemate.
-	  * Function is created as such because checkmate and stalemate checks are the same.
-	  */
-	 public int isCheckmateOrStalemate(boolean w) { 
-	     Set<Spot> completeSet = new HashSet<Spot>();
-	     for(int i=0; i<8; i++) {
-		 for(int j=0; j<8; j++) {
-		     if(board[i][j].getPiece()!=null && board[i][j].getPiece().isWhite()== w) {
-			 Set<Spot> s = board[i][j].getPiece().getMoveList();
-			 completeSet.addAll(s);
-		     }
-		 }
-	     }
-	     if (kingInCheck(w) == true) {
-		 if (completeSet == null) {
-		     return 1;
-		 }
-	     } else {
-		 if (completeSet == null) {
-		     return 2;
-		 }
-	     }
-	     return 0;
-	 }
-
-		public boolean kingInCheck(boolean w){
-			if(w){
-				return isThreatenedSpot(w, board[whiteKing.getRow()][whiteKing.getCol()]);
-			}
-			else{
-				return isThreatenedSpot(w, board[blackKing.getRow()][blackKing.getCol()]);
+	 * Function is created as such because checkmate and stalemate checks are the same.
+	 */
+	public int isCheckmateOrStalemate(boolean w) { 
+		Set<Spot> completeSet = new HashSet<Spot>();
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				if(board[i][j].getPiece()!=null && board[i][j].getPiece().isWhite()== w) {
+					Set<Spot> s = board[i][j].getPiece().getMoveList();
+					completeSet.addAll(s);
+				}
 			}
 		}
+		if (kingInCheck(w) == true) {
+			if (completeSet == null) {
+				return 1;
+			}
+		} else {
+			if (completeSet == null) {
+				return 2;
+			}
+		}
+		return 0;
+	}
 
+	public boolean kingInCheck(boolean w){
+		if(w){
+			return isThreatenedSpot(w, board[whiteKing.getRow()][whiteKing.getCol()]);
+		}
+		else{
+			return isThreatenedSpot(w, board[blackKing.getRow()][blackKing.getCol()]);
+		}
+	}
+	
+	public void setEnPassant(boolean white) {
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				if(board[i][j].getPiece() instanceof Pawn && board[i][j].getPiece().isWhite()==white) {
+					((Pawn)board[i][j].getPiece()).setEnPassant(false);
+				}
+			}
+		}
+	}
+	
 	public boolean isThreatenedSpot(boolean whiteThreatened, Spot threatenedSpot) {
 
 		int knightDirections[] = {2,1,2,-1,-2,1,-2,-1,1,2,1,-2,-1,2,-1,-2};
@@ -190,14 +199,14 @@ public class Board implements Drawable {
 		}
 		return false;
 	}
-	
+
 	private boolean isRCValid(int row, int col) {
 		if(row<0 || row>7 || col<0 || col>7) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void draw(Graphics g) {
 		for(int i=0; i<8; i++) {

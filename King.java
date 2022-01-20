@@ -1,3 +1,4 @@
+package chessproject;
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
@@ -29,6 +30,11 @@ public class King extends Piece {
 	@Override
 	public Set<Spot> validMoves(Board b) {
 		Spot[][] board = b.getBoard();
+		if(b.isThreatenedSpot(isWhite(), board[getRow()][getCol()])) {
+			board[getRow()][getCol()].setChecked(true);
+		}else {
+			board[getRow()][getCol()].setChecked(false);
+		}
 		int[] rowIncrements= {-1, 1, 0, 0, 1, 1, -1, -1};
 		int[] colIncrements= {0, 0 , -1, 1, 1, -1, 1, -1};
 		int row= getRow(); int col= getCol();

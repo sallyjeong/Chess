@@ -1,4 +1,4 @@
-
+package chessproject;
 
 import java.util.ArrayList;
 
@@ -22,12 +22,12 @@ public class Game {
 		}
 	}
 	
-	public boolean playerMove(Player player, Spot start, Spot end) throws InterruptedException {
+	public boolean playerMove(Player player, Spot start, Spot end) {
 		Move move = new Move(player, start, end);
 		return makeMove(move);
 	}
 
-	private boolean makeMove(Move move) throws InterruptedException {
+	private boolean makeMove(Move move) {
 	//	System.out.println(move.getStart().getRow()+" "+move.getStart().getColumn()+" "+move.getEnd().getRow()+" "+move.getEnd().getColumn());
 		Piece sourcePiece = move.getStart().getPiece();
 		Player player = move.getPlayer();
@@ -44,8 +44,9 @@ public class Game {
 		move.getEnd().addPiece(sourcePiece);
 		move.getStart().removePiece();
 		sourcePiece.setMoved(true);
-		int prevRow= sourcePiece.getRow(); int prevCol= sourcePiece.getCol();
 		sourcePiece.setRow(move.getEnd().getRow()); sourcePiece.setCol(move.getEnd().getColumn());
+		
+		Thread t= Thread.currentThread();
 
 
 		if (sourcePiece instanceof Pawn) {
@@ -54,42 +55,17 @@ public class Game {
 			if(!isWhite){
 				lastRow+= 7;
 			}
-
-
 			if(sourcePiece.getRow() == lastRow){
-
-
 
 				PromotionFrame p= new PromotionFrame();
 
-				Thread t= new Thread(p);
-				t.start();
-				while(t.isAlive()){
-
-				}
 
 				int choice= p.getChoice();
 
-				if(choice == 1){
-					move.getEnd().addPiece(new Queen(isWhite, false, 9, 'Q', sourcePiece.getRow(), sourcePiece.getCol()));
-				}
-				else if(choice == 2){
-					move.getEnd().addPiece(new Rook(isWhite, false, 9, 'Q', sourcePiece.getRow(), sourcePiece.getCol()));
-				}
-				else if(choice == 3){
-					move.getEnd().addPiece(new Bishop(isWhite, false, 9, 'B', sourcePiece.getRow(), sourcePiece.getCol()));
-				}
-				else if(choice == 4){
-					move.getEnd().addPiece(new Knight(isWhite, false, 9, 'N', sourcePiece.getRow(), sourcePiece.getCol()));
-				}
-				else{
-					//undo
-					move.getEnd().addPiece(destPiece);
-					move.getStart().addPiece(sourcePiece);
-					sourcePiece.setRow(prevRow); sourcePiece.setCol(prevCol);
-					return false;
+					if(choice == 1){
+						move.getEnd().addPiece(new Queen(isWhite, false, 9, 'Q', sourcePiece.getRow(), sourcePiece.getCol()));
+					}
 
-				}
 			}
 
 		}
@@ -122,6 +98,7 @@ public class Game {
 			movingRook.setMoved(true);
 			movingRook.setRow(movingTo.getRow()); movingRook.setCol(movingTo.getColumn());
 		}else if(move.isEnPassantMove()) {
+			System.out.println("yooo");
 			Spot above = board.getBoard()[move.getEnd().getRow()-1][move.getEnd().getColumn()];
 			if(above.getPiece() instanceof Pawn && ((Pawn)above.getPiece()).getEnPassant()) {
 				above.removePiece();
@@ -132,7 +109,8 @@ public class Game {
 		
 		
 		pastMoves.add(move);
-		board.getPseudoLegal(!player.isWhite());
+		board.setEnPassant(!player.isWhite());
+		board.getPseudoLegal();
 		
 		if(this.turn==players[0]) {
 			this.turn = players[1];
@@ -154,6 +132,4 @@ public class Game {
 	public Player getTurn() {
 		return turn;
 	}
-
-
 }
