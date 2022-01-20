@@ -1,4 +1,4 @@
-package chessproject;
+//package chessproject;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -45,16 +45,20 @@ public class tester {
 			game.getBoard().draw(g);
 			repaint();
 		}
-		
+
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			if(e.getX()<8*game.getBoard().LENGTH && e.getY()<8*game.getBoard().LENGTH) {
 				Spot spot = game.getBoard().getBoard()[e.getY()/game.getBoard().LENGTH][e.getX()/game.getBoard().LENGTH];
 				if(source==null) {
-					if(spot.getPiece()!=null) {
-						spot.setClicked(true);
-						spot.getPiece().displayValidMoves(true);
-						source = spot;
+					if(spot.getPiece()==null) {
+						return;
+					}else {
+						if (game.getTurn().isWhite() == spot.getPiece().isWhite()) {
+							spot.setClicked(true);
+							spot.getPiece().displayValidMoves(true);
+							source = spot;
+						}
 					}
 				}else {
 					if(spot.equals(source)) {
@@ -63,9 +67,17 @@ public class tester {
 						source = null;
 					}else if(source.getPiece().getMoveList().contains(spot)) {
 						if(source.getPiece().isWhite()) {
-							game.playerMove(p1, source, spot);
+							try {
+								game.playerMove(p1, source, spot);
+							} catch (InterruptedException interruptedException) {
+								interruptedException.printStackTrace();
+							}
 						}else {
-							game.playerMove(p2, source, spot);
+							try {
+								game.playerMove(p2, source, spot);
+							} catch (InterruptedException interruptedException) {
+								interruptedException.printStackTrace();
+							}
 						}
 						source.setClicked(false);
 						if(source.getPiece()!=null) {
@@ -76,6 +88,7 @@ public class tester {
 				}
 			}
 		}
+
 
 
 		@Override
