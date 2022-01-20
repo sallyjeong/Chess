@@ -8,7 +8,7 @@ public class King extends Piece {
 
 	private boolean castle = false;
 
-	public King(boolean w, boolean m, int p, int s, int r, int c) {
+	public King(boolean w, boolean m, int p, char s, int r, int c) {
 		super(w, m, p, s, r, c);
 	}
 
