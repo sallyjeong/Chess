@@ -13,8 +13,8 @@ public class Client {
     private Socket socket;
     private BufferedReader dataIn;
     private BufferedWriter dataOut;
-    private EnterUsernameFrame enterUsernameFrame;
-    private InvalidUserFrame invalidUserFrame;
+    // private EnterUsernameFrame enterUsernameFrame;
+    private MessageFrame messageFrame;
 
     public static void main(String[] args) {
         Client client = new Client(false);
@@ -40,10 +40,10 @@ public class Client {
                 System.out.println("USERNAME CREATION: " + result);
 
                 if (result.equals(Constants.USERNAME_ERROR)) {
-                    invalidUserFrame = new InvalidUserFrame();
+                    messageFrame = new MessageFrame(Constants.USERNAME_ERROR);
                 }
 
-                while (invalidUserFrame != null && !invalidUserFrame.isClosed()) {
+                while (messageFrame != null && !messageFrame.isClosed()) {
                     try {
                         Thread.sleep(0,1);
                     } catch (InterruptedException e) {
@@ -53,19 +53,33 @@ public class Client {
 
             } while (result.equals(Constants.USERNAME_ERROR));
 
+            //
+
             if (createRoom == true) {
                 CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
                 room = roomFrame.getCode();
-                // saving the result here is wrong
                 result = verifyData(Constants.CREATE_ROOM_DATA);
-                System.out.println("ROOM CREATION: " + result);
+                messageFrame = new MessageFrame("ROOM CREATION: " + result);
 
             } else {
                 //for joining a private room
                 do {
                     askForData(Constants.JOIN_PRIV_ROOM_DATA);
                     result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
-                    System.out.println("JOIN ROOM: " + result);
+                    System.out.println("JOIN ROOM: [" + room + "] "+ result);
+
+                    if (result.equals(Constants.JOIN_ROOM_ERROR)) {
+                        messageFrame = new MessageFrame(Constants.JOIN_ROOM_ERROR);
+                    }
+
+                    while (messageFrame != null && !messageFrame.isClosed()) {
+                        try {
+                            Thread.sleep(0,1);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                 } while (result.equals(Constants.JOIN_ROOM_ERROR));
             }
 
@@ -90,15 +104,16 @@ public class Client {
 //                }
 //            });
 
-            enterUsernameFrame = new EnterUsernameFrame();
+            EnterUsernameFrame enterUsernameFrame = new EnterUsernameFrame();
             do {
                 username = enterUsernameFrame.getUsernameEntered();
             } while (enterUsernameFrame.isClosed()==false);
 
         } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
-            // create a PrivateRoomCode Frame
-            System.out.println("Enter a room code: ");
-            room = input.next().toLowerCase();
+            PrivateRoomCodeFrame privateRoomCodeFrame = new PrivateRoomCodeFrame();
+            do {
+                room = privateRoomCodeFrame.getRoomEntered();
+            } while (privateRoomCodeFrame.isClosed()==false);
         }
     }
 
