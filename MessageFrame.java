@@ -15,17 +15,6 @@ public class MessageFrame extends JFrame {
 
     private JPanel contentPane;
     private boolean closed = false;
-    //    public static void main(String[] args) {
-    //        EventQueue.invokeLater(new Runnable() {
-    //            public void run() {
-    //                try {
-    //                    InvalidUserFrame frame = new InvalidUserFrame();
-    //                } catch (Exception e) {
-    //                    e.printStackTrace();
-    //                }
-    //            }
-    //        });
-    //    }
 
     /**
      * Create the frame.
@@ -54,9 +43,6 @@ public class MessageFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 closed = true;
                 frame.dispose();
-
-                // new EnterUsernameFrame();
-                // new ();    new frame here
             }
         });
 
@@ -65,8 +51,8 @@ public class MessageFrame extends JFrame {
     public boolean isClosed() {
         return closed;
     }
-
-    public void setClosed(boolean x) {
-        this.closed = x;
-    }
+//
+//    public void setClosed(boolean x) {
+//        this.closed = x;
+//    }
 }

@@ -34,6 +34,8 @@ public class GameFrame extends JFrame {
     public GameFrame() {
         // take in param to decide which way to display the board!!
         // take in param to see if its spectator or player (e.g. surrender button not available for spectators)
+        // take in param of room code to display in corner
+
         JFrame frame = this;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 1313, 715);
