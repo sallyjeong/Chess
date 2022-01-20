@@ -18,7 +18,6 @@ public class EnterDataFrame extends JFrame {
     private String dataEntered;
     private boolean closed = false;
 
-
     /**
      * Create the frame.
      */
@@ -46,11 +45,11 @@ public class EnterDataFrame extends JFrame {
         } else if (data == Constants.COLOUR_DATA) {
             prompt = new JLabel("Black/White: ");
         }
-        prompt.setBounds(44, 55, 79, 16);
+        prompt.setBounds(44, 55, 90, 16);
         contentPane.add(prompt);
 
         text = new JTextField();
-        text.setBounds(118, 50, 130, 26);
+        text.setBounds(130, 50, 130, 26);
         contentPane.add(text);
         text.setColumns(10);
 

@@ -94,13 +94,7 @@ public class Client {
                 messageFrame = new MessageFrame(result);
             }
 
-            while (messageFrame != null && !messageFrame.isClosed()) {
-                try {
-                    Thread.sleep(0,1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+            waitTillClosed(messageFrame);
 
         } while (result.equals(Constants.USERNAME_ERROR));
     }
@@ -131,13 +125,7 @@ public class Client {
                     messageFrame = new MessageFrame(result);
                 }
 
-                while (messageFrame != null && !messageFrame.isClosed()) {
-                    try {
-                        Thread.sleep(0,1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+                waitTillClosed(messageFrame);
             } while (result.equals(Constants.JOIN_ROOM_ERROR));
 
             colour = verifyData(Constants.COLOUR_DATA);
@@ -159,18 +147,16 @@ public class Client {
                 colour = roomFrame.getColourChosen();;
             } while (roomFrame.isClosed()==false);
 
+            if (colour.equals("random")) {
+                randomizeColour();
+            }
+
             verifyData(Constants.CREATE_ROOM_DATA);
             System.out.println("CREATE ROOM: [" + room + "] success");
             System.out.println("CREATOR: " + verifyData(Constants.COLOUR_DATA)); // printing just to check
 
-//            while (roomFrame != null && !roomFrame.isClosed()) {
-//                try {
-//                    Thread.sleep(0,1);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-            // new SettingsFrame(); // this works but gameFrame doesn't...
+            // waitTillClosed(roomFrame);
+
             startGame(true);
         }
     }
@@ -184,33 +170,25 @@ public class Client {
 
     public void pickSpectateColour() {
         EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA);
-        do{
-            do {
-                colour = colourChoice.getDataEntered();
-            } while (colourChoice.isClosed() == false);
+        do {
+            colour = colourChoice.getDataEntered();
+            waitTillClosed(messageFrame);
+        } while (colourChoice.isClosed() == false);
 
-            if (!validColour()) {
-                messageFrame = new MessageFrame("error. invalid colour");
-            }
-
-            while (messageFrame != null && !messageFrame.isClosed()) {
-                try {
-                    Thread.sleep(0,1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        } while (!validColour());
-
-    }
-    public boolean validColour() {
-        colour = colour.toLowerCase();
-        if (colour.equals("white") || colour.equals("black")) {
-            return true;
+        if (!(colour.equals("white") || colour.equals("black"))) {
+            randomizeColour();
         }
-        return false;
+
     }
 
+    public void randomizeColour() {
+        int choice = (int) Math.round(Math.random());
+        if (choice == 0) {
+            colour = "white";
+        } else {
+            colour = "black";
+        }
+    }
     public boolean isWhite() {
         if (colour.equals("white")) {
             return true;
@@ -269,5 +247,15 @@ public class Client {
             }
 
         }).start();
+    }
+
+    public void waitTillClosed(MessageFrame frame) {
+        while (frame != null && !frame.isClosed()) {
+            try {
+                Thread.sleep(0, 1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
