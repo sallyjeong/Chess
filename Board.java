@@ -9,6 +9,7 @@ import java.util.HashSet;
 public class Board implements Drawable {
 
 	final int LENGTH = 50;
+	//final int LENGTH = 72;
 
 	private Spot[][] board;
 	private King whiteKing, blackKing;
