@@ -1,3 +1,5 @@
+REPLACED WITH ENTERDATAFRAME
+
 package chessproject;
 
 import java.awt.event.ActionEvent;
