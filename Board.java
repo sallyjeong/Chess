@@ -8,98 +8,85 @@ import java.util.HashSet;
 
 public class Board implements Drawable {
 
-	final int LENGTH = 50;
+	//final int LENGTH = 50;
+	final int LENGTH = 72;
 
 	private Spot[][] board;
 	private King whiteKing, blackKing;
+	private boolean white;
 
-	public Board() {
+	public Board(boolean white) {
+		this.white = white;
 		this.create();
 	}
 
 	public void create() {
-//		Color whiteSquare = new Color(238, 232, 170), blackSquare = new Color(139, 69, 19);
-//		board = new Spot[8][8];
-//		for(int i=0; i<8; i++) {
-//			for(int j=0; j<8; j++) {
-//				String tempId = (char)('a'+j) + ((8-i)+"");
-//				if((i+j)%2==0) {
-//					board[i][j] = new Spot(i, j, tempId, null, whiteSquare, LENGTH);
-//				}else {
-//					board[i][j] = new Spot(i, j, tempId, null, blackSquare, LENGTH);
-//				}
-//			}
-//		}
-//
-//		board[0][0].addPiece(new Rook(false, false, 5, 'R', 0, 0));
-//		board[0][1].addPiece(new Knight(false, false, 3, 'N', 0, 1));
-//		board[0][2].addPiece(new Bishop(false, false, 3, 'B', 0, 2));
-//		board[0][3].addPiece(new Queen(false, false, 9, 'Q', 0, 3));
-//		blackKing = new King(false, false, 1000, 'K', 0, 4);
-//		board[0][4].addPiece(blackKing);
-//		board[0][5].addPiece(new Bishop(false, false, 3, 'B', 0, 5));
-//		board[0][6].addPiece(new Knight(false, false, 3, 'N', 0, 6));
-//		board[0][7].addPiece(new Rook(false, false, 5, 'R', 0, 7));
-//		for(int i=0; i<8; i++) {
-//			board[1][i].addPiece(new Pawn(false, false, 1, '\u0000', 1, i));
-//		}
-//		for(int i=0; i<8; i++) {
-//			board[6][i].addPiece(new Pawn(true, false, 1, '\u0000', 6, i));
-//		}
-//		board[7][0].addPiece(new Rook(true, false, 5, 'R', 7, 0));
-//		board[7][1].addPiece(new Knight(true, false, 3, 'N', 7, 1));
-//		board[7][2].addPiece(new Bishop(true, false, 3, 'B', 7, 2));
-//		board[7][3].addPiece(new Queen(true, false, 9, 'Q', 7, 3));
-//		whiteKing = new King(true, false, 1000, 'K', 7, 4);
-//		board[7][4].addPiece(whiteKing);
-//		board[7][5].addPiece(new Bishop(true, false, 3, 'B', 7, 5));
-//		board[7][6].addPiece(new Knight(true, false, 3, 'N', 7, 6));
-//		board[7][7].addPiece(new Rook(true, false, 5, 'R', 7, 7));
-//
-//		getPseudoLegal();
-
-//		// BLACK POV
 		Color whiteSquare = new Color(238, 232, 170), blackSquare = new Color(139, 69, 19);
 		board = new Spot[8][8];
-		for(int i=7; i>=0; i--) {
-			for(int j=7; j>=0; j--) {
-				String tempId = (char)('a'+j) + ((8-i)+"");
-				System.out.print(" " + tempId);
+		String tempId;
+		int whiteRow, blackRow;
+		int kingCol, queenCol;
+
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				if (white) {
+					tempId = (char) ('a' + j) + ((8 - i) + "");
+				} else {
+					tempId = (char) ('a'+ (7 - j)) + ((i + 1) +"");
+				}
 				if((i+j)%2==0) {
 					board[i][j] = new Spot(i, j, tempId, null, whiteSquare, LENGTH);
 				}else {
 					board[i][j] = new Spot(i, j, tempId, null, blackSquare, LENGTH);
 				}
 			}
-			System.out.println();
 		}
-		for(int i=0; i<8; i++) {
-			board[1][i].addPiece(new Pawn(true, false, 1, '\u0000', 1, i));
-		}
-		board[0][0].addPiece(new Rook(true, false, 5, 'R', 0, 0));
-		board[0][1].addPiece(new Knight(true, false, 3, 'N', 0, 1));
-		board[0][2].addPiece(new Bishop(true, false, 3, 'B', 0, 2));
-		board[0][4].addPiece(new Queen(true, false, 9, 'Q', 0, 4));
-		whiteKing = new King(true, false, 1000, 'K', 0, 4);
-		board[0][3].addPiece(whiteKing);
-		board[0][5].addPiece(new Bishop(true, false, 3, 'B', 0, 5));
-		board[0][6].addPiece(new Knight(true, false, 3, 'N', 0, 6));
-		board[0][7].addPiece(new Rook(true, false, 5, 'R', 0, 7));
 
-		// black pieces
-		board[7][0].addPiece(new Rook(false, false, 5, 'R', 7, 0));
-		board[7][1].addPiece(new Knight(false, false, 3, 'N', 7, 1));
-		board[7][2].addPiece(new Bishop(false, false, 3, 'B', 7, 2));
-		board[7][4].addPiece(new Queen(false, false, 9, 'Q', 7, 4));
-		blackKing = new King(false, false, 1000, 'K', 0, 3);
-		board[7][3].addPiece(blackKing);
-		board[7][5].addPiece(new Bishop(false, false, 3, 'B', 7, 5));
-		board[7][6].addPiece(new Knight(false, false, 3, 'N', 7, 6));
-		board[7][7].addPiece(new Rook(false, false, 5, 'R', 7, 7));
-		for(int i=0; i<8; i++) {
-			board[8-2][i].addPiece(new Pawn(false, false, 1, '\u0000', 8-2, i));
+		if (white) {
+			whiteRow = 7;
+			blackRow = 0;
+			kingCol = 4;
+			queenCol = 3;
+			for(int i=0; i<8; i++) {
+				// white pawns
+				board[whiteRow-1][i].addPiece(new Pawn(true, false, 1, '\u0000', whiteRow-1, i, white));
+				// black pawns
+				board[blackRow+1][i].addPiece(new Pawn(false, false, 1, '\u0000', blackRow+1, i, !white));
+			}
+		} else {
+			whiteRow = 0;
+			blackRow = 7;
+			kingCol = 3;
+			queenCol = 4;
+			for(int i=0; i<8; i++) {
+				// white pawns
+				board[whiteRow+1][i].addPiece(new Pawn(true, false, 1, '\u0000', whiteRow+1, i, white));
+				// black pawns
+				board[blackRow-1][i].addPiece(new Pawn(false, false, 1, '\u0000', blackRow-1, i, !white));
+			}
 		}
-		getPseudoLegal(); // not sure if we have to change this
+
+		board[whiteRow][0].addPiece(new Rook(true, false, 5, 'R', whiteRow, 0));
+		board[whiteRow][1].addPiece(new Knight(true, false, 3, 'N', whiteRow, 1));
+		board[whiteRow][2].addPiece(new Bishop(true, false, 3, 'B', whiteRow, 2));
+		board[whiteRow][queenCol].addPiece(new Queen(true, false, 9, 'Q', whiteRow, queenCol));
+		whiteKing = new King(true, false, 1000, 'K', whiteRow, kingCol);
+		board[whiteRow][kingCol].addPiece(whiteKing);
+		board[whiteRow][5].addPiece(new Bishop(true, false, 3, 'B', whiteRow, 5));
+		board[whiteRow][6].addPiece(new Knight(true, false, 3, 'N', whiteRow, 6));
+		board[whiteRow][7].addPiece(new Rook(true, false, 5, 'R', whiteRow, 7));
+
+		board[blackRow][0].addPiece(new Rook(false, false, 5, 'R', blackRow, 0));
+		board[blackRow][1].addPiece(new Knight(false, false, 3, 'N', blackRow, 1));
+		board[blackRow][2].addPiece(new Bishop(false, false, 3, 'B', blackRow, 2));
+		board[blackRow][queenCol].addPiece(new Queen(false, false, 9, 'Q', blackRow, queenCol));
+		blackKing = new King(false, false, 1000, 'K', blackRow, kingCol);
+		board[blackRow][kingCol].addPiece(blackKing);
+		board[blackRow][5].addPiece(new Bishop(false, false, 3, 'B', blackRow, 5));
+		board[blackRow][6].addPiece(new Knight(false, false, 3, 'N', blackRow, 6));
+		board[blackRow][7].addPiece(new Rook(false, false, 5, 'R', blackRow, 7));
+
+		getPseudoLegal();
 
 	}
 
