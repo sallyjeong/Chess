@@ -14,5 +14,6 @@ public class Constants {
     public static final char CREATE_ROOM_DATA = '5';//for private room
     public static final char QUICK_MATCH_DATA = '6';//for public room
     public static final char JOIN_PUB_ROOM_DATA = '7';//for private room
+    public static final char COLOUR_DATA = '8';
 
 }

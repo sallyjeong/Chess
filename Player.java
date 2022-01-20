@@ -10,9 +10,6 @@ public class Player {
     }
     
     public boolean isWhite() {
-        if (white == true) {
-            return true;
-        }
-        return false;
+        return white;
     }
 }

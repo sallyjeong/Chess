@@ -144,7 +144,7 @@ public class HomeFrame extends JFrame {
         lobbyPanel.add(privateLabel);
 
         //enter room code button (for private room)
-        JButton enterCodeButton = new JButton("Enter code");
+        JButton enterCodeButton = new JButton("Join room");
         enterCodeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();

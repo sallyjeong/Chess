@@ -17,10 +17,10 @@ public class Server {
     }
 
     public Server() {
-        // for room testing
-        rooms.put("123", new ArrayList<ClientHandler>());
-        rooms.put("abc", new ArrayList<ClientHandler>());
-        // end room testing
+//        // for room testing
+//        rooms.put("123", new ArrayList<ClientHandler>());
+//        rooms.put("abc", new ArrayList<ClientHandler>());
+//        // end room testing
         try {
             serverSocket = new ServerSocket(Constants.PORT);
             System.out.println("Waiting for connections");
@@ -39,6 +39,7 @@ public class Server {
 
     private class ClientHandler implements Runnable { //not sure if client handler is the best name?
         private String username = " ";
+        private String colour;
         private String room = ""; //i need this for broadcast -- theres prob a better idea
         private Socket socket;
         private BufferedReader dataIn;
@@ -80,27 +81,27 @@ public class Server {
                         if (validUsername(input)) {
                             username = input;
                             //can change to a new popupData char?
-                            writeData(Constants.CHAT_DATA + "success. welcome " + username);
+                            writeData("success. welcome " + username);
                         } else {
                             //can change to a new popupData char?
-                            writeData(Constants.CHAT_DATA + Constants.USERNAME_ERROR);
+                            writeData(Constants.USERNAME_ERROR);
                         }
                     }else if (type == Constants.JOIN_PRIV_ROOM_DATA){ //join private room
                         if (rooms.containsKey(input)){
                             rooms.get(input).add(this);
                             room = input;
-                            writeData(Constants.CHAT_DATA + "success. welcome " + username);
+                            writeData("success. welcome " + username);
                             broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
 
                         }else{
-                            writeData(Constants.JOIN_PRIV_ROOM_DATA + Constants.JOIN_ROOM_ERROR);
+                            writeData(Constants.JOIN_ROOM_ERROR);
                         }
                     }else if (type == Constants.CREATE_ROOM_DATA) { //join private room
                         //String roomCode = CreatePrivateRoomFrame.roomCodes.get(CreatePrivateRoomFrame.roomCodes.size()-1);
                         rooms.put(input, new ArrayList<ClientHandler>());
                         rooms.get(input).add(this);
                         room = input;
-                        writeData(Constants.CHAT_DATA + "room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
+                        writeData("room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
 
                     }else if (type== Constants.QUICK_MATCH_DATA){ //public room
                         if (quickMatch.isEmpty()){
@@ -108,7 +109,39 @@ public class Server {
                             quickMatch.add(this);
                             //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
                         }
-                    } //else if clicking into a public room??
+                    } else if (type == Constants.COLOUR_DATA) {//else if clicking into a public room??
+                        // room creator
+                        if (input.equals("black") || input.equals("white")) {
+                            //System.out.println("ROOM CREATOR DATA");
+                            colour = input;
+                            writeData(colour);
+                        } else {
+                            ArrayList<ClientHandler> existingPlayers = rooms.get(room);
+
+//                            // output for testing
+//                            for (ClientHandler client: existingPlayers) {
+//                                System.out.println(client.username+ ": " + client.colour);
+//                            }
+                            // second player
+                            if (existingPlayers.size() == 2) {
+                                //System.out.println("SECOND PLAYER");
+                                String existingColour = existingPlayers.get(0).colour;
+                                if (existingColour.equals("white")) {
+                                    colour = "black";
+                                } else if (existingColour.equals("black")) {
+                                    colour = "white";
+                                }
+                                writeData(colour);
+
+                            // spectators
+                            } else {
+                                // System.out.println("SPECTATORS");
+                                // pickSpectateColour();
+                                writeData(Constants.COLOUR_DATA + "");
+                            }
+                        }
+                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     break;
@@ -183,6 +216,33 @@ public class Server {
             }
             return true;
         }
+
+//        public boolean validColour(String colourPicked) {
+//            colourPicked = colourPicked.toLowerCase();
+//            if (colourPicked.equals("white") || colourPicked.equals("black")) {
+//                return true;
+//            }
+//            return false;
+//        }
+//
+//        public void pickSpectateColour() {
+//            EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA);
+//            do {
+//                MessageFrame messageFrame = null;
+//                colour = colourChoice.getDataEntered();
+//                if (!validColour(colour)) {
+//                    messageFrame = new MessageFrame("error. invalid colour");
+//                }
+//
+//                while (messageFrame != null && !messageFrame.isClosed()) {
+//                    try {
+//                        Thread.sleep(0,1);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            } while (!validColour(colour) && colourChoice.isClosed() == false);
+//        }
 
         public void closeConnection() {
             remove();

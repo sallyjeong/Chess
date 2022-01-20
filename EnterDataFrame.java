@@ -26,8 +26,10 @@ public class EnterDataFrame extends JFrame {
         JFrame frame = this;
         if (data == Constants.USERNAME_DATA) {
             setTitle("Enter username");
-        } else {
+        } else if (data == Constants.JOIN_PRIV_ROOM_DATA)  {
             setTitle("Enter room code");
+        } else if (data == Constants.COLOUR_DATA) {
+            setTitle("Enter board perspective");
         }
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,9 +40,11 @@ public class EnterDataFrame extends JFrame {
         contentPane.setLayout(null);
 
         if (data == Constants.USERNAME_DATA) {
-            prompt = new JLabel("Username:");
-        } else {
-            prompt = new JLabel("Room Code:");
+            prompt = new JLabel("Username: ");
+        } else if (data == Constants.JOIN_PRIV_ROOM_DATA) {
+            prompt = new JLabel("Room Code: ");
+        } else if (data == Constants.COLOUR_DATA) {
+            prompt = new JLabel("Black/White: ");
         }
         prompt.setBounds(44, 55, 79, 16);
         contentPane.add(prompt);
