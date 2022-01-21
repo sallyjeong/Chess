@@ -30,7 +30,7 @@ public class FindingRoomFrame extends JFrame {
     public FindingRoomFrame() {
         // maybe replace with a pop up
         setTitle("Finding match");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 292, 200);
         contentPane = new JPanel();
         contentPane.setBackground(new Color(238, 238, 238));

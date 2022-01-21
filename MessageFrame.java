@@ -23,7 +23,7 @@ public class MessageFrame extends JFrame {
         JFrame frame = this;
         setTitle("Message");
         setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 292, 200);
         contentPane = new JPanel();
         contentPane.setBackground(new Color(238, 238, 238));

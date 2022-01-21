@@ -1,3 +1,4 @@
+package chessproject;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -34,7 +35,7 @@ public class PromotionFrame extends JFrame implements Runnable{
      */
     public PromotionFrame() {
         frame= this;
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 261, 446);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

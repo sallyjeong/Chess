@@ -27,11 +27,11 @@ public class GameFrame extends JFrame {
     private JFrame frame;
     private JTextField userInputField;
 
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-        //GameFrame game = new GameFrame(false, true);
-
-    }
+//    public static void main(String[] args) {
+//        // TODO Auto-generated method stub
+//        GameFrame game = new GameFrame(false, true);
+//
+//    }
 
     public GameFrame(Client client, boolean isPlayer) {
         /**
@@ -44,7 +44,7 @@ public class GameFrame extends JFrame {
         curPlayer = p1;
         game = new Game(client.isWhite(), p1, p2); // again probably
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setBounds(100, 100, 1313, 715);
         JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -84,9 +84,15 @@ public class GameFrame extends JFrame {
         sendButton.setBounds(441, 201, 117, 29);
         chatPanel.add(sendButton);
 
-        JTextArea textArea = new JTextArea();
-        textArea.setBounds(549, 32, -531, 163);
-        chatPanel.add(textArea);
+//        JTextArea textArea = new JTextArea();
+//        textArea.setBounds(549, 32, -531, 163);
+//        chatPanel.add(textArea);
+//
+        JTextArea textArea = new JTextArea(5, 20);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setEditable(false);
+        chatPanel.add(scrollPane);
+//        chatPanel.add(textArea);
 
         /**
          * add JLabel with room code in the corner with text being client.getRoom()
