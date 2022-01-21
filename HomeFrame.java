@@ -33,6 +33,7 @@ import java.awt.ScrollPane;
 public class HomeFrame extends JFrame {
 
     private JPanel contentPane;
+    private Client thisClient;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -40,6 +41,7 @@ public class HomeFrame extends JFrame {
                 try {
                     HomeFrame frame = new HomeFrame();
                     frame.setVisible(true);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -51,6 +53,7 @@ public class HomeFrame extends JFrame {
      * Create the frame.
      */
     public HomeFrame() {
+
         //setting up the frame
         JFrame frame = this;
         setTitle("HomeFrame");
@@ -130,7 +133,7 @@ public class HomeFrame extends JFrame {
         JButton playButton = new JButton("Enter matchmaking");
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();
+                frame.dispose(); // maybe also switch to setVisible thing
                 new FindingRoomFrame();
             }
         });
@@ -147,11 +150,20 @@ public class HomeFrame extends JFrame {
         JButton enterCodeButton = new JButton("Join room");
         enterCodeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();
+                frame.setVisible(false); //instead of dispose, so they can setVisble(true) after the game ends
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        new Client(false);
+
+                        /**
+                         * not sure if new thread is needed to create client or just to open frames
+                         */
+
+                        thisClient = new Client(frame);
+                        if (thisClient.getUsername().equals("!")) {
+                            thisClient.getUsernameInput();
+                        }
+                        thisClient.getRoomInput();
                     }
                 }).start();
             }
@@ -162,11 +174,15 @@ public class HomeFrame extends JFrame {
         JButton createRoomLabel = new JButton("Create room");
         createRoomLabel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();
+                frame.setVisible(false); //instead of dispose, so they can setVisble(true) after the game ends
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        new Client(true);
+                        thisClient = new Client(frame);
+                        if (thisClient.getUsername().equals("!")) {
+                            thisClient.getUsernameInput();
+                        }
+                        thisClient.createRoom();
                     }
                 }).start();
             }

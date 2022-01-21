@@ -9,11 +9,12 @@ import java.util.Scanner;
 
 // remember to call closeConnection after the game ends/client leaves (IN SERVER CLASS)
 public class Client {
-    private String username;
+    private JFrame home;
+    private String username = "!";
     private String room;
     private String colour = " "; // "white" or "black"
     private boolean isPlayer;
-    private boolean myTurn = true; // set original based on colour, will be used in the game code later
+    private boolean myTurn = false; // set white to true once both players are in the game
     private Socket socket;
     private GameFrame gameFrame;
     private BufferedReader dataIn;
@@ -21,11 +22,14 @@ public class Client {
     private MessageFrame messageFrame;
     private String result = "";
 
-    public static void main(String[] args) {
-        Client client = new Client(false);
-    }
+//    public static void main(String[] args) {
+//
+//        Client client = new Client(new HomeFrame());
+//    }
 
-    public Client(boolean createRoom) {
+    public Client(JFrame home) {
+        this.home = home; // use this variable to setVisible after you leave the game
+
         // add variable to see if the game has been closed/left
         // send msg to client handler to remove the person from that room
         // do we want spectators to be able to go look at another room?
@@ -40,11 +44,6 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        getUsernameInput();
-        getRoomInput(createRoom);
-        listenForUpdates();
-        sendMessage();
     }
 
     public void askForData(char type) {
@@ -113,58 +112,54 @@ public class Client {
 //        return data;
 //    }
 
-    public void getRoomInput(boolean createRoom) {
-        if (createRoom == false) {
-            // for joining a private room
-            do {
-                askForData(Constants.JOIN_PRIV_ROOM_DATA);
-                result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
-                System.out.println("JOIN ROOM: [" + room + "] "+ result);
+    public void getRoomInput() {
+        do {
+            askForData(Constants.JOIN_PRIV_ROOM_DATA);
+            result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
+            System.out.println("JOIN ROOM: [" + room + "] "+ result);
 
-                if (result.equals(Constants.JOIN_ROOM_ERROR)) {
-                    messageFrame = new MessageFrame(result);
-                }
-
-                waitTillClosed(messageFrame);
-            } while (result.equals(Constants.JOIN_ROOM_ERROR));
-
-            colour = verifyData(Constants.COLOUR_DATA);
-            System.out.println("JOINING AS: " + colour);
-
-            // spectator or not
-            if (colour.charAt(0) == Constants.COLOUR_DATA) {
-                pickSpectateColour();
-                verifyData(Constants.COLOUR_DATA);
-                startGame(false);
-            } else {
-                startGame(true);
+            if (result.equals(Constants.JOIN_ROOM_ERROR)) {
+                messageFrame = new MessageFrame(result);
             }
 
+            waitTillClosed(messageFrame);
+        } while (result.equals(Constants.JOIN_ROOM_ERROR));
+
+        colour = verifyData(Constants.COLOUR_DATA);
+        System.out.println("JOINING AS: " + colour);
+
+        // spectator or not
+        if (colour.charAt(0) == Constants.COLOUR_DATA) {
+            pickSpectateColour();
+            verifyData(Constants.COLOUR_DATA);
+            startGame(false);
         } else {
-            CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
-            room = roomFrame.getCode();
-            do {
-                colour = roomFrame.getColourChosen();;
-            } while (roomFrame.isClosed()==false);
-
-            if (colour.equals("random")) {
-                randomizeColour();
-            }
-
-            verifyData(Constants.CREATE_ROOM_DATA);
-            System.out.println("CREATE ROOM: [" + room + "] success");
-            System.out.println("CREATOR: " + verifyData(Constants.COLOUR_DATA)); // printing just to check
-
-            // waitTillClosed(roomFrame);
-
             startGame(true);
         }
     }
 
-    public void startGame(boolean isPlayer) {
-        if (!isWhite()) {
-            myTurn = false;
+    public void createRoom() {
+        CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
+        room = roomFrame.getCode();
+        do {
+            colour = roomFrame.getColourChosen();;
+        } while (roomFrame.isClosed()==false);
+
+        if (colour.equals("random")) {
+            randomizeColour();
         }
+
+        verifyData(Constants.CREATE_ROOM_DATA);
+        System.out.println("CREATE ROOM: [" + room + "] success");
+        System.out.println("CREATOR: " + verifyData(Constants.COLOUR_DATA)); // printing just to check
+
+        // waitTillClosed(roomFrame);
+
+        startGame(true);
+    }
+    public void startGame(boolean isPlayer) {
+        listenForUpdates();
+        sendMessage();
         gameFrame = new GameFrame(this, isPlayer);
     }
 
@@ -257,5 +252,9 @@ public class Client {
                 e.printStackTrace();
             }
         }
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
