@@ -16,9 +16,9 @@ public class tester {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		p1 = new Player(true, true); p2 = new Player(false, true);
+		p1 = new Player(true); p2 = new Player(false);
 		curPlayer = p1;
-		game = new Game(p1, p2);
+		game = new Game(true, p1, p2);
 		
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
@@ -67,17 +67,9 @@ public class tester {
 						source = null;
 					}else if(source.getPiece().getMoveList().contains(spot)) {
 						if(source.getPiece().isWhite()) {
-							try {
-								game.playerMove(p1, source, spot);
-							} catch (InterruptedException interruptedException) {
-								interruptedException.printStackTrace();
-							}
+							game.playerMove(p1, source, spot);
 						}else {
-							try {
-								game.playerMove(p2, source, spot);
-							} catch (InterruptedException interruptedException) {
-								interruptedException.printStackTrace();
-							}
+							game.playerMove(p2, source, spot);
 						}
 						source.setClicked(false);
 						if(source.getPiece()!=null) {

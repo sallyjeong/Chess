@@ -1,4 +1,4 @@
-package chessproject;
+////package chessproject;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -33,8 +33,8 @@ public class GameFrame extends JFrame {
          */
         frame = this;
         GamePanel board = new GamePanel(isPlayer);
-        p1 = new Player(true, true);
-        p2 = new Player(false, true);
+        p1 = new Player(true);
+        p2 = new Player(false);
         curPlayer = p1;
         game = new Game(client.isWhite(), p1, p2); // again probably
 
