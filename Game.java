@@ -38,7 +38,7 @@ public class Game {
 		
 		Piece destPiece = move.getEnd().getPiece();
 		if(destPiece!=null) {
-			move.getEnd().removePiece();
+			player.getCaptured().add(move.getEnd().removePiece());
 		}
 		move.getStart().getPiece().displayValidMoves(false);
 		move.getEnd().addPiece(sourcePiece);
@@ -85,9 +85,9 @@ public class Game {
 		}else if(move.isEnPassantMove()) {
 			Spot above = board.getBoard()[move.getEnd().getRow()-1][move.getEnd().getColumn()];
 			if(above.getPiece() instanceof Pawn && ((Pawn)above.getPiece()).getEnPassant()) {
-				above.removePiece();
+				player.getCaptured().add(above.removePiece());
 			}else {
-				board.getBoard()[move.getEnd().getRow()+1][move.getEnd().getColumn()].removePiece();
+				player.getCaptured().add(board.getBoard()[move.getEnd().getRow()+1][move.getEnd().getColumn()].removePiece());
 			}
 		}
 		

@@ -30,6 +30,10 @@ public class Move {
 		return false;
 	}
 
+	public boolean isPromotionMove() {
+		return false;
+	}
+	
 	public String toString() {
 		if(isCastlingMove()) {
 			if(start.getColumn()==4) {
