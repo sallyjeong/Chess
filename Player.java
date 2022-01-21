@@ -7,12 +7,10 @@ public class Player {
 	final int LENGTH = 35;
 	
     private boolean white;
-    private boolean humanPlayer;
     private ArrayList<Piece> captured;
     
-    public Player(boolean w, boolean h){
+    public Player(boolean w){
         this.white = w;
-        this.humanPlayer = h;
         this.captured = new ArrayList<Piece>();
     }
     
