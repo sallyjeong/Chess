@@ -53,8 +53,8 @@ public class GameFrame extends JFrame {
 
         JPanel boardPanel = new JPanel();
         //boardPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-//        boardPanel.add(board);
-        //board.setBounds(0,0, 576, 576);
+        boardPanel.add(board);
+        board.setBounds(0,0, 576, 576);
 
         boardPanel.setBounds(674, 50, 600, 600); // 576/8 = 72
         contentPane.add(boardPanel);
