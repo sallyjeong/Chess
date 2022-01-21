@@ -13,6 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import java.awt.GridLayout;
+import javax.swing.JTextField;
+import java.awt.ScrollPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 public class GameFrame extends JFrame {
 
@@ -20,12 +25,13 @@ public class GameFrame extends JFrame {
     static Player curPlayer;
     static Player p1, p2;
     private JFrame frame;
+    private JTextField userInputField;
 
-//    public static void main(String[] args) {
-//        // TODO Auto-generated method stub
-//        //GameFrame game = new GameFrame(false, true);
-//
-//    }
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        //GameFrame game = new GameFrame(false, true);
+
+    }
 
     public GameFrame(Client client, boolean isPlayer) {
         /**
@@ -33,8 +39,8 @@ public class GameFrame extends JFrame {
          */
         frame = this;
         GamePanel board = new GamePanel(isPlayer);
-        p1 = new Player(true, true);
-        p2 = new Player(false, true);
+        p1 = new Player(true);
+        p2 = new Player(false);
         curPlayer = p1;
         game = new Game(client.isWhite(), p1, p2); // again probably
 
@@ -47,7 +53,7 @@ public class GameFrame extends JFrame {
 
         JPanel boardPanel = new JPanel();
         //boardPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-        boardPanel.add(board);
+//        boardPanel.add(board);
         //board.setBounds(0,0, 576, 576);
 
         boardPanel.setBounds(674, 50, 600, 600); // 576/8 = 72
@@ -63,6 +69,24 @@ public class GameFrame extends JFrame {
         chatPanel.setBorder(new TitledBorder(null, "Chat", TitledBorder.CENTER, TitledBorder.TOP, null, null));
         chatPanel.setBounds(52, 395, 564, 237);
         contentPane.add(chatPanel);
+        chatPanel.setLayout(null);
+
+        userInputField = new JTextField();
+        userInputField.setBounds(6, 198, 437, 33);
+        chatPanel.add(userInputField);
+        userInputField.setColumns(10);
+
+        JButton sendButton = new JButton("Send");
+        sendButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            }
+        });
+        sendButton.setBounds(441, 201, 117, 29);
+        chatPanel.add(sendButton);
+
+        JTextArea textArea = new JTextArea();
+        textArea.setBounds(549, 32, -531, 163);
+        chatPanel.add(textArea);
 
         /**
          * add JLabel with room code in the corner with text being client.getRoom()
@@ -83,7 +107,7 @@ public class GameFrame extends JFrame {
                     // new ();    new frame here
                 }
             });
-            drawButton.setBounds(52, 56, 172, 29);
+            drawButton.setBounds(52, 50, 267, 29);
             contentPane.add(drawButton);
 
             JButton surrenderButton = new JButton("Surrender");
@@ -94,7 +118,7 @@ public class GameFrame extends JFrame {
                     // new ();    new frame here
                 }
             });
-            surrenderButton.setBounds(246, 56, 172, 29);
+            surrenderButton.setBounds(343, 50, 267, 29);
             contentPane.add(surrenderButton);
         } else {
 
@@ -111,13 +135,25 @@ public class GameFrame extends JFrame {
                     // new ();    new frame here
                 }
             });
-            flipButton.setBounds(444, 56, 172, 29);
+            flipButton.setBounds(343, 50, 267, 29);
             contentPane.add(flipButton);
+
+            JButton leaveButton = new JButton("Leave");
+            leaveButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    frame.dispose();
+//
+                }
+            });
+            leaveButton.setBounds(52, 50, 267, 29);
+            contentPane.add(leaveButton);
+
+
+
         }
         frame.setVisible(true);
     }
-
-
+    //}
     public static class GamePanel extends JPanel implements MouseListener {
 
         private Spot source = null;
@@ -136,8 +172,8 @@ public class GameFrame extends JFrame {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             game.getBoard().draw(g);
-            p1.displayCaptured(g);
-            p2.displayCaptured(g);
+//            p1.displayCaptured(g);
+//            p2.displayCaptured(g);
             repaint();
         }
 

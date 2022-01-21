@@ -53,6 +53,7 @@ public class HomeFrame extends JFrame {
      * Create the frame.
      */
     public HomeFrame() {
+        thisClient = new Client(this);
 
         //setting up the frame
         JFrame frame = this;
@@ -100,6 +101,16 @@ public class HomeFrame extends JFrame {
         settingsButton.setBounds(26, 65, 343, 80);
         mainPanel.add(settingsButton);
 
+        JButton quitButton = new JButton("Quit");
+        quitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+
+            }
+        });
+        quitButton.setBounds(26, 287, 343, 80);
+        mainPanel.add(quitButton);
+
         //lobby panel
         JPanel lobbyPanel = new JPanel();
         lobbyPanel.setBackground(new Color(255, 255, 255));
@@ -134,7 +145,17 @@ public class HomeFrame extends JFrame {
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose(); // maybe also switch to setVisible thing
-                new FindingRoomFrame();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (thisClient.getUsername().equals("!")) {
+                            thisClient.getUsernameInput();
+                        }
+                        thisClient.quickMatch();
+                    }
+                }).start();
+
+                new FindingRoomFrame(); // not sure if you open this automatically inside quickMatch instead
             }
         });
         playButton.setBackground(SystemColor.windowBorder);
@@ -159,7 +180,6 @@ public class HomeFrame extends JFrame {
                          * not sure if new thread is needed to create client or just to open frames
                          */
 
-                        thisClient = new Client(frame);
                         if (thisClient.getUsername().equals("!")) {
                             thisClient.getUsernameInput();
                         }
@@ -178,7 +198,6 @@ public class HomeFrame extends JFrame {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        thisClient = new Client(frame);
                         if (thisClient.getUsername().equals("!")) {
                             thisClient.getUsernameInput();
                         }
