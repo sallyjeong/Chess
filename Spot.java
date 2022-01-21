@@ -1,4 +1,4 @@
-package chessproject;
+//package chessproject;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -32,9 +32,15 @@ public class Spot implements Drawable {
 		}else if(this.piece!=null && this.highlighted) {
 			g.setColor(capturedColour);
 		}else if(this.checked) {
-			g.setColor(checkedColour);
+			if(piece == null){ //King has moved out
+				checked= false;
+			}
+			else{
+				g.setColor(checkedColour);
+			}
 		}else {
 			g.setColor(this.defaultColour);
+
 		}
 		g.fillRect(column*this.length, row*this.length, this.length, this.length);
 		if(this.piece!=null) {
