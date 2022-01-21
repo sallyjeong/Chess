@@ -32,8 +32,6 @@ public class King extends Piece {
 		Spot[][] board = b.getBoard();
 		if(b.kingInCheck(isWhite())) {
 			board[getRow()][getCol()].setChecked(true);
-		}else {
-			board[getRow()][getCol()].setChecked(false);
 		}
 		int[] rowIncrements= {-1, 1, 0, 0, 1, 1, -1, -1};
 		int[] colIncrements= {0, 0 , -1, 1, 1, -1, 1, -1};

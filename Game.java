@@ -38,7 +38,10 @@ public class Game {
 		
 		Piece destPiece = move.getEnd().getPiece();
 		if(destPiece!=null) {
-			player.getCaptured().add(move.getEnd().removePiece());
+			move.getEnd().removePiece();
+			player.getCaptured().add(destPiece);
+		}else if(board.kingInCheck(player.isWhite())) {
+			move.getStart().setChecked(false);
 		}
 		move.getStart().getPiece().displayValidMoves(false);
 		move.getEnd().addPiece(sourcePiece);
