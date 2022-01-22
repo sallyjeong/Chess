@@ -20,6 +20,7 @@ import javax.swing.JButton;
 
 public class CreatePrivateRoomFrame extends JFrame {
     public static HashSet<String> roomCodes = new HashSet<String>(); //possibly make it private and add getters/setters
+    private JComboBox colourChoices;
     private boolean closed = false;
     private String colourChosen;
     private String code = CodeGenerator.generateCode();
@@ -54,7 +55,7 @@ public class CreatePrivateRoomFrame extends JFrame {
         contentPane.add(colourLabel);
 
         String[] colours = {"white", "black", "random"};
-		JComboBox colourChoices = new JComboBox<>(colours);//use this one for drop down list
+		colourChoices = new JComboBox<>(colours);//use this one for drop down list
         //JComboBox colourChoices = new JComboBox();
         colourChoices.setBounds(134, 66, 121, 27);
         contentPane.add(colourChoices);
@@ -76,9 +77,12 @@ public class CreatePrivateRoomFrame extends JFrame {
         return closed;
     }
     public String getColourChosen() {
+        if (colourChosen == null) {
+            colourChosen = (String) (colourChoices.getSelectedItem());
+        }
         return colourChosen;
     }
-
+    
     public String getCode () {
         return code;
     }
