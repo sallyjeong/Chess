@@ -1,4 +1,4 @@
-
+package chessproject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -168,7 +168,7 @@ public class Client {
 //        gameThread = new Thread(new Runnable() {
 //            @Override
 //            public void run() {
-                gameFrame = new GameFrame(thisClient, thisClient.isPlayer);
+        gameFrame = new GameFrame(thisClient, thisClient.isPlayer);
 //            }
 //        });
 //
@@ -209,10 +209,23 @@ public class Client {
 
     public void quickMatch() {
         try {
+            FindingRoomFrame findRoom = new FindingRoomFrame();
             dataOut.write(Constants.QUICK_MATCH_DATA);
             dataOut.newLine();
             dataOut.flush();
             String result = dataIn.readLine();
+            System.out.println(result);
+
+            result = dataIn.readLine();
+            if (result.equals(Constants.QUICK_MATCH_JOINED)){
+                System.out.println(result);
+                room = dataIn.readLine();
+                colour = dataIn.readLine();
+                isPlayer=true;
+                System.out.println("room: "+room+"     colour: "+colour);
+                findRoom.dispose();
+                startGame();
+            }
             //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
         } catch (IOException e) {
             e.printStackTrace();

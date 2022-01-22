@@ -1,4 +1,4 @@
-
+package chessproject;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -155,7 +155,7 @@ public class HomeFrame extends JFrame {
                     }
                 }).start();
 
-                new FindingRoomFrame(); // not sure if you open this automatically inside quickMatch instead
+                //new FindingRoomFrame(); // not sure if you open this automatically inside quickMatch instead
             }
         });
         playButton.setBackground(SystemColor.windowBorder);

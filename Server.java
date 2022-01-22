@@ -1,16 +1,18 @@
-
+package chessproject;
 
 //imports for network communication
 import java.io.*;
 import java.lang.reflect.Array;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class Server {
     public ServerSocket serverSocket;//server socket for connection
     public ArrayList<ClientHandler> clientHandlers = new ArrayList<>(); //maybe set
     public Map <String, ArrayList<ClientHandler>> rooms = new HashMap<>();
-    public Queue<ClientHandler> quickMatch = new LinkedList<>();
+    public BlockingQueue<ClientHandler> quickMatch = new LinkedBlockingQueue<>();
     public static void main(String[] args) {
         Server server = new Server();
 
@@ -82,7 +84,7 @@ public class Server {
                         } else if (type == Constants.USERNAME_DATA) {
                             if (validUsername(input)) {
                                 username = input;
-                                writeData("success. welcome " + username);
+                                // writeData("success. welcome " + username);
                             } else {
                                 writeData(Constants.USERNAME_ERROR);
                             }
@@ -102,13 +104,32 @@ public class Server {
                             room = input;
                             writeData("room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
 
-                        } else if (type == Constants.QUICK_MATCH_DATA) { //public room
-                            if (quickMatch.isEmpty()) {
-                                writeData(Constants.QUICK_MATCH_WAIT);
-                                quickMatch.add(this);
-                                //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
+                        } else if (type== Constants.QUICK_MATCH_DATA){ //public room
+
+                            writeData(Constants.QUICK_MATCH_WAIT);
+                            quickMatch.add(this);
+
+                            if (quickMatch.size()%2==1){
+                                System.out.println("after while");
+                                room = CodeGenerator.generateCode();
+                                rooms.put (room, new ArrayList<ClientHandler>());
+                                this.colour="white";
+                                while (quickMatch.size()%2!=0){
+
+                                }
+                            } else{ //if they press x
+                                System.out.println("quick match:"+quickMatch);
+                                room = quickMatch.peek().getRoom();
+                                this.colour="black";
+                                quickMatch.poll();
+                                quickMatch.poll();
                             }
-                            //else if clicking into a public room??
+
+                            rooms.get(room).add(this);
+                            writeData(Constants.QUICK_MATCH_JOINED);
+                            writeData(room);
+                            writeData(colour);
+
                         } else if (type == Constants.COLOUR_DATA) {
 
                             // first player/room creator
@@ -129,7 +150,7 @@ public class Server {
                                     }
                                     writeData(colour);
 
-                                // spectators
+                                    // spectators
                                 } else {
                                     writeData(Constants.COLOUR_DATA + "");
                                 }
@@ -243,5 +264,13 @@ public class Server {
             }
             // we don't have to but we can interrupt/yield the thread? not too sure if its necessary
         }
+
+        public String getUsername() {
+            return username;
+        }
+        public String getRoom() {
+            return room;
+        }
+
     }
 }
