@@ -1,4 +1,4 @@
-package chessproject;
+
 
 /* TextDemo.java requires no other files. */
 

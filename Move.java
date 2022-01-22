@@ -1,4 +1,4 @@
-package chessproject;
+
 
 public class Move {
 	private Spot start;

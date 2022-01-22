@@ -1,4 +1,4 @@
-package chessproject;
+
 
 import java.util.ArrayList;
 
@@ -14,6 +14,10 @@ public class Game {
 		players[0] = p1;
 		players[1] = p2;
 		board = new Board(white);
+
+		if(p2 instanceof ComputerPlayer){
+			((ComputerPlayer) p2).receiveBoard(board);
+		}
 		pastMoves = new ArrayList<Move>();
 		if(p1.isWhite()) {
 			this.turn = p1;
@@ -40,6 +44,7 @@ public class Game {
 		if(destPiece!=null) {
 			move.getEnd().removePiece();
 			player.getCaptured().add(destPiece);
+			destPiece.captured();
 		}else if(board.kingInCheck(player.isWhite())) {
 			move.getStart().setChecked(false);
 		}

@@ -1,4 +1,4 @@
-package chessproject;
+
 
 import javax.swing.*;
 import java.awt.*;

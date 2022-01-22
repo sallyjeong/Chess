@@ -1,6 +1,5 @@
-package chessproject;
+//package chessproject;
 
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +28,15 @@ public abstract class Piece {
 
 	public abstract void loadImage();
 
+	public void captured(){
+		captured= true;
+	}
+
+	public boolean isCaptured(){
+		return captured;
+	}
+
+
 	public abstract Set<Spot> validMoves(Board board);
 
 	public BufferedImage[] getImage() {
@@ -47,6 +55,10 @@ public abstract class Piece {
 		return this.possibleMoves;
 	}
 
+	public int getPoints(){
+		return points;
+	}
+
 	public int getRow() {
 		return this.row;
 	}
@@ -58,11 +70,11 @@ public abstract class Piece {
 	public void setRow(int r) {
 		this.row = r;
 	}
-	
+
 	public void setCol(int c) {
 		this.col = c;
 	}
-	
+
 	public boolean getMoved() {
 		return this.moved;
 	}
@@ -74,11 +86,11 @@ public abstract class Piece {
 	public void addMove(Spot s) {
 		this.possibleMoves.add(s);
 	}
-	
+
 	public char getSymbol() {
 		return this.symbol;
 	}
-	
+
 	public void checkCol(int row, int col, Spot[][] board){
 		boolean blockedFront= false, blockedBack= false;
 		Spot curSpot; Piece curPiece;
@@ -199,7 +211,7 @@ public abstract class Piece {
 			c--;
 		}
 	}
-	
+
 	public void displayValidMoves(boolean b) {
 		for(Spot s: possibleMoves){
 			s.setHighlight(b);
