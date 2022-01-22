@@ -242,6 +242,7 @@ public class Client {
             Scanner input = new Scanner(System.in);
             while (socket.isConnected() && inGame == true) {
                 String message = input.nextLine(); //replace with jtextfield input
+                // System.out.println("message: " + message);
                 dataOut.write(Constants.CHAT_DATA + username + ": " + message);
                 dataOut.newLine();
                 dataOut.flush();

@@ -76,6 +76,7 @@ public class Server {
                         //System.out.println("TYPE: " + type);
                         //System.out.println("INPUT: " + input);
                         if (type == Constants.CHAT_DATA) {
+                            //System.out.println("chat data received");
                             broadcastMessage(Constants.CHAT_DATA + input);
                         } else if (type == Constants.MOVE_DATA) {
                             // send movement stuff
@@ -111,7 +112,8 @@ public class Server {
                             if (quickMatch.size()%2==1){
                                 System.out.println("after while");
                                 room = CodeGenerator.generateCode();
-                                rooms.put (room, new ArrayList<ClientHandler>());
+                                rooms.put(room, new ArrayList<ClientHandler>());
+                               // rooms.get(room).add(this);
                                 this.colour="white";
                                 while (quickMatch.size()%2!=0){
 
@@ -119,6 +121,7 @@ public class Server {
                             } else{ //if they press x
                                 System.out.println("quick match:"+quickMatch);
                                 room = quickMatch.peek().getRoom();
+                                //rooms.get(room).add(this);
                                 this.colour="black";
                                 quickMatch.poll();
                                 quickMatch.poll();
@@ -128,6 +131,10 @@ public class Server {
                             writeData(Constants.QUICK_MATCH_JOINED);
                             writeData(room);
                             writeData(colour);
+
+                            for (String key: rooms.keySet()) {
+                                System.out.println(username + " key: " + key);
+                            }
                         } else if (type == Constants.COLOUR_DATA) {
 
                             // first player/room creator
@@ -196,6 +203,7 @@ public class Server {
                         // ^^ first 2 ClientHandlers of a room (HashMap) will be the players
                         // so we can differentiate sending data this way
                         if ((!member.username.equals(username)) && (!member.username.equals(" "))) {
+
                             member.dataOut.write(msg);
                             member.dataOut.newLine();
                             member.dataOut.flush();
