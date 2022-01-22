@@ -82,7 +82,7 @@ public class Server {
                         } else if (type == Constants.USERNAME_DATA) {
                             if (validUsername(input)) {
                                 username = input;
-                                // writeData("success. welcome " + username);
+                                writeData("success. welcome " + username);
                             } else {
                                 writeData(Constants.USERNAME_ERROR);
                             }
