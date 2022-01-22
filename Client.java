@@ -297,7 +297,7 @@ public class Client {
                     }
                 }
             }
-        });
+        }).start();
     }
 
     public void waitTillClosed(MessageFrame frame) {
