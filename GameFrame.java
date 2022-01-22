@@ -26,6 +26,7 @@ public class GameFrame extends JFrame {
     static Player p1, p2;
     private JFrame frame;
     private JTextField userInputField;
+    private Client client;
 
 //    public static void main(String[] args) {
 //        // TODO Auto-generated method stub
@@ -38,6 +39,7 @@ public class GameFrame extends JFrame {
          * replace boolean white with Client client -- that way we can get client.isWhite() for that variable)
          */
         frame = this;
+        this.client = client;
         GamePanel board = new GamePanel(isPlayer);
         p1 = new Player(true);
         p2 = new Player(false);
@@ -79,6 +81,8 @@ public class GameFrame extends JFrame {
         JButton sendButton = new JButton("Send");
         sendButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                // client.sendMessage(userInputField.getText());
+                // userInputField.setText("");
             }
         });
         sendButton.setBounds(441, 201, 117, 29);
@@ -95,10 +99,8 @@ public class GameFrame extends JFrame {
 //        chatPanel.add(textArea);
 
         /**
-         * add JLabel with room code in the corner with text being client.getRoom()
-         *
-         * add actual jtextfield and "send" button
-         * maybe see if we can store a long string into a scroll-y thing
+         * add JLabel with client's room code in the corner with text being client.getRoom()
+         * add JLabel with client's username in the corner
          */
 
         if (isPlayer) {
@@ -119,18 +121,13 @@ public class GameFrame extends JFrame {
             JButton surrenderButton = new JButton("Surrender");
             surrenderButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    frame.dispose();
-                    // send to new page, remove user from the room
-                    // new ();    new frame here
+                    // frame.dispose();
+                    client.leaveRoom();
                 }
             });
             surrenderButton.setBounds(343, 50, 267, 29);
             contentPane.add(surrenderButton);
         } else {
-
-            /**
-             *  yoyo add a leave game button for spectators
-             */
 
             JButton flipButton = new JButton("Flip board");
             flipButton.addActionListener(new ActionListener() {
@@ -147,15 +144,11 @@ public class GameFrame extends JFrame {
             JButton leaveButton = new JButton("Leave");
             leaveButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    frame.dispose();
-//
+                    client.leaveRoom();
                 }
             });
             leaveButton.setBounds(52, 50, 267, 29);
             contentPane.add(leaveButton);
-
-
-
         }
         frame.setVisible(true);
     }

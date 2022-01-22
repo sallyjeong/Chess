@@ -105,7 +105,7 @@ public class HomeFrame extends JFrame {
         quitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-
+                thisClient.quitGame();
             }
         });
         quitButton.setBounds(26, 287, 343, 80);
@@ -175,11 +175,6 @@ public class HomeFrame extends JFrame {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-
-                        /**
-                         * not sure if new thread is needed to create client or just to open frames
-                         */
-
                         if (thisClient.getUsername().equals("!")) {
                             thisClient.getUsernameInput();
                         }
@@ -202,10 +197,13 @@ public class HomeFrame extends JFrame {
                             thisClient.getUsernameInput();
                         }
                         thisClient.createRoom();
+                        System.out.println("room created");
+                        //NEVER GETS HERE WHICH IS WHY CREATE ROOM AFTER LEAVING DOESN'T WORK
                     }
                 }).start();
             }
         });
+
         createRoomLabel.setBounds(469, 384, 373, 80);
         lobbyPanel.add(createRoomLabel);
 

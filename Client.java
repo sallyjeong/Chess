@@ -9,26 +9,30 @@ import java.util.Scanner;
 
 // remember to call closeConnection after the game ends/client leaves (IN SERVER CLASS)
 public class Client {
-    private JFrame home;
+    //private Thread gameThread;
+    private JFrame homeFrame;
     private String username = "!";
     private String room;
     private String colour = " "; // "white" or "black"
     private boolean isPlayer;
     private boolean myTurn = false; // set white to true once both players are in the game
+    private boolean inGame = false;
     private Socket socket;
     private GameFrame gameFrame;
     private BufferedReader dataIn;
     private BufferedWriter dataOut;
     private MessageFrame messageFrame;
     private String result = "";
+    private Client thisClient;
 
 //    public static void main(String[] args) {
 //
 //        Client client = new Client(new HomeFrame());
 //    }
 
-    public Client(JFrame home) {
-        this.home = home; // use this variable to setVisible after you leave the game
+    public Client(JFrame homeFrame) {
+        this.homeFrame = homeFrame; // use this variable to setVisible after you leave the game
+        this.thisClient = this;
 
         // add variable to see if the game has been closed/left
         // send msg to client handler to remove the person from that room
@@ -83,6 +87,17 @@ public class Client {
         return result;
     }
 
+    public void sendData(String data) {
+        try {
+            dataOut.write(data);
+            dataOut.newLine();
+            dataOut.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void getUsernameInput() {
         do {
             askForData(Constants.USERNAME_DATA);
@@ -98,20 +113,6 @@ public class Client {
         } while (result.equals(Constants.USERNAME_ERROR));
     }
 
-//    public String askForDataCondensed(char type) {
-//        EnterDataFrame enterDataFrame = new EnterDataFrame(type);
-//        /**
-//         * me tryna make it more efficient except it doesn't work
-//         * and obviously you would set username = askForData or room = askForData
-//         */
-//        String data;
-//        do {
-//            data = enterDataFrame.getDataEntered();
-//        } while (enterDataFrame.isClosed() == false);
-//
-//        return data;
-//    }
-
     public void getRoomInput() {
         do {
             askForData(Constants.JOIN_PRIV_ROOM_DATA);
@@ -126,16 +127,19 @@ public class Client {
         } while (result.equals(Constants.JOIN_ROOM_ERROR));
 
         colour = verifyData(Constants.COLOUR_DATA);
-        System.out.println("JOINING AS: " + colour);
 
         // spectator or not
         if (colour.charAt(0) == Constants.COLOUR_DATA) {
             pickSpectateColour();
             verifyData(Constants.COLOUR_DATA);
-            startGame(false);
+
+            isPlayer = false;
         } else {
-            startGame(true);
+            isPlayer = true;
         }
+
+        System.out.println("JOINING AS: " + colour);
+        startGame();
     }
 
     public void createRoom() {
@@ -155,19 +159,30 @@ public class Client {
 
         // waitTillClosed(roomFrame);
 
-        startGame(true);
+        isPlayer = true;
+        startGame();
     }
-    public void startGame(boolean isPlayer) {
+
+    public void startGame() {
+        inGame = true;
+//        gameThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+                gameFrame = new GameFrame(thisClient, thisClient.isPlayer);
+//            }
+//        });
+//
+//        gameThread.start();
+
         listenForUpdates();
         sendMessage();
-        gameFrame = new GameFrame(this, isPlayer);
     }
 
     public void pickSpectateColour() {
         EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA);
         do {
             colour = colourChoice.getDataEntered();
-            waitTillClosed(messageFrame);
+            // waitTillClosed(messageFrame);
         } while (colourChoice.isClosed() == false);
 
         if (!(colour.equals("white") || colour.equals("black"))) {
@@ -184,6 +199,7 @@ public class Client {
             colour = "black";
         }
     }
+
     public boolean isWhite() {
         if (colour.equals("white")) {
             return true;
@@ -203,10 +219,13 @@ public class Client {
         }
     }
 
+
+    // tbh i don't think we'll need this anymore because it'll send one msg at a time based on gameFrame's jtextfield
+    // replace with sendData(msg) with the msg having the right char at the front alr
     public void sendMessage() {
         try {
             Scanner input = new Scanner(System.in);
-            while (socket.isConnected()) {
+            while (socket.isConnected() && inGame == true) {
                 String message = input.nextLine(); //replace with jtextfield input
                 dataOut.write(Constants.CHAT_DATA + username + ": " + message);
                 dataOut.newLine();
@@ -217,22 +236,45 @@ public class Client {
         }
     }
 
+    public void leaveRoom() {
+        try {
+            dataOut.write(Constants.LEAVE_ROOM_DATA + "" + isPlayer);
+            dataOut.newLine();
+            dataOut.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        gameFrame.dispose();
+        homeFrame.setVisible(true);
+        System.out.println(username + " left room [" + room +"]");
+        room = "";
+        inGame = false;
+        // gameThread.interrupt();
+    }
+
     public void listenForUpdates() { // this will be the place you determine what type of data it is?
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (socket.isConnected()) {
+                while (socket.isConnected() && inGame == true) {
                     try {
                         String data = dataIn.readLine();
                         char type = data.charAt(0);
+                        data = data.substring(1);
                         // check the char stuff
                         if (type == Constants.CHAT_DATA) {
-                            System.out.println(data.substring(1)); // display message (maybe store chat in a multiline string
+                            System.out.println(data); // display message (maybe store chat in a multiline string
                         } else if (type == Constants.MOVE_DATA) {
                             // run a diff method that digests the move lmao
 
-                        }else if (type == Constants.QUICK_MATCH_DATA){
+                        } else if (type == Constants.QUICK_MATCH_DATA){
 
+                        } else if (type == Constants.LEAVE_ROOM_DATA) {
+                            // System.out.println("DATA: " + data);
+                            if (data.equals("true")) { // a player has left the game
+                                // show pop-up that game over/which side won
+                                leaveRoom();
+                            }
                         }
                         // might need a leave room?
                     } catch (IOException e) {
@@ -240,8 +282,7 @@ public class Client {
                     }
                 }
             }
-
-        }).start();
+        });
     }
 
     public void waitTillClosed(MessageFrame frame) {
@@ -254,7 +295,28 @@ public class Client {
         }
     }
 
+    public void quitGame() {
+        sendData(Constants.QUIT_DATA + "");
+        try {
+            if (socket != null) {
+                socket.close();
+            }
+            if (dataIn != null) {
+                dataIn.close();
+            }
+            if (dataOut != null) {
+                dataOut.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.exit(0);
+    }
+
     public String getUsername() {
         return username;
+    }
+    public JFrame getHomeFrame() {
+        return homeFrame;
     }
 }

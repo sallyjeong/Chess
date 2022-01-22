@@ -57,9 +57,8 @@ public class EnterDataFrame extends JFrame {
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dataEntered = text.getText();
-
-                closed = true;
                 frame.dispose();
+                closed = true;
                 //closed = false;
             }
         });
@@ -70,6 +69,9 @@ public class EnterDataFrame extends JFrame {
     }
 
     public String getDataEntered() {
+        if (dataEntered == null) {
+            dataEntered = text.getText();
+        }
         return dataEntered;
     }
 

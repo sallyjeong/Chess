@@ -31,6 +31,7 @@ public class Server {
                 ClientHandler clientHandler = new ClientHandler(clientSocket);
                 Thread thread = new Thread(clientHandler);
                 thread.start();
+                //clientHandler.setThread(thread);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -38,6 +39,7 @@ public class Server {
     }
 
     private class ClientHandler implements Runnable { //not sure if client handler is the best name?
+        // private Thread thread; //maybe use to terminate the thread when quit game is chosen
         private String username = " ";
         private String colour;
         private String room = ""; //i need this for broadcast -- theres prob a better idea
@@ -64,84 +66,92 @@ public class Server {
             while (socket.isConnected()) {
                 try {
                     String input = dataIn.readLine(); // = get input thing
-                    char type = input.charAt(0);
-                    input = input.substring(1);
+                    if (input != null) {
 
-                    //System.out.println("TYPE: " + type);
-                    //System.out.println("INPUT: " + input);
-                    if (type == Constants.CHAT_DATA) {
-                        broadcastMessage(Constants.CHAT_DATA + input);
-                    } else if (type == Constants.MOVE_DATA){
-                        // send movement stuff
-                        // broadcastMessage(Constants.moveData + "theactualmove");
+                        char type = input.charAt(0);
+                        input = input.substring(1);
 
-                    } else if (type == Constants.USERNAME_DATA) {
-                        // System.out.println("username data !!");
-                        //System.out.println("server - else if username data");
-                        if (validUsername(input)) {
-                            username = input;
-                            //can change to a new popupData char?
-                            writeData("success. welcome " + username);
-                        } else {
-                            //can change to a new popupData char?
-                            writeData(Constants.USERNAME_ERROR);
-                        }
-                    }else if (type == Constants.JOIN_PRIV_ROOM_DATA){ //join private room
-                        if (rooms.containsKey(input)){
+                        //System.out.println("TYPE: " + type);
+                        //System.out.println("INPUT: " + input);
+                        if (type == Constants.CHAT_DATA) {
+                            broadcastMessage(Constants.CHAT_DATA + input);
+                        } else if (type == Constants.MOVE_DATA) {
+                            // send movement stuff
+                            // broadcastMessage(Constants.MOVE_DATA + "theactualmove");
+
+                        } else if (type == Constants.USERNAME_DATA) {
+                            if (validUsername(input)) {
+                                username = input;
+                                // writeData("success. welcome " + username);
+                            } else {
+                                writeData(Constants.USERNAME_ERROR);
+                            }
+                        } else if (type == Constants.JOIN_PRIV_ROOM_DATA) { //join private room
+                            if (rooms.containsKey(input)) {
+                                rooms.get(input).add(this);
+                                room = input;
+                                writeData("success. welcome " + username);
+                                broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
+
+                            } else {
+                                writeData(Constants.JOIN_ROOM_ERROR);
+                            }
+                        } else if (type == Constants.CREATE_ROOM_DATA) { //creating new room
+                            rooms.put(input, new ArrayList<ClientHandler>());
                             rooms.get(input).add(this);
                             room = input;
-                            writeData("success. welcome " + username);
-                            broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
+                            writeData("room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
 
-                        }else{
-                            writeData(Constants.JOIN_ROOM_ERROR);
-                        }
-                    }else if (type == Constants.CREATE_ROOM_DATA) { //join private room
-                        //String roomCode = CreatePrivateRoomFrame.roomCodes.get(CreatePrivateRoomFrame.roomCodes.size()-1);
-                        rooms.put(input, new ArrayList<ClientHandler>());
-                        rooms.get(input).add(this);
-                        room = input;
-                        writeData("room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
-
-                    }else if (type== Constants.QUICK_MATCH_DATA){ //public room
-                        if (quickMatch.isEmpty()){
-                            writeData(Constants.QUICK_MATCH_WAIT);
-                            quickMatch.add(this);
-                            //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
-                        }
-                    } else if (type == Constants.COLOUR_DATA) {//else if clicking into a public room??
-                        // room creator
-                        if (input.equals("black") || input.equals("white")) {
-                            //System.out.println("ROOM CREATOR DATA");
-                            colour = input;
-                            writeData(colour);
-                        } else {
-                            ArrayList<ClientHandler> existingPlayers = rooms.get(room);
-
-//                            // output for testing
-//                            for (ClientHandler client: existingPlayers) {
-//                                System.out.println(client.username+ ": " + client.colour);
-//                            }
-                            // second player
-                            if (existingPlayers.size() == 2) {
-                                //System.out.println("SECOND PLAYER");
-                                String existingColour = existingPlayers.get(0).colour;
-                                if (existingColour.equals("white")) {
-                                    colour = "black";
-                                } else if (existingColour.equals("black")) {
-                                    colour = "white";
-                                }
-                                writeData(colour);
-
-                            // spectators
-                            } else {
-                                // System.out.println("SPECTATORS");
-                                // pickSpectateColour();
-                                writeData(Constants.COLOUR_DATA + "");
+                        } else if (type == Constants.QUICK_MATCH_DATA) { //public room
+                            if (quickMatch.isEmpty()) {
+                                writeData(Constants.QUICK_MATCH_WAIT);
+                                quickMatch.add(this);
+                                //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
                             }
+                            //else if clicking into a public room??
+                        } else if (type == Constants.COLOUR_DATA) {
+
+                            // first player/room creator
+                            if (input.equals("black") || input.equals("white")) {
+                                colour = input;
+                                writeData(colour);
+                            } else {
+                                ArrayList<ClientHandler> existingPlayers = rooms.get(room);
+
+                                // second player
+                                if (existingPlayers.size() == 2) {
+                                    //System.out.println("SECOND PLAYER");
+                                    String existingColour = existingPlayers.get(0).colour;
+                                    if (existingColour.equals("white")) {
+                                        colour = "black";
+                                    } else if (existingColour.equals("black")) {
+                                        colour = "white";
+                                    }
+                                    writeData(colour);
+
+                                // spectators
+                                } else {
+                                    writeData(Constants.COLOUR_DATA + "");
+                                }
+                            }
+                        } else if (type == Constants.LEAVE_ROOM_DATA) {
+
+                            if (input.equals("true")) { // tell everybody that a player has left the room
+                                broadcastMessage(Constants.LEAVE_ROOM_DATA + input);
+                                // ^^ might need to add colour/more info so they know who won the game
+                                rooms.remove(room);
+                            } else { // spectator leaves room
+                                if (rooms.get(room) != null) {
+                                    rooms.get(room).remove(username);
+                                }
+                                broadcastMessage(Constants.CHAT_DATA + username + " has left the chat");
+                            }
+                            room = "";
+                        } else if (type == Constants.QUIT_DATA) {
+                            closeConnection();
+                            System.out.println("CLIENT HANDLER " + username + " CLOSED");
                         }
                     }
-
                 } catch (IOException e) {
                     e.printStackTrace();
                     break;
@@ -178,25 +188,24 @@ public class Server {
             }
         }
 
-        public void broadcastMessageToAll(String msg) { //change for rooms, make leaveroom method,
+//        public void setThread(Thread thread) {
+//            this.thread = thread;
+//        }
 
-            for (ClientHandler clientHandler : clientHandlers) {
-                try {
-                    if ((!clientHandler.username.equals(username)) && (!clientHandler.username.equals(" "))) {
-                        clientHandler.dataOut.write(msg);
-                        clientHandler.dataOut.newLine();
-                        clientHandler.dataOut.flush();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        public void remove() {
-            clientHandlers.remove(this);
-            broadcastMessage(username + "has left");
-        }
+//        public void broadcastMessageToAll(String msg) {
+//
+//            for (ClientHandler clientHandler : clientHandlers) {
+//                try {
+//                    if ((!clientHandler.username.equals(username)) && (!clientHandler.username.equals(" "))) {
+//                        clientHandler.dataOut.write(msg);
+//                        clientHandler.dataOut.newLine();
+//                        clientHandler.dataOut.flush();
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
 
         public boolean validUsername(String user){
             //System.out.println("entered valid username method");
@@ -217,35 +226,8 @@ public class Server {
             return true;
         }
 
-//        public boolean validColour(String colourPicked) {
-//            colourPicked = colourPicked.toLowerCase();
-//            if (colourPicked.equals("white") || colourPicked.equals("black")) {
-//                return true;
-//            }
-//            return false;
-//        }
-//
-//        public void pickSpectateColour() {
-//            EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA);
-//            do {
-//                MessageFrame messageFrame = null;
-//                colour = colourChoice.getDataEntered();
-//                if (!validColour(colour)) {
-//                    messageFrame = new MessageFrame("error. invalid colour");
-//                }
-//
-//                while (messageFrame != null && !messageFrame.isClosed()) {
-//                    try {
-//                        Thread.sleep(0,1);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            } while (!validColour(colour) && colourChoice.isClosed() == false);
-//        }
-
         public void closeConnection() {
-            remove();
+            clientHandlers.remove(this);
             try {
                 if (socket != null) {
                     socket.close();
@@ -259,6 +241,7 @@ public class Server {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            // we don't have to but we can interrupt/yield the thread? not too sure if its necessary
         }
     }
 }
