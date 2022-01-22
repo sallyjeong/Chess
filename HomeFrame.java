@@ -144,7 +144,7 @@ public class HomeFrame extends JFrame {
         JButton playButton = new JButton("Enter matchmaking");
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.dispose(); // maybe also switch to setVisible thing
+                frame.setVisible(false);
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -197,8 +197,6 @@ public class HomeFrame extends JFrame {
                             thisClient.getUsernameInput();
                         }
                         thisClient.createRoom();
-                        System.out.println("room created");
-                        //NEVER GETS HERE WHICH IS WHY CREATE ROOM AFTER LEAVING DOESN'T WORK
                     }
                 }).start();
             }

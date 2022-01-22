@@ -2,11 +2,11 @@ package chessproject;
 
 //imports for network communication
 import java.io.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.lang.reflect.Array;
 import java.net.*;
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 public class Server {
     public ServerSocket serverSocket;//server socket for connection
@@ -84,7 +84,7 @@ public class Server {
                         } else if (type == Constants.USERNAME_DATA) {
                             if (validUsername(input)) {
                                 username = input;
-                                // writeData("success. welcome " + username);
+                                writeData("success. welcome " + username);
                             } else {
                                 writeData(Constants.USERNAME_ERROR);
                             }
@@ -104,8 +104,7 @@ public class Server {
                             room = input;
                             writeData("room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
 
-                        } else if (type== Constants.QUICK_MATCH_DATA){ //public room
-
+                        } else if (type == Constants.QUICK_MATCH_DATA) { //public room
                             writeData(Constants.QUICK_MATCH_WAIT);
                             quickMatch.add(this);
 
@@ -129,7 +128,6 @@ public class Server {
                             writeData(Constants.QUICK_MATCH_JOINED);
                             writeData(room);
                             writeData(colour);
-
                         } else if (type == Constants.COLOUR_DATA) {
 
                             // first player/room creator
@@ -264,13 +262,8 @@ public class Server {
             }
             // we don't have to but we can interrupt/yield the thread? not too sure if its necessary
         }
-
-        public String getUsername() {
-            return username;
-        }
         public String getRoom() {
             return room;
         }
-
     }
 }

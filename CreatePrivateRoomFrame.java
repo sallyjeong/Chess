@@ -82,7 +82,7 @@ public class CreatePrivateRoomFrame extends JFrame {
         }
         return colourChosen;
     }
-    
+
     public String getCode () {
         return code;
     }

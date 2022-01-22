@@ -111,6 +111,7 @@ public class Client {
             waitTillClosed(messageFrame);
 
         } while (result.equals(Constants.USERNAME_ERROR));
+        System.out.println("done username");
     }
 
     public void getRoomInput() {
@@ -208,6 +209,7 @@ public class Client {
     }
 
     public void quickMatch() {
+        System.out.println("quick game called");
         try {
             FindingRoomFrame findRoom = new FindingRoomFrame();
             dataOut.write(Constants.QUICK_MATCH_DATA);
@@ -331,5 +333,8 @@ public class Client {
     }
     public JFrame getHomeFrame() {
         return homeFrame;
+    }
+    public String getRoom() {
+        return room;
     }
 }
