@@ -1,4 +1,4 @@
-
+package chessproject;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -22,7 +22,7 @@ public class CreatePrivateRoomFrame extends JFrame {
     public static HashSet<String> roomCodes = new HashSet<String>(); //possibly make it private and add getters/setters
     private boolean closed = false;
     private String colourChosen;
-    private String code = generateCode();
+    private String code = CodeGenerator.generateCode();
     private JPanel contentPane;
 
     /**
@@ -32,7 +32,7 @@ public class CreatePrivateRoomFrame extends JFrame {
         JFrame frame = this;
 
         setTitle("Creating private room");
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 292, 200);
         contentPane = new JPanel();
         contentPane.setBackground(new Color(238, 238, 238));
@@ -77,26 +77,6 @@ public class CreatePrivateRoomFrame extends JFrame {
     }
     public String getColourChosen() {
         return colourChosen;
-    }
-    public String generateCode () {
-        //System.out.println("method called");
-        int min = 97; // 'a'
-        int max = 123; // 'z + 1'
-        Random random = new Random();
-        String generatedCode = "";
-
-        do {
-            generatedCode = "";
-            for (int i = 0; i < 5; i++) {
-                int number = random.nextInt (max - min) + min;//random.ints (startLimit, endLimit);
-                //String generatedLetter = ((char)number).toString();
-                char letter = (char)number;
-                generatedCode += letter;
-            }
-            roomCodes.add(generatedCode);
-        } while(!roomCodes.contains(generatedCode));
-
-        return generatedCode;
     }
 
     public String getCode () {
