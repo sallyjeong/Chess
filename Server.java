@@ -11,13 +11,9 @@ import java.util.*;
 public class Server {
     public ServerSocket serverSocket;//server socket for connection
     public ArrayList<ClientHandler> clientHandlers = new ArrayList<>(); //maybe set
-    public Map <String, ArrayList<ClientHandler>> rooms = new HashMap<>();
+    public Map <String, ArrayList<ClientHandler>> publicRooms = new HashMap<>();
+    public Map <String, ArrayList<ClientHandler>> privateRooms = new HashMap<>();
     public BlockingQueue<ClientHandler> quickMatch = new LinkedBlockingQueue<>();
-    public static void main(String[] args) {
-        Server server = new Server();
-
-    }
-
     public Server() {
 //        // for room testing
 //        rooms.put("123", new ArrayList<ClientHandler>());
@@ -40,6 +36,11 @@ public class Server {
         }
     }
 
+    public static void main(String[] args) {
+        Server server = new Server();
+
+    }
+
     private class ClientHandler implements Runnable { //not sure if client handler is the best name?
         // private Thread thread; //maybe use to terminate the thread when quit game is chosen
         private String username = " ";
@@ -48,6 +49,7 @@ public class Server {
         private Socket socket;
         private BufferedReader dataIn;
         private BufferedWriter dataOut;
+        private boolean priv; //private room
 
         public ClientHandler(Socket socket) {
             //System.out.println("Attempting to establish a connection ...");
@@ -90,19 +92,22 @@ public class Server {
                                 writeData(Constants.USERNAME_ERROR);
                             }
                         } else if (type == Constants.JOIN_PRIV_ROOM_DATA) { //join private room
-                            if (rooms.containsKey(input)) {
-                                rooms.get(input).add(this);
+                            if (privateRooms.containsKey(input)) {
+                                privateRooms.get(input).add(this);
+                                priv = true;
                                 room = input;
                                 writeData("success. welcome " + username);
+
                                 broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
 
                             } else {
                                 writeData(Constants.JOIN_ROOM_ERROR);
                             }
                         } else if (type == Constants.CREATE_ROOM_DATA) { //creating new room
-                            rooms.put(input, new ArrayList<ClientHandler>());
-                            rooms.get(input).add(this);
+                            privateRooms.put(input, new ArrayList<ClientHandler>());
+                            privateRooms.get(input).add(this);
                             room = input;
+                            priv = true;
                             writeData("room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
 
                         } else if (type == Constants.QUICK_MATCH_DATA) { //public room
@@ -112,7 +117,7 @@ public class Server {
                             if (quickMatch.size()%2==1){
                                 System.out.println("after while");
                                 room = CodeGenerator.generateCode();
-                                rooms.put(room, new ArrayList<ClientHandler>());
+                                publicRooms.put(room, new ArrayList<ClientHandler>());
                                // rooms.get(room).add(this);
                                 this.colour="white";
                                 while (quickMatch.size()%2!=0){
@@ -126,13 +131,13 @@ public class Server {
                                 quickMatch.poll();
                                 quickMatch.poll();
                             }
-
-                            rooms.get(room).add(this);
+                            priv = false;
+                            publicRooms.get(room).add(this);
                             writeData(Constants.QUICK_MATCH_JOINED);
                             writeData(room);
                             writeData(colour);
 
-                            for (String key: rooms.keySet()) {
+                            for (String key: publicRooms.keySet()) {
                                 System.out.println(username + " key: " + key);
                             }
                         } else if (type == Constants.COLOUR_DATA) {
@@ -142,7 +147,7 @@ public class Server {
                                 colour = input;
                                 writeData(colour);
                             } else {
-                                ArrayList<ClientHandler> existingPlayers = rooms.get(room);
+                                ArrayList<ClientHandler> existingPlayers = privateRooms.get(room);
 
                                 // second player
                                 if (existingPlayers.size() == 2) {
@@ -161,6 +166,12 @@ public class Server {
                                 }
                             }
                         } else if (type == Constants.LEAVE_ROOM_DATA) {
+                            Map<String, ArrayList<ClientHandler>> rooms;
+                            if (this.priv){
+                                rooms = privateRooms;
+                            }else{
+                                rooms = privateRooms;
+                            }
 
                             if (input.equals("true")) { // tell everybody that a player has left the room
                                 broadcastMessage(Constants.LEAVE_ROOM_DATA + input);
@@ -195,7 +206,12 @@ public class Server {
             }
         }
         public void broadcastMessage(String msg) { //change for rooms, make leaveroom method,
-            ArrayList<ClientHandler> roomMembers = rooms.get(this.room);
+            ArrayList<ClientHandler> roomMembers;
+            if (this.priv){
+                roomMembers = privateRooms.get(this.room);
+            }else{
+                roomMembers = publicRooms.get(this.room);
+            }
             if (roomMembers.size() > 1) {
                 for (ClientHandler member : roomMembers) {
                     try {
