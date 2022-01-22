@@ -1,4 +1,4 @@
-//package chessproject;
+package chessproject;
 
 import java.awt.Color;
 import java.awt.Graphics;

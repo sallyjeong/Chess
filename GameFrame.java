@@ -1,4 +1,4 @@
-
+package chessproject;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
