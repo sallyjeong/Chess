@@ -11,8 +11,9 @@ import java.util.*;
 public class Server {
     public ServerSocket serverSocket;//server socket for connection
     public ArrayList<ClientHandler> clientHandlers = new ArrayList<>(); //maybe set
-    public Map <String, ArrayList<ClientHandler>> publicRooms = new HashMap<>();
+    public Map <String, ArrayList<ClientHandler>> publicRooms = new LinkedHashMap<>();
     public Map <String, ArrayList<ClientHandler>> privateRooms = new HashMap<>();
+    public static ArrayList<String> roomNames = new ArrayList<>();
     public BlockingQueue<ClientHandler> quickMatch = new LinkedBlockingQueue<>();
     public Server() {
 //        // for room testing
@@ -81,8 +82,8 @@ public class Server {
                             //System.out.println("chat data received");
                             broadcastMessage(Constants.CHAT_DATA + input);
                         } else if (type == Constants.MOVE_DATA) {
-                            System.out.println("MOVE RECEIVED");
-                            broadcastMessage(Constants.MOVE_DATA + input);
+                            // send movement stuff
+                            // broadcastMessage(Constants.MOVE_DATA + "theactualmove");
 
                         } else if (type == Constants.USERNAME_DATA) {
                             if (validUsername(input)) {
@@ -97,11 +98,8 @@ public class Server {
                                 priv = true;
                                 room = input;
                                 writeData("success. welcome " + username);
+
                                 broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
-                                if (privateRooms.get(room).size() > 1) {
-                                    // writeData(Constants.START_DATA + "");
-                                    broadcastMessage(Constants.START_DATA + "");
-                                }
 
                             } else {
                                 writeData(Constants.JOIN_ROOM_ERROR);
@@ -112,7 +110,7 @@ public class Server {
                             room = input;
                             priv = true;
                             writeData("room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
-                            System.out.println("data written");
+
                         } else if (type == Constants.QUICK_MATCH_DATA) { //public room
                             writeData(Constants.QUICK_MATCH_WAIT);
                             quickMatch.add(this);
@@ -121,7 +119,6 @@ public class Server {
                                 System.out.println("after while");
                                 room = CodeGenerator.generateCode();
                                 publicRooms.put(room, new ArrayList<ClientHandler>());
-                                // rooms.get(room).add(this);
                                 this.colour="white";
                                 while (quickMatch.size()%2!=0){
 
@@ -133,6 +130,8 @@ public class Server {
                                 this.colour="black";
                                 quickMatch.poll();
                                 quickMatch.poll();
+                                broadcastMessageToAll(Constants.UPDATE_LIST+"");
+
                             }
                             priv = false;
                             publicRooms.get(room).add(this);
@@ -140,9 +139,24 @@ public class Server {
                             writeData(room);
                             writeData(colour);
 
-                            for (String key: publicRooms.keySet()) {
-                                System.out.println(username + " key: " + key);
+                            if (this.colour.equals("black")){
+                                String roomName = publicRooms.get(room).get(0).username +" vs "+ publicRooms.get(room).get(1).username;
+                                roomNames.add(roomName);
+                                // writeData(roomName);
+                                System.out.println("room names : "+roomNames);
                             }
+
+                            //useless
+//                            if (this.colour.equals("black")){
+//                                String roomName = publicRooms.get(room).get(0).username +" vs "+ publicRooms.get(room).get(1).username;
+//                                roomNames.add(roomName);
+//                               // writeData(roomName);
+//                                System.out.println("room names : "+roomNames);
+//                            }
+
+//                            for (String key: publicRooms.keySet()) {
+//                                System.out.println(username + " key: " + key);
+//                            }
                         } else if (type == Constants.COLOUR_DATA) {
 
                             // first player/room creator
@@ -161,27 +175,38 @@ public class Server {
                                     } else if (existingColour.equals("black")) {
                                         colour = "white";
                                     }
-                                    //System.out.println("player 2 data written: " + colour);
                                     writeData(colour);
 
                                     // spectators
                                 } else {
-                                    //System.out.println("spectator data written");
                                     writeData(Constants.COLOUR_DATA + "");
                                 }
                             }
+                        } else if (type == Constants.JOIN_PUB_ROOM_DATA){
+                            List<String> keys = new ArrayList<String>(publicRooms.keySet());
+                            String room = keys.get((roomNames.indexOf(input)));
+                            publicRooms.get(room).add(this);
+
+                            broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
                         } else if (type == Constants.LEAVE_ROOM_DATA) {
                             Map<String, ArrayList<ClientHandler>> rooms;
                             if (this.priv){
                                 rooms = privateRooms;
                             }else{
-                                rooms = privateRooms;
+                                rooms = publicRooms;
                             }
 
                             if (input.equals("true")) { // tell everybody that a player has left the room
+
+                                //need most/all of the commented code if you wanna make the room close once a player leaves --JK prob need ot change most of this code
+//                                writeData(rooms.get(room).get(0).username+" vs "+rooms.get(room).get(0).username);
                                 broadcastMessage(Constants.LEAVE_ROOM_DATA + input);
                                 // ^^ might need to add colour/more info so they know who won the game
-                                rooms.remove(room);
+                                roomNames.remove(rooms.get(room).get(0).username+" vs "+rooms.get(room).get(0).username);
+                                publicRooms.remove(room);
+                                System.out.println("room removed       "+rooms.get(room).get(0).username+" vs "+rooms.get(room).get(0).username);
+                                broadcastMessageToAll(Constants.UPDATE_LIST+"");
+//
                             } else { // spectator leaves room
                                 if (rooms.get(room) != null) {
                                     rooms.get(room).remove(username);
@@ -189,12 +214,17 @@ public class Server {
                                 broadcastMessage(Constants.CHAT_DATA + username + " has left the chat");
                             }
                             room = "";
+                        } else if(type==Constants.ROOM_NAMES_DATA){
+                            writeData(""+roomNames.size());
+                            for (String roomName: roomNames){
+                                writeData(roomName);
+                            }
+
                         } else if (type == Constants.QUIT_DATA) {
                             closeConnection();
                             System.out.println("CLIENT HANDLER " + username + " CLOSED");
                         }
                     }
-
                 } catch (IOException e) {
                     e.printStackTrace();
                     break;
@@ -218,7 +248,7 @@ public class Server {
             }else{
                 roomMembers = publicRooms.get(this.room);
             }
-            if (roomMembers.size() > 1) {
+            if (roomMembers!= null && roomMembers.size() > 1) {
                 for (ClientHandler member : roomMembers) {
                     try {
                         // some should only send to opponent/players and not spectators
@@ -241,20 +271,20 @@ public class Server {
 //            this.thread = thread;
 //        }
 
-//        public void broadcastMessageToAll(String msg) {
-//
-//            for (ClientHandler clientHandler : clientHandlers) {
-//                try {
-//                    if ((!clientHandler.username.equals(username)) && (!clientHandler.username.equals(" "))) {
-//                        clientHandler.dataOut.write(msg);
-//                        clientHandler.dataOut.newLine();
-//                        clientHandler.dataOut.flush();
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
+        public void broadcastMessageToAll(String msg) {
+
+            for (ClientHandler clientHandler : clientHandlers) {
+                try {
+                    if ((!clientHandler.username.equals(username)) && (!clientHandler.username.equals(" "))) {
+                        clientHandler.dataOut.write(msg);
+                        clientHandler.dataOut.newLine();
+                        clientHandler.dataOut.flush();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         public boolean validUsername(String user){
             //System.out.println("entered valid username method");
@@ -295,5 +325,10 @@ public class Server {
         public String getRoom() {
             return room;
         }
+
+        public ArrayList getGetRoomNames() {
+            return roomNames;
+        }
+
     }
 }

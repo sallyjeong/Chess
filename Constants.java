@@ -14,11 +14,14 @@ public class Constants {
     public static final char JOIN_PRIV_ROOM_DATA = 'd';//for private room
     public static final char CREATE_ROOM_DATA = 'e';//for private room
     public static final char QUICK_MATCH_DATA = 'f';//for public room
-    public static final char JOIN_PUB_ROOM_DATA = 'g';//for private room
+    public static final char JOIN_PUB_ROOM_DATA = 'g';
     public static final char COLOUR_DATA = 'h';
     public static final char BOARD_DATA = 'i';
-    public static final char START_DATA = 'j';
-    public static final char LEAVE_ROOM_DATA = 'k';
-    public static final char QUIT_DATA = 'l';
+    public static final char LEAVE_ROOM_DATA = 'j';
+    public static final char QUIT_DATA = 'k';
+    public static final char ROOM_NAMES_DATA = 'l';
+    public static final char UPDATE_LIST = 'm';
+
+
 
 }

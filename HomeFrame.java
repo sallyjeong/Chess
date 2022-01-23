@@ -29,11 +29,14 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
 import java.awt.ScrollPane;
+import java.util.ArrayList;
 
 public class HomeFrame extends JFrame {
 
     private JPanel contentPane;
     private Client thisClient;
+    public static ArrayList<String> roomNames = new ArrayList<>();
+    public static JList list;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -196,7 +199,6 @@ public class HomeFrame extends JFrame {
                         if (thisClient.getUsername().equals("!")) {
                             thisClient.getUsernameInput();
                         }
-                        System.out.println("create?");
                         thisClient.createRoom();
                     }
                 }).start();
@@ -229,11 +231,16 @@ public class HomeFrame extends JFrame {
         lobbyPanel.add(scrollPane);
         scrollPane.setBackground(new Color(143, 188, 143));
 
-        String categories[] = { "Household", "Office", "Extended Family",
-                "Company (US)", "Company (World)", "Team", "Will",
-                "Birthday Card List", "High School", "Country", "Continent",
-                "Planet" };
-        JList list = new JList(categories);
+//        String categories[] = { "Household", "Office", "Extended Family",
+//                "Company (US)", "Company (World)", "Team", "Will",
+//                "Birthday Card List", "High School", "Country", "Continent",
+//                "Planet" };
+
+        //might have to comment this out later
+
+        roomNames = thisClient.getRoomNames();
+
+                list = new JList(roomNames.toArray());
         scrollPane.setViewportView(list);
 
         JLabel lblNewLabel = new JLabel("Spectate public lobbies");
@@ -242,11 +249,24 @@ public class HomeFrame extends JFrame {
         JButton confirmButton = new JButton("Spectate");
         confirmButton.setForeground(new Color(143, 188, 143));
         confirmButton.setBackground(new Color(143, 188, 143));
+
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();
+                frame.setVisible(false); //instead of dispose, so they can setVisble(true) after the game ends
+                String roomName = (String)list.getSelectedValue();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (thisClient.getUsername().equals("!")) {
+                            thisClient.getUsernameInput();
+                        }
+                        thisClient.spectate(roomName);
+
+                    }
+                }).start();
             }
         });
+
         confirmButton.setBounds(560, 114, 278, 65);
         lobbyPanel.add(confirmButton);
     }
