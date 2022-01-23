@@ -369,7 +369,7 @@ public class Client {
                         } else if (type == Constants.MOVE_DATA) {
                             System.out.println("MOVE: " + data);
                             if (data.equals("O-O") || data.equals("O-O-O")) {
-                                // receiveMove(data);
+                                 receiveMove(data);
                                 System.out.println("CASTLE HASN'T BEEN ACCOUNTED FOR YET");
                             } else {
                                 String startId = data.substring(1, 3);
@@ -417,6 +417,57 @@ public class Client {
             }
         }
     }
+    public void receiveMove(String castle) {
+        if (isWhite()) {
+            if (castle.equals("O-O")) {
+                castle("right");
+
+            } else {
+                castle("left");
+            }
+        } else if (!isWhite()) {
+            if (castle.equals("O-O")) {
+                castle("left");
+            } else {
+                castle("right");
+            }
+        }
+
+        if (isPlayer) {
+            turn = true;
+        }
+    }
+
+    public void castle(String direction) {
+
+        Spot[][] temp = board.getBoard();
+        Spot kingSpot;
+        Piece king, rook;
+        int col;
+        if (temp[0][3].getPiece() instanceof King) {
+            kingSpot = temp[0][3];
+            col = 3;
+        } else {
+            kingSpot = temp[0][4];
+            col = 4;
+        }
+        king = kingSpot.removePiece();
+
+        if (direction.equals("left")) {
+            rook = temp[0][0].removePiece();
+            temp[0][col-2].addPiece(king);
+            temp[0][col-2+1].addPiece(rook);
+            king.setCol(col-2);
+            rook.setCol(col-2+1);
+        } else {
+            rook = temp[0][7].removePiece();
+            temp[0][col+2].addPiece(king);
+            temp[0][col+2-1].addPiece(rook);
+            king.setCol(col+2);
+            rook.setCol(col+2-1);
+        }
+    }
+
     public void displayCaptured(Graphics g) {
         for(int i=0; i<captured.size(); i++) {
             Piece p = captured.get(i);

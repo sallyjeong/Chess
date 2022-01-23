@@ -21,6 +21,8 @@ public class Constants {
     public static final char QUIT_DATA = 'k';
     public static final char ROOM_NAMES_DATA = 'l';
     public static final char UPDATE_LIST = 'm';
+    public static final char START_DATA = 'n';
+;
 
 
 
