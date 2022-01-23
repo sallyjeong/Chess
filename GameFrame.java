@@ -1,6 +1,7 @@
 package chessproject;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +21,8 @@ import java.awt.ScrollPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
+
+import java.awt.CardLayout;
 import java.awt.Color;
 
 public class GameFrame extends JFrame {
@@ -71,35 +74,16 @@ public class GameFrame extends JFrame {
         chatPanel.setBorder(new TitledBorder(null, "Chat", TitledBorder.CENTER, TitledBorder.TOP, null, null));
         chatPanel.setBounds(52, 395, 564, 237);
         contentPane.add(chatPanel);
-        chatPanel.setLayout(null);
+        //chatPanel.setLayout(new FlowLayout());;
 
-//        userInputField = new JTextField();
-//        userInputField.setBounds(6, 198, 437, 33);
-//        chatPanel.add(userInputField);
-//        userInputField.setColumns(10);
-//
-//        JButton sendButton = new JButton("Send");
-//        sendButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                // client.sendMessage(userInputField.getText());
-//                // userInputField.setText("");
-//            }
-//        });
-//        sendButton.setBounds(441, 201, 117, 29);
-//        chatPanel.add(sendButton);
-
-        JTextArea textArea = new JTextArea(5,5);
+        JTextArea textArea = new JTextArea(10,43);
         textArea.setEditable(false);
-        textArea.setVisible(true);
 
         JScrollPane scroll = new JScrollPane (textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setVisible(true);
-        //scroll.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
         chatPanel.add(scroll);
-        //chatPanel.add(textArea);
-        //chatPanel.setVisible(true);
-        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 
         textArea.setText("getContentPane().setLayout(\n"
                 + "                new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));\n"
@@ -130,6 +114,21 @@ public class GameFrame extends JFrame {
                 + "        add(scroll2);\n"
                 + "\n"
                 + "        setDefaultCloseOperation(EXIT_ON_CLOSE);");
+        
+        JTextField userInputField = new JTextField();
+        //userInputField.setBounds(6, 198, 437, 33);
+        chatPanel.add(userInputField);
+        userInputField.setColumns(37);
+
+        JButton sendButton = new JButton("Send");
+        sendButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // client.sendMessage(userInputField.getText());
+                // userInputField.setText("");
+            }
+        });
+        sendButton.setBounds(441, 201, 117, 29);
+        chatPanel.add(sendButton);
 
 
         JLabel roomCodeLabel = new JLabel();
