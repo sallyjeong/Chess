@@ -83,7 +83,7 @@ public class Server {
                             broadcastMessage(Constants.CHAT_DATA + input);
                         } else if (type == Constants.MOVE_DATA) {
                             // send movement stuff
-                            broadcastMessage(Constants.MOVE_DATA + "theactualmove");
+                            broadcastMessage(Constants.MOVE_DATA + input);
 
                         } else if (type == Constants.USERNAME_DATA) {
                             if (validUsername(input)) {
