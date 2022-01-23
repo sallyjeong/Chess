@@ -58,6 +58,30 @@ public class Client {
         }
     }
 
+    public ArrayList<String> getRoomNames(){
+        ArrayList <String> roomNames = new ArrayList<>();
+        sendData(Constants.ROOM_NAMES_DATA+"");
+        try {
+            int size = Integer.parseInt(dataIn.readLine());
+
+            for (int i = 0; i<size; i++){
+                roomNames.add(dataIn.readLine());
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return roomNames;
+    }
+
+    public void spectate(String roomName) {
+        sendData(Constants.JOIN_PUB_ROOM_DATA + roomName);
+        pickSpectateColour();
+        verifyData(Constants.COLOUR_DATA);
+        System.out.println("JOINING AS: " + colour);
+        isPlayer = false;
+        startGame();
+    }
+
     public void askForData(char type) {
         EnterDataFrame enterDataFrame = new EnterDataFrame(type);
 
@@ -199,7 +223,7 @@ public class Client {
     public void pickSpectateColour() {
         EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA);
         do {
-            colour = colourChoice.getDataEntered();
+            colour = colourChoice.getDataEntered().toLowerCase();
             // waitTillClosed(messageFrame);
         } while (colourChoice.isClosed() == false);
 
@@ -242,6 +266,7 @@ public class Client {
                 colour = dataIn.readLine();
                 isPlayer=true;
                 System.out.println("room: "+room+"     colour: "+colour);
+                System.out.println("room name list : "+HomeFrame.roomNames);
                 findRoom.dispose();
                 startGame();
             }
@@ -358,7 +383,6 @@ public class Client {
             e.printStackTrace();
         }
         gameFrame.dispose();
-        //gameFrame = null;
         homeFrame.setVisible(true);
         System.out.println(username + " left room [" + room +"]");
         room = "";
@@ -369,7 +393,7 @@ public class Client {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (socket.isConnected()) {
+                while (socket.isConnected() && inGame == true) {
                     try {
                         String data = dataIn.readLine();
                         char type = data.charAt(0);
@@ -399,6 +423,9 @@ public class Client {
 
                         } else if (type == Constants.QUICK_MATCH_DATA){
 
+                        } else if (type == Constants.UPDATE_LIST) {
+                            HomeFrame.roomNames = getRoomNames();
+                            HomeFrame.list = new JList(HomeFrame.roomNames.toArray());
                         } else if (type == Constants.LEAVE_ROOM_DATA) {
                             // System.out.println("DATA: " + data);
                             if (data.equals("true")) { // a player has left the game
