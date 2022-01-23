@@ -83,7 +83,7 @@ public class Server {
                             broadcastMessage(Constants.CHAT_DATA + input);
                         } else if (type == Constants.MOVE_DATA) {
                             // send movement stuff
-                            // broadcastMessage(Constants.MOVE_DATA + "theactualmove");
+                            broadcastMessage(Constants.MOVE_DATA + "theactualmove");
 
                         } else if (type == Constants.USERNAME_DATA) {
                             if (validUsername(input)) {
@@ -98,8 +98,11 @@ public class Server {
                                 priv = true;
                                 room = input;
                                 writeData("success. welcome " + username);
-
                                 broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
+                                if (privateRooms.get(room).size() > 1) {
+                                    //writeData(Constants.START_DATA + "");
+                                    broadcastMessage(Constants.START_DATA + "");
+                                }
 
                             } else {
                                 writeData(Constants.JOIN_ROOM_ERROR);
@@ -202,10 +205,14 @@ public class Server {
 //                                writeData(rooms.get(room).get(0).username+" vs "+rooms.get(room).get(0).username);
                                 broadcastMessage(Constants.LEAVE_ROOM_DATA + input);
                                 // ^^ might need to add colour/more info so they know who won the game
-                                roomNames.remove(rooms.get(room).get(0).username+" vs "+rooms.get(room).get(0).username);
-                                publicRooms.remove(room);
-                                System.out.println("room removed       "+rooms.get(room).get(0).username+" vs "+rooms.get(room).get(0).username);
-                                broadcastMessageToAll(Constants.UPDATE_LIST+"");
+                                if (this.priv) {
+                                    rooms.remove(room);
+                                } else {
+                                    roomNames.remove(rooms.get(room).get(0).username + " vs " + rooms.get(room).get(0).username);
+                                    publicRooms.remove(room);
+                                    System.out.println("room removed       " + rooms.get(room).get(0).username + " vs " + rooms.get(room).get(0).username);
+                                    broadcastMessageToAll(Constants.UPDATE_LIST + "");
+                                }
 //
                             } else { // spectator leaves room
                                 if (rooms.get(room) != null) {
