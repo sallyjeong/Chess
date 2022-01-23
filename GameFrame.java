@@ -24,7 +24,7 @@ import java.awt.Color;
 
 public class GameFrame extends JFrame {
 
-    static Game game;
+    public static Game game;
     //static Player curPlayer;
     // static Player p1, p2;
     private GameFrame frame;
@@ -44,7 +44,7 @@ public class GameFrame extends JFrame {
 //        p1 = new Player(true);
 //        p2 = new Player(false);
         // curPlayer = p1;
-        game = new Game(client); // again probably
+        game = new Game(client);
 
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setBounds(100, 100, 1313, 715);
@@ -245,12 +245,6 @@ public class GameFrame extends JFrame {
                             source = null;
                         } else if (source.getPiece().getMoveList().contains(spot)) {
                             game.playerMove(client, source, spot);
-//                            if (source.getPiece().isWhite()) {
-//                                game.playerMove(p1, source, spot);
-//                            } else {
-//                                game.playerMove(p2, source, spot);
-//                            }
-                            // ^^ not sure about this change
                             source.setClicked(false);
                             if (source.getPiece() != null) {
                                 source.getPiece().displayValidMoves(false);

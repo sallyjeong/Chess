@@ -31,7 +31,9 @@ public class Game {
 		Piece sourcePiece = move.getStart().getPiece();
 		Client player = move.getPlayer();
 
-		if(player.getTurn() == false) {
+		// don't know if we need this part because playerMove is only called insdie the Game Frame
+		// action listener which already checks for turn
+		if(!player.getTurn()) {
 			return false;
 		}
 
@@ -96,7 +98,7 @@ public class Game {
 
 		pastMoves.add(move);
 		board.setEnPassant(!player.isWhite());
-		board.getPseudoLegal();
+		// board.getPseudoLegal(); moved to Client.receiveMove() method
 
 		Spot erase = player.getOpponentStart();
 		if (erase != null) {

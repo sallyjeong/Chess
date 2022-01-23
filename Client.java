@@ -18,6 +18,7 @@ public class Client {
     private boolean isPlayer;
     private boolean turn = false; // set white to true once both players are in the game
     private Board board;
+    //private boolean boardChanged = false;
     private Spot opponentStart = null;
     private boolean inGame = false;
     private ArrayList<Piece> captured;
@@ -151,9 +152,6 @@ public class Client {
         }
 
         System.out.println("JOINING AS: " + colour);
-        if (isWhite()) {
-            turn = true;
-        }
         startGame();
     }
 
@@ -286,6 +284,7 @@ public class Client {
         piece.setCol(end.getColumn());
         piece.setRow(end.getRow());
         opponentStart.setLeft(true);
+        board.getPseudoLegal();
 
         if (isPlayer) {
             turn = true;
@@ -371,6 +370,7 @@ public class Client {
                             System.out.println("GAME CAN START NOW");
                             if (isWhite()) {
                                 turn = true;
+                                //boardChanged = true;
                             }
                         } else if (type == Constants.CHAT_DATA) {
                             System.out.println(data); // display message (maybe store chat in a multiline string
@@ -383,11 +383,15 @@ public class Client {
                                 String startId = data.substring(1, 3);
                                 String endId = data.substring(data.length() - 2);
                                 receiveMove(startId, endId);
+                                System.out.println(board == gameFrame.game.getBoard());
+                                System.out.println("board changed from receive move");
                             }
 
+                            // avoids multiple gray boxes but also... no dark gray
                             if (!isPlayer) {
                                 opponentStart.setLeft(false);
                             }
+                            //boardChanged = true;
 
                         } else if (type == Constants.QUICK_MATCH_DATA){
 
@@ -477,4 +481,10 @@ public class Client {
     public Spot getOpponentStart() {
         return opponentStart;
     }
+//    public void setBoardChanged(boolean boardChanged) {
+//        this.boardChanged = boardChanged;
+//    }
+//    public boolean getBoardChanged() {
+//        return boardChanged;
+//    }
 }
