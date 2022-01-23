@@ -36,9 +36,9 @@ public class Move {
 
 	public String toString() {
 		if(isCastlingMove()) {
-			if(start.getColumn()==4) {
+			if(end.getColumn()==1 || end.getColumn()==6) {
 				return "O-O";
-			}else {
+			} else {
 				return "O-O-O";
 			}
 		}
