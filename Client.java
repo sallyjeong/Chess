@@ -94,7 +94,7 @@ public class Client {
         if (!isPlayer && opponentStart != null) {
             opponentStart.setLeft(false);
         }
-        
+
         //System.out.println("MOVE DIGESTION");
         Spot[][] temp = board.getBoard();
         Spot end = null;
@@ -121,8 +121,8 @@ public class Client {
 
         //System.out.println("MOVE RECEIVED");
     }
-    
-        public void receiveMove(String castle) {
+
+    public void receiveMove(String castle) {
         if (isWhite()) {
             if (castle.equals("O-O")) {
                 castle("right");
@@ -349,7 +349,7 @@ public class Client {
 //                    HomeFrame.roomNames.add(dataIn.readLine());
 //                }
 
-                    System.out.println("room name list : "+HomeFrame.roomNames);
+                System.out.println("room name list : "+HomeFrame.roomNames);
                 findRoom.dispose();
                 startGame();
 
@@ -424,7 +424,7 @@ public class Client {
                         } else if (type == Constants.MOVE_DATA) {
                             System.out.println("MOVE: " + data);
                             if (data.equals("O-O") || data.equals("O-O-O")) {
-                                 receiveMove(data);
+                                receiveMove(data);
                                 System.out.println("CASTLE HASN'T BEEN ACCOUNTED FOR YET");
                             } else {
                                 String startId = data.substring(1, 3);
@@ -474,14 +474,15 @@ public class Client {
     }
 
     public void displayCaptured(Graphics g) {
-        for(int i=0; i<captured.size(); i++) {
-            Piece p = captured.get(i);
-            if(p.isWhite()) {
-                g.drawImage(p.getImage()[0], 576+i*LENGTH, 0, LENGTH, LENGTH, null);
-            }else {
-                g.drawImage(p.getImage()[1], 576+i*LENGTH, 520, LENGTH, LENGTH, null);
+        if (captured != null) {
+            for (int i = 0; i < captured.size(); i++) {
+                Piece p = captured.get(i);
+                if (p.isWhite()) {
+                    g.drawImage(p.getImage()[0], 576 + i * LENGTH, 0, LENGTH, LENGTH, null);
+                } else {
+                    g.drawImage(p.getImage()[1], 576 + i * LENGTH, 520, LENGTH, LENGTH, null);
+                }
             }
-
         }
     }
 

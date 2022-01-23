@@ -114,7 +114,7 @@ public class GameFrame extends JFrame {
                 + "        add(scroll2);\n"
                 + "\n"
                 + "        setDefaultCloseOperation(EXIT_ON_CLOSE);");
-        
+
         JTextField userInputField = new JTextField();
         //userInputField.setBounds(6, 198, 437, 33);
         chatPanel.add(userInputField);
@@ -157,7 +157,7 @@ public class GameFrame extends JFrame {
             surrenderButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     new ConfirmFrame(frame);
-                     }
+                }
             });
             surrenderButton.setBounds(237,  50, 175, 29);
             contentPane.add(surrenderButton);
@@ -198,7 +198,7 @@ public class GameFrame extends JFrame {
     public Client getClient() {
         return client;
     }
-        class GamePanel extends JPanel implements MouseListener {
+    class GamePanel extends JPanel implements MouseListener {
 
         private Spot source = null;
         private boolean isPlayer;

@@ -240,7 +240,7 @@ public class HomeFrame extends JFrame {
 
         roomNames = thisClient.getRoomNames();
 
-                list = new JList(roomNames.toArray());
+        list = new JList(roomNames.toArray());
         scrollPane.setViewportView(list);
 
         JLabel lblNewLabel = new JLabel("Spectate public lobbies");
