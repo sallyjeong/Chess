@@ -293,7 +293,7 @@ public class Client {
         }
     }
 
-    public void receiveMove(String startId, String endId) {
+    public void receiveMove(String startId, String endId, boolean enPassant) {
         if (!isPlayer && opponentStart != null) {
             opponentStart.setLeft(false);
         }
@@ -301,6 +301,7 @@ public class Client {
         Spot[][] temp = board.getBoard();
         Spot end = null;
         Piece piece = null;
+
         for (int i = 0; i<temp.length; i++) {
             for (int j = 0; j<temp.length; j++) {
                 if (temp[i][j].getID().equals(startId)) {
@@ -308,12 +309,16 @@ public class Client {
                     piece = opponentStart.removePiece();
                 } else if (temp[i][j].getID().equals(endId)) {
                     end = temp[i][j];
+                    if (enPassant) {
+                        temp[i-1][j].removePiece();
+                    }
                 }
             }
         }
         end.addPiece(piece);
         piece.setCol(end.getColumn());
         piece.setRow(end.getRow());
+
         opponentStart.setLeft(true);
         board.getPseudoLegal();
 
@@ -415,7 +420,13 @@ public class Client {
                             } else {
                                 String startId = data.substring(1, 3);
                                 String endId = data.substring(data.length() - 2);
-                                receiveMove(startId, endId);
+                                // check for enPassant move, charAt(0) == 'P'
+                                // ^^ also don't print out the P in display moves if this happens
+                                if (data.charAt(0) == 'P') {
+                                    receiveMove(startId, endId, true);
+                                } else {
+                                    receiveMove(startId, endId, false);
+                                }
 //                                System.out.println(board == gameFrame.game.getBoard());
 //                                System.out.println("board changed from receive move");
                             }

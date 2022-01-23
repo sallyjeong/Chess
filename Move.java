@@ -46,6 +46,8 @@ public class Move {
 		String ret = "";
 		if(!(sourcePiece instanceof Pawn)) {
 			ret+=sourcePiece.getSymbol();
+		} else if (isEnPassantMove()) {
+			ret+="P";
 		} else {
 			ret+=" ";
 		}
