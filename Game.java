@@ -39,7 +39,7 @@ public class Game {
 		if(destPiece!=null) {
 			move.getEnd().removePiece();
 			player.getCaptured().add(destPiece);
-		}else if(board.kingInCheck(player.isWhite())) {
+		} else if(board.kingInCheck(player.isWhite())) {
 			move.getStart().setChecked(false);
 		}
 		move.getStart().getPiece().displayValidMoves(false);
@@ -106,6 +106,7 @@ public class Game {
 		player.setTurn(false);
 
 		//System.out.println(pastMoves);
+		// for testing board.print();
 
 		return true;
 

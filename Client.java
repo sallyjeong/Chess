@@ -268,7 +268,7 @@ public class Client {
     }
 
     public void receiveMove(String startId, String endId) {
-        System.out.println("MOVE DIGESTION");
+        //System.out.println("MOVE DIGESTION");
         Spot[][] temp = board.getBoard();
         Spot end = null;
         Piece piece = null;
@@ -283,15 +283,64 @@ public class Client {
             }
         }
         end.addPiece(piece);
+        piece.setCol(end.getColumn());
+        piece.setRow(end.getRow());
         opponentStart.setLeft(true);
 
         if (isPlayer) {
             turn = true;
         }
 
-        System.out.println("MOVE RECEIVED");
+        //System.out.println("MOVE RECEIVED");
     }
 
+//    public void receiveMove(String castle) {
+//        if (isWhite()) {
+//            if (castle.equals("O-O")) {
+//                castle("right");
+//
+//            } else {
+//                castle("left");
+//            }
+//        } else if (!isWhite()) {
+//            if (castle.equals("O-O")) {
+//                castle("left");
+//            } else {
+//                castle("right");
+//            }
+//        }
+//
+//        if (isPlayer) {
+//            turn = true;
+//        }
+//    }
+
+//    public void castle(String direction) {
+//        Spot[][] temp = board.getBoard();
+//        Piece king, rook;
+//        int col;
+//        if (temp[0][3].getPiece() instanceof King) {
+//            col = 3;
+//        } else {
+//            col = 4;
+//        }
+//        king = temp[0][col].removePiece();
+//
+//        if (direction.equals("left")) {
+//            rook = temp[0][0].removePiece();
+//            temp[0][1].addPiece(king);
+//            temp[0][2].addPiece(rook);
+//            king.setCol(1);
+//            rook.setCol(2);
+//        } else {
+//            rook = temp[0][7].removePiece();
+//            temp[0][6].addPiece(king);
+//            temp[0][5].addPiece(rook);
+//            king.setCol(6);
+//            rook.setCol(5);
+//        }
+//
+//    }
     public void leaveRoom() {
         try {
             dataOut.write(Constants.LEAVE_ROOM_DATA + "" + isPlayer);
@@ -327,9 +376,18 @@ public class Client {
                             System.out.println(data); // display message (maybe store chat in a multiline string
                         } else if (type == Constants.MOVE_DATA) {
                             System.out.println("MOVE: " + data);
-                            String startId = data.substring(1,3);
-                            String endId = data.substring(data.length()-2);
-                            receiveMove(startId, endId);
+                            if (data.equals("O-O") || data.equals("O-O-O")) {
+                                 // receiveMove(data);
+                                System.out.println("CASTLE HASN'T BEEN ACCOUNTED FOR YET");
+                            } else {
+                                String startId = data.substring(1, 3);
+                                String endId = data.substring(data.length() - 2);
+                                receiveMove(startId, endId);
+                            }
+
+                            if (!isPlayer) {
+                                opponentStart.setLeft(false);
+                            }
 
                         } else if (type == Constants.QUICK_MATCH_DATA){
 

@@ -245,8 +245,36 @@ public class Board implements Drawable {
 			}
 		}
 	}
+	// for testing
+	public void print() {
+		// piece in each spot
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				if (board[i][j].getPiece() != null) {
+					System.out.print(board[i][j].getPiece().getSymbol());
+				} else {
+					System.out.print("-");
+				}
+			}
+			System.out.println();
+		}
+		// piece xy
+//		for(int i=0; i<8; i++) {
+//			for(int j=0; j<8; j++) {
+//				System.out.print(board[i][j].getPiece().getRow() + board[i][j].getPiece().getCol() + " ");
+//			}
+//			System.out.println();
+//		}
 
+//		// spot id
+//		for(int i=0; i<8; i++) {
+//			for(int j=0; j<8; j++) {
+//				System.out.print(board[i][j].getID() + " ");
+//			}
+//			System.out.println();
+//		}
+	}
 	public Spot[][] getBoard() {
 		return this.board;
-	} 
+	}
 }
