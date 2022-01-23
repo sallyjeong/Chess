@@ -24,6 +24,7 @@ public class Client {
     private MessageFrame messageFrame;
     private String result = "";
     private Client thisClient;
+    private Thread updateThread;
 
 //    public static void main(String[] args) {
 //
@@ -74,6 +75,7 @@ public class Client {
                 // maybe combine both below into an
             } else if ((type == Constants.JOIN_PRIV_ROOM_DATA) || (type == Constants.CREATE_ROOM_DATA)) {
                 dataOut.write(type + room);
+                // System.out.println("data written");
             } else if (type == Constants.COLOUR_DATA) {
                 dataOut.write(type + colour);
             }
@@ -81,6 +83,8 @@ public class Client {
             dataOut.flush();
 
             result = dataIn.readLine();
+            //System.out.println(dataIn.readLine());
+            //System.out.println("data saved");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -111,7 +115,7 @@ public class Client {
             waitTillClosed(messageFrame);
 
         } while (result.equals(Constants.USERNAME_ERROR));
-        System.out.println("done username");
+        //System.out.println("done username");
     }
 
     public void getRoomInput() {
@@ -154,7 +158,9 @@ public class Client {
             randomizeColour();
         }
 
+        //System.out.println("before verify");
         verifyData(Constants.CREATE_ROOM_DATA);
+        //System.out.println("after verify");
         System.out.println("CREATE ROOM: [" + room + "] success");
         System.out.println("CREATOR: " + verifyData(Constants.COLOUR_DATA)); // printing just to check
 
@@ -165,6 +171,7 @@ public class Client {
     }
 
     public void startGame() {
+        //System.out.println("start game called");
         inGame = true;
 //        gameThread = new Thread(new Runnable() {
 //            @Override
@@ -174,8 +181,6 @@ public class Client {
 //        });
 //
 //        gameThread.start();
-
-        listenForUpdates();
         sendMessage();
     }
 
@@ -209,7 +214,7 @@ public class Client {
     }
 
     public void quickMatch() {
-        System.out.println("quick game called");
+        //System.out.println("quick game called");
         try {
             FindingRoomFrame findRoom = new FindingRoomFrame();
             dataOut.write(Constants.QUICK_MATCH_DATA);
@@ -233,6 +238,7 @@ public class Client {
             e.printStackTrace();
         }
     }
+
 
 
     // tbh i don't think we'll need this anymore because it'll send one msg at a time based on gameFrame's jtextfield
@@ -261,18 +267,18 @@ public class Client {
             e.printStackTrace();
         }
         gameFrame.dispose();
+        //gameFrame = null;
         homeFrame.setVisible(true);
         System.out.println(username + " left room [" + room +"]");
         room = "";
         inGame = false;
-        // gameThread.interrupt();
     }
 
     public void listenForUpdates() { // this will be the place you determine what type of data it is?
-        new Thread(new Runnable() {
+        updateThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (socket.isConnected() && inGame == true) {
+                while (socket.isConnected()) {
                     try {
                         String data = dataIn.readLine();
                         char type = data.charAt(0);
@@ -292,13 +298,16 @@ public class Client {
                                 leaveRoom();
                             }
                         }
-                        // might need a leave room?
+                        // scuffed "solution"
+//                        else if (type == Constants.CREATE_ROOM_DATA) {
+//                            startGame();
+//                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
-        }).start();
+        });
     }
 
     public void waitTillClosed(MessageFrame frame) {
