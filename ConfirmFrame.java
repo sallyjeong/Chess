@@ -14,12 +14,12 @@ import java.awt.Color;
 
 public class ConfirmFrame extends JFrame {
 
-	private JPanel contentPane;
+    private JPanel contentPane;
 //	public static String leave = "unconfirmed";
 
-	/**
-	 * Launch the application.
-	 */
+    /**
+     * Launch the application.
+     */
 //	public static void main(String[] args) {
 //		EventQueue.invokeLater(new Runnable() {
 //			public void run() {
@@ -33,45 +33,45 @@ public class ConfirmFrame extends JFrame {
 //		});
 //	}
 
-	/**
-	 * Create the frame.
-	 */
-	public ConfirmFrame(GameFrame currentGameFrame) {
-		JFrame frame = this;
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 292, 200);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		JLabel lblNewLabel = new JLabel("Leave current game");
-		lblNewLabel.setBounds(81, 52, 122, 16);
-		contentPane.add(lblNewLabel);
-		
-		JButton confirmButton = new JButton("Confirm");
-		confirmButton.addActionListener(new ActionListener() {
+    /**
+     * Create the frame.
+     */
+    public ConfirmFrame(GameFrame currentGameFrame) {
+        JFrame frame = this;
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 292, 200);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        JLabel lblNewLabel = new JLabel("Leave current game");
+        lblNewLabel.setBounds(81, 52, 122, 16);
+        contentPane.add(lblNewLabel);
+
+        JButton confirmButton = new JButton("Confirm");
+        confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	frame.dispose();
-            	currentGameFrame.dispose();
+                frame.dispose();
+                currentGameFrame.dispose();
                 currentGameFrame.getClient().leaveRoom();
             }
         });
-		confirmButton.setForeground(new Color(0, 100, 0));
-		confirmButton.setBounds(24, 90, 117, 29);
-		contentPane.add(confirmButton);
-		
-		JButton cancelButton = new JButton("Cancel");
-		cancelButton.addActionListener(new ActionListener() {
+        confirmButton.setForeground(new Color(0, 100, 0));
+        confirmButton.setBounds(24, 90, 117, 29);
+        contentPane.add(confirmButton);
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	frame.dispose();
+                frame.dispose();
                 //frame.dispose();
                 //client.leaveRoom();
             }
         });
-		cancelButton.setForeground(new Color(220, 20, 60));
-		cancelButton.setBounds(151, 90, 117, 29);
-		contentPane.add(cancelButton);
-		frame.setVisible(true);
-	}
+        cancelButton.setForeground(new Color(220, 20, 60));
+        cancelButton.setBounds(151, 90, 117, 29);
+        contentPane.add(cancelButton);
+        frame.setVisible(true);
+    }
 }

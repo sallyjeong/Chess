@@ -15,8 +15,8 @@ public class Bishop extends Piece {
 	@Override
 	public void loadImage() {
 		try {
-			this.setImage(ImageIO.read(new File("06_classic2\\w-bishop2.png")), 0);
-			this.setImage(ImageIO.read(new File("06_classic2\\b-bishop2.png")), 1);
+			this.setImage(ImageIO.read(new File("06_classic2/w-bishop2.png")), 0);
+			this.setImage(ImageIO.read(new File("06_classic2/b-bishop2.png")), 1);
 		} catch (IOException e) {
 			System.out.println("error loading sprite");
 		}

@@ -81,8 +81,8 @@ public class Server {
                             //System.out.println("chat data received");
                             broadcastMessage(Constants.CHAT_DATA + input);
                         } else if (type == Constants.MOVE_DATA) {
-                            // send movement stuff
-                            // broadcastMessage(Constants.MOVE_DATA + "theactualmove");
+                            System.out.println("MOVE RECEIVED");
+                            broadcastMessage(Constants.MOVE_DATA + input);
 
                         } else if (type == Constants.USERNAME_DATA) {
                             if (validUsername(input)) {
@@ -97,8 +97,11 @@ public class Server {
                                 priv = true;
                                 room = input;
                                 writeData("success. welcome " + username);
-
                                 broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
+                                if (privateRooms.get(room).size() > 1) {
+                                    // writeData(Constants.START_DATA + "");
+                                    broadcastMessage(Constants.START_DATA + "");
+                                }
 
                             } else {
                                 writeData(Constants.JOIN_ROOM_ERROR);
@@ -109,7 +112,7 @@ public class Server {
                             room = input;
                             priv = true;
                             writeData("room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
-
+                            System.out.println("data written");
                         } else if (type == Constants.QUICK_MATCH_DATA) { //public room
                             writeData(Constants.QUICK_MATCH_WAIT);
                             quickMatch.add(this);
@@ -118,7 +121,7 @@ public class Server {
                                 System.out.println("after while");
                                 room = CodeGenerator.generateCode();
                                 publicRooms.put(room, new ArrayList<ClientHandler>());
-                               // rooms.get(room).add(this);
+                                // rooms.get(room).add(this);
                                 this.colour="white";
                                 while (quickMatch.size()%2!=0){
 
@@ -158,10 +161,12 @@ public class Server {
                                     } else if (existingColour.equals("black")) {
                                         colour = "white";
                                     }
+                                    //System.out.println("player 2 data written: " + colour);
                                     writeData(colour);
 
                                     // spectators
                                 } else {
+                                    //System.out.println("spectator data written");
                                     writeData(Constants.COLOUR_DATA + "");
                                 }
                             }
@@ -189,6 +194,7 @@ public class Server {
                             System.out.println("CLIENT HANDLER " + username + " CLOSED");
                         }
                     }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     break;

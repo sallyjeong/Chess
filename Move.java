@@ -4,9 +4,9 @@ public class Move {
 	private Spot start;
 	private Spot end;
 	private Piece sourcePiece, capturedPiece;
-	private Player player;
+	private Client player;
 
-	public Move (Player player, Spot start, Spot end) {
+	public Move (Client player, Spot start, Spot end) {
 		this.player = player;
 		this.start = start;
 		this.end = end;
@@ -33,7 +33,7 @@ public class Move {
 	public boolean isPromotionMove() {
 		return false;
 	}
-	
+
 	public String toString() {
 		if(isCastlingMove()) {
 			if(start.getColumn()==4) {
@@ -58,7 +58,7 @@ public class Move {
 		return ret;
 	}
 
-	public Player getPlayer() {
+	public Client getPlayer() {
 		return this.player;
 	}
 

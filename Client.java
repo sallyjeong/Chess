@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -15,8 +16,11 @@ public class Client {
     private String room;
     private String colour = " "; // "white" or "black"
     private boolean isPlayer;
-    private boolean myTurn = false; // set white to true once both players are in the game
+    private boolean turn = false; // set white to true once both players are in the game
+    private Board board;
+    private Spot opponentStart = null;
     private boolean inGame = false;
+    private ArrayList<Piece> captured;
     private Socket socket;
     private GameFrame gameFrame;
     private BufferedReader dataIn;
@@ -24,7 +28,8 @@ public class Client {
     private MessageFrame messageFrame;
     private String result = "";
     private Client thisClient;
-    private Thread updateThread;
+    //private Thread updateThread;
+    final int LENGTH = 35;
 
 //    public static void main(String[] args) {
 //
@@ -34,6 +39,7 @@ public class Client {
     public Client(JFrame homeFrame) {
         this.homeFrame = homeFrame; // use this variable to setVisible after you leave the game
         this.thisClient = this;
+        this.captured = new ArrayList<Piece>();
 
         // add variable to see if the game has been closed/left
         // send msg to client handler to remove the person from that room
@@ -137,13 +143,17 @@ public class Client {
         if (colour.charAt(0) == Constants.COLOUR_DATA) {
             pickSpectateColour();
             verifyData(Constants.COLOUR_DATA);
-
+            System.out.println("spectator");
             isPlayer = false;
         } else {
+            System.out.println("player 2");
             isPlayer = true;
         }
 
         System.out.println("JOINING AS: " + colour);
+        if (isWhite()) {
+            turn = true;
+        }
         startGame();
     }
 
@@ -181,6 +191,7 @@ public class Client {
 //        });
 //
 //        gameThread.start();
+        listenForUpdates();
         sendMessage();
     }
 
@@ -239,8 +250,6 @@ public class Client {
         }
     }
 
-
-
     // tbh i don't think we'll need this anymore because it'll send one msg at a time based on gameFrame's jtextfield
     // replace with sendData(msg) with the msg having the right char at the front alr
     public void sendMessage() {
@@ -256,6 +265,31 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void receiveMove(String startId, String endId) {
+        System.out.println("MOVE DIGESTION");
+        Spot[][] temp = board.getBoard();
+        Spot end = null;
+        Piece piece = null;
+        for (int i = 0; i<temp.length; i++) {
+            for (int j = 0; j<temp.length; j++) {
+                if (temp[i][j].getID().equals(startId)) {
+                    opponentStart = temp[i][j];
+                    piece = opponentStart.removePiece();
+                } else if (temp[i][j].getID().equals(endId)) {
+                    end = temp[i][j];
+                }
+            }
+        }
+        end.addPiece(piece);
+        opponentStart.setLeft(true);
+
+        if (isPlayer) {
+            turn = true;
+        }
+
+        System.out.println("MOVE RECEIVED");
     }
 
     public void leaveRoom() {
@@ -275,7 +309,7 @@ public class Client {
     }
 
     public void listenForUpdates() { // this will be the place you determine what type of data it is?
-        updateThread = new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 while (socket.isConnected()) {
@@ -284,10 +318,18 @@ public class Client {
                         char type = data.charAt(0);
                         data = data.substring(1);
                         // check the char stuff
-                        if (type == Constants.CHAT_DATA) {
+                        if (type == Constants.START_DATA) {
+                            System.out.println("GAME CAN START NOW");
+                            if (isWhite()) {
+                                turn = true;
+                            }
+                        } else if (type == Constants.CHAT_DATA) {
                             System.out.println(data); // display message (maybe store chat in a multiline string
                         } else if (type == Constants.MOVE_DATA) {
-                            // run a diff method that digests the move lmao
+                            System.out.println("MOVE: " + data);
+                            String startId = data.substring(0,2);
+                            String endId = data.substring(data.length()-2);
+                            receiveMove(startId, endId);
 
                         } else if (type == Constants.QUICK_MATCH_DATA){
 
@@ -299,15 +341,15 @@ public class Client {
                             }
                         }
                         // scuffed "solution"
-//                        else if (type == Constants.CREATE_ROOM_DATA) {
-//                            startGame();
-//                        }
+                        else if (type == Constants.CREATE_ROOM_DATA) {
+                            System.out.println("oh..");
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
-        });
+        }).start();
     }
 
     public void waitTillClosed(MessageFrame frame) {
@@ -338,6 +380,24 @@ public class Client {
         System.exit(0);
     }
 
+
+
+    public void displayCaptured(Graphics g) {
+        for(int i=0; i<captured.size(); i++) {
+            Piece p = captured.get(i);
+            if(p.isWhite()) {
+                g.drawImage(p.getImage()[0], 576+i*LENGTH, 0, LENGTH, LENGTH, null);
+            }else {
+                g.drawImage(p.getImage()[1], 576+i*LENGTH, 520, LENGTH, LENGTH, null);
+            }
+
+        }
+    }
+
+    public ArrayList<Piece> getCaptured() {
+        return this.captured;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -346,5 +406,17 @@ public class Client {
     }
     public String getRoom() {
         return room;
+    }
+    public boolean getTurn() {
+        return turn;
+    }
+    public void setTurn(boolean turn) {
+        this.turn = turn;
+    }
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+    public Spot getOpponentStart() {
+        return opponentStart;
     }
 }

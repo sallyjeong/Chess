@@ -5,13 +5,13 @@ import java.awt.Graphics;
 
 public class Spot implements Drawable {
 
-	private final Color clickedColour = Color.green, capturedColour = Color.lightGray, checkedColour = Color.red;
-	
+	private final Color clickedColour = Color.green, capturedColour = Color.lightGray, checkedColour = Color.red, movedColour = Color.darkGray;
+
 	private Color defaultColour;
 	private int row, column;
 	private String id;
 	private Piece piece;
-	private boolean highlighted, clicked, checked;
+	private boolean highlighted, clicked, checked, left;
 	private int length;
 
 	public Spot(int r, int c, String id, Piece p, Color co, int l) {
@@ -28,7 +28,7 @@ public class Spot implements Drawable {
 		//colors for the tile underneath
 		if(this.clicked) {
 			g.setColor(clickedColour);
-		//can be captured
+			//can be captured
 		}else if(this.piece!=null && this.highlighted) {
 			g.setColor(capturedColour);
 		}else if(this.checked) {
@@ -38,7 +38,9 @@ public class Spot implements Drawable {
 			else{
 				g.setColor(checkedColour);
 			}
-		}else {
+		} else if(this.left){
+			g.setColor(movedColour);
+		} else {
 			g.setColor(this.defaultColour);
 
 		}
@@ -53,42 +55,42 @@ public class Spot implements Drawable {
 			g.setColor(Color.green);
 			g.fillOval(column*this.length+length/2-5, row*this.length+length/2-5, 10, 10);
 		}
-	} 
-	
+	}
+
 	public String getID() {
 		return this.id;
 	}
-	
+
 	public int getRow() {
 		return this.row;
 	}
-	
+
 	public int getColumn() {
 		return this.column;
 	}
-	
+
 	public void addPiece(Piece p) {
 		this.piece = p;
 	}
-	
+
 	public Piece removePiece() {
 		Piece p= piece;
 		this.piece = null;
 		return p;
 	}
-	
+
 	public Piece getPiece() {
 		return this.piece;
 	}
-	
+
 	public void setHighlight(boolean b) {
 		this.highlighted = b;
 	}
-	
+
 	public boolean isClicked() {
 		return this.clicked;
 	}
-	
+
 	public void setClicked(boolean b) {
 		this.clicked = b;
 	}
@@ -96,5 +98,8 @@ public class Spot implements Drawable {
 	public void setChecked(boolean b) {
 		this.checked = b;
 	}
-	
+
+	public void setLeft(boolean b) {
+		this.left = b;
+	}
 }

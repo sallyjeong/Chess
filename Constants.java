@@ -17,9 +17,8 @@ public class Constants {
     public static final char JOIN_PUB_ROOM_DATA = 'g';//for private room
     public static final char COLOUR_DATA = 'h';
     public static final char BOARD_DATA = 'i';
-    public static final char LEAVE_ROOM_DATA = 'j';
-    public static final char QUIT_DATA = 'k';
-
-
+    public static final char START_DATA = 'j';
+    public static final char LEAVE_ROOM_DATA = 'k';
+    public static final char QUIT_DATA = 'l';
 
 }

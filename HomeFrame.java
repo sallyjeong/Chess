@@ -196,6 +196,7 @@ public class HomeFrame extends JFrame {
                         if (thisClient.getUsername().equals("!")) {
                             thisClient.getUsernameInput();
                         }
+                        System.out.println("create?");
                         thisClient.createRoom();
                     }
                 }).start();

@@ -4,47 +4,41 @@ import java.util.ArrayList;
 
 public class Game {
 	private ArrayList<Move> pastMoves;
-	private Player players[] = new Player[2];
+	//private Player players[] = new Player[2];
 	//private CheckStatus checkStatus;
 	private boolean gameOver;
 	private Player turn;
 	private Board board;
 
-	public Game(boolean white, Player p1, Player p2) {
-		players[0] = p1;
-		players[1] = p2;
-		board = new Board(white);
-
-		if(p2 instanceof ComputerPlayer){
-			((ComputerPlayer) p2).receiveBoard(board);
-		}
+	public Game(Client player) {
+//		players[0] = p1;
+//		players[1] = p2;
+		board = new Board(player.isWhite());
+		player.setBoard(board);
 		pastMoves = new ArrayList<Move>();
-		if(p1.isWhite()) {
-			this.turn = p1;
-		}else {
-			this.turn = p2;
-		}
+//		if (player.isWhite()) {
+//			player.setTurn(true);
+//		}
 	}
-	
-	public boolean playerMove(Player player, Spot start, Spot end) {
+
+	public boolean playerMove(Client player, Spot start, Spot end) {
 		Move move = new Move(player, start, end);
 		return makeMove(move);
 	}
 
 	private boolean makeMove(Move move) {
-	//	System.out.println(move.getStart().getRow()+" "+move.getStart().getColumn()+" "+move.getEnd().getRow()+" "+move.getEnd().getColumn());
+		//	System.out.println(move.getStart().getRow()+" "+move.getStart().getColumn()+" "+move.getEnd().getRow()+" "+move.getEnd().getColumn());
 		Piece sourcePiece = move.getStart().getPiece();
-		Player player = move.getPlayer();
-		
-		if(player!=turn) {
+		Client player = move.getPlayer();
+
+		if(player.getTurn() == false) {
 			return false;
 		}
-		
+
 		Piece destPiece = move.getEnd().getPiece();
 		if(destPiece!=null) {
 			move.getEnd().removePiece();
 			player.getCaptured().add(destPiece);
-			destPiece.captured();
 		}else if(board.kingInCheck(player.isWhite())) {
 			move.getStart().setChecked(false);
 		}
@@ -63,12 +57,12 @@ public class Game {
 			if(sourcePiece.getRow() == lastRow){
 				PromotionFrame p= new PromotionFrame();
 				int choice= p.getChoice();
-					if(choice == 1){
-						move.getEnd().addPiece(new Queen(isWhite, false, 9, 'Q', sourcePiece.getRow(), sourcePiece.getCol()));
-					}
+				if(choice == 1){
+					move.getEnd().addPiece(new Queen(isWhite, false, 9, 'Q', sourcePiece.getRow(), sourcePiece.getCol()));
+				}
 			}
 		}
-		
+
 		if(move.isCastlingMove()) {
 			Spot movingRook;
 			int row = move.getEnd().getPiece().getRow();
@@ -88,7 +82,8 @@ public class Game {
 			}
 			Piece rook = movingRook.removePiece();
 			board.getBoard()[row][col].addPiece(rook);
-			rook.setRow(row); rook.setCol(col);
+			rook.setRow(row);
+			rook.setCol(col);
 			System.out.println(board.getBoard()[row][col].getPiece().getRow()+ " "+board.getBoard()[row][col].getPiece().getCol());
 		}else if(move.isEnPassantMove()) {
 			Spot above = board.getBoard()[move.getEnd().getRow()-1][move.getEnd().getColumn()];
@@ -98,24 +93,26 @@ public class Game {
 				player.getCaptured().add(board.getBoard()[move.getEnd().getRow()+1][move.getEnd().getColumn()].removePiece());
 			}
 		}
-		
-		
+
 		pastMoves.add(move);
 		board.setEnPassant(!player.isWhite());
 		board.getPseudoLegal();
-		
-		if(this.turn==players[0]) {
-			this.turn = players[1];
-		}else {
-			this.turn = players[0];
+
+		Spot erase = player.getOpponentStart();
+		if (erase != null) {
+			erase.setLeft(false);
 		}
-		
+		player.sendData(Constants.MOVE_DATA + move.toString());
+		player.setTurn(false);
+
+		//System.out.println(pastMoves);
+
 		return true;
-		
+
 	}
-	
-	
-	
+
+
+
 	public Board getBoard() {
 		return this.board;
 	}
