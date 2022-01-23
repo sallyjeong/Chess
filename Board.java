@@ -248,5 +248,5 @@ public class Board implements Drawable {
 
 	public Spot[][] getBoard() {
 		return this.board;
-	}
+	} 
 }
