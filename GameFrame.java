@@ -139,7 +139,7 @@ public class GameFrame extends JFrame {
         contentPane.add(roomCodeLabel);
 
         if (isPlayer) {
-
+	              
             JButton drawButton = new JButton("Draw");
             drawButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -157,19 +157,18 @@ public class GameFrame extends JFrame {
             JButton surrenderButton = new JButton("Surrender");
             surrenderButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    new ConfirmFrame(frame);
-                     }
+                	new ConfirmFrame(frame);                }
             });
             surrenderButton.setBounds(237,  50, 175, 29);
             contentPane.add(surrenderButton);
-
+            
             JButton boardFlipButton = new JButton("Flip Board");
             boardFlipButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                }
-            });
+	        	public void actionPerformed(ActionEvent e) {
+	        	}
+	        });
             boardFlipButton.setBounds(426,  50, 175, 29);
-            contentPane.add(boardFlipButton);
+	        contentPane.add(boardFlipButton);
         } else {
 
             JButton flipButton = new JButton("Flip board");
@@ -187,12 +186,12 @@ public class GameFrame extends JFrame {
             JButton leaveButton = new JButton("Leave");
             leaveButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    new ConfirmFrame(frame);
+                	new ConfirmFrame(frame);
                 }
             });
             leaveButton.setBounds(52, 50, 267, 29);
             contentPane.add(leaveButton);
-
+            
         }
         frame.setVisible(true);
     }
