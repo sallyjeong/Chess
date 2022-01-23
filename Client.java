@@ -327,7 +327,7 @@ public class Client {
                             System.out.println(data); // display message (maybe store chat in a multiline string
                         } else if (type == Constants.MOVE_DATA) {
                             System.out.println("MOVE: " + data);
-                            String startId = data.substring(0,2);
+                            String startId = data.substring(1,3);
                             String endId = data.substring(data.length()-2);
                             receiveMove(startId, endId);
 

@@ -46,6 +46,8 @@ public class Move {
 		String ret = "";
 		if(!(sourcePiece instanceof Pawn)) {
 			ret+=sourcePiece.getSymbol();
+		} else {
+			ret+=" ";
 		}
 		ret+=start.getID();
 		if(capturedPiece==null) {
