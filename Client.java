@@ -91,6 +91,10 @@ public class Client {
     }
 
     public void receiveMove(String startId, String endId) {
+        if (!isPlayer && opponentStart != null) {
+            opponentStart.setLeft(false);
+        }
+        
         //System.out.println("MOVE DIGESTION");
         Spot[][] temp = board.getBoard();
         Spot end = null;
@@ -116,6 +120,57 @@ public class Client {
         }
 
         //System.out.println("MOVE RECEIVED");
+    }
+    
+        public void receiveMove(String castle) {
+        if (isWhite()) {
+            if (castle.equals("O-O")) {
+                castle("right");
+
+            } else {
+                castle("left");
+            }
+        } else if (!isWhite()) {
+            if (castle.equals("O-O")) {
+                castle("left");
+            } else {
+                castle("right");
+            }
+        }
+
+        if (isPlayer) {
+            turn = true;
+        }
+    }
+
+    public void castle(String direction) {
+
+        Spot[][] temp = board.getBoard();
+        Spot kingSpot;
+        Piece king, rook;
+        int col;
+        if (temp[0][3].getPiece() instanceof King) {
+            kingSpot = temp[0][3];
+            col = 3;
+        } else {
+            kingSpot = temp[0][4];
+            col = 4;
+        }
+        king = kingSpot.removePiece();
+
+        if (direction.equals("left")) {
+            rook = temp[0][0].removePiece();
+            temp[0][col-2].addPiece(king);
+            temp[0][col-2+1].addPiece(rook);
+            king.setCol(col-2);
+            rook.setCol(col-2+1);
+        } else {
+            rook = temp[0][7].removePiece();
+            temp[0][col+2].addPiece(king);
+            temp[0][col+2-1].addPiece(rook);
+            king.setCol(col+2);
+            rook.setCol(col+2-1);
+        }
     }
 
 
@@ -415,56 +470,6 @@ public class Client {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
-    }
-    public void receiveMove(String castle) {
-        if (isWhite()) {
-            if (castle.equals("O-O")) {
-                castle("right");
-
-            } else {
-                castle("left");
-            }
-        } else if (!isWhite()) {
-            if (castle.equals("O-O")) {
-                castle("left");
-            } else {
-                castle("right");
-            }
-        }
-
-        if (isPlayer) {
-            turn = true;
-        }
-    }
-
-    public void castle(String direction) {
-
-        Spot[][] temp = board.getBoard();
-        Spot kingSpot;
-        Piece king, rook;
-        int col;
-        if (temp[0][3].getPiece() instanceof King) {
-            kingSpot = temp[0][3];
-            col = 3;
-        } else {
-            kingSpot = temp[0][4];
-            col = 4;
-        }
-        king = kingSpot.removePiece();
-
-        if (direction.equals("left")) {
-            rook = temp[0][0].removePiece();
-            temp[0][col-2].addPiece(king);
-            temp[0][col-2+1].addPiece(rook);
-            king.setCol(col-2);
-            rook.setCol(col-2+1);
-        } else {
-            rook = temp[0][7].removePiece();
-            temp[0][col+2].addPiece(king);
-            temp[0][col+2-1].addPiece(rook);
-            king.setCol(col+2);
-            rook.setCol(col+2-1);
         }
     }
 
