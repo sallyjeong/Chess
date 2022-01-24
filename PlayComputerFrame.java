@@ -20,7 +20,7 @@ public class PlayComputerFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public PlayComputerFrame() {
+    public PlayComputerFrame(JFrame homeFrame) {
         JFrame frame = this;
         setTitle("Play Computer");
 
@@ -61,10 +61,15 @@ public class PlayComputerFrame extends JFrame {
         doneButton.setBounds(47, 122, 98, 29);
         contentPane.add(doneButton);
         
-        JButton btnNewButton = new JButton("Cancel");
-        btnNewButton.setForeground(new Color(178, 34, 34));
-        btnNewButton.setBounds(157, 122, 98, 29);
-        contentPane.add(btnNewButton);
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	frame.dispose();
+            	homeFrame.setVisible(true);            }
+        });
+        cancelButton.setForeground(new Color(178, 34, 34));
+        cancelButton.setBounds(157, 122, 98, 29);
+        contentPane.add(cancelButton);
 
         setVisible(true);
     }
