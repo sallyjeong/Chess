@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
+import java.awt.Color;
 
 public class PlayComputerFrame extends JFrame {
 
@@ -51,13 +52,19 @@ public class PlayComputerFrame extends JFrame {
         contentPane.add(difficulty);
 
         JButton doneButton = new JButton("Done");
+        doneButton.setForeground(new Color(0, 100, 0));
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
             }
         });
-        doneButton.setBounds(57, 118, 208, 29);
+        doneButton.setBounds(47, 122, 98, 29);
         contentPane.add(doneButton);
+        
+        JButton btnNewButton = new JButton("Cancel");
+        btnNewButton.setForeground(new Color(178, 34, 34));
+        btnNewButton.setBounds(157, 122, 98, 29);
+        contentPane.add(btnNewButton);
 
         setVisible(true);
     }
