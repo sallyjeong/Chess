@@ -29,7 +29,7 @@ public class CreatePrivateRoomFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public CreatePrivateRoomFrame() {
+    public CreatePrivateRoomFrame(JFrame homeFrame) {
         JFrame frame = this;
 
         setTitle("Creating private room");
@@ -55,7 +55,7 @@ public class CreatePrivateRoomFrame extends JFrame {
         contentPane.add(colourLabel);
 
         String[] colours = {"white", "black", "random"};
-	colourChoices = new JComboBox<>(colours);//use this one for drop down list
+		colourChoices = new JComboBox<>(colours);//use this one for drop down list
         //JComboBox colourChoices = new JComboBox();
         colourChoices.setBounds(134, 66, 121, 27);
         contentPane.add(colourChoices);
@@ -76,6 +76,7 @@ public class CreatePrivateRoomFrame extends JFrame {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+                homeFrame.setVisible(true);
             }
         });
         cancelButton.setForeground(new Color(178, 34, 34));

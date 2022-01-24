@@ -218,7 +218,7 @@ public class HomeFrame extends JFrame {
         playComputerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new PlayComputerFrame();
+                new PlayComputerFrame(frame);
             }
         });
         playComputerButton.setBackground(SystemColor.windowBorder);

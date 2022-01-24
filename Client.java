@@ -74,7 +74,7 @@ public class Client {
     }
 
     public void askForData(char type) {
-        EnterDataFrame enterDataFrame = new EnterDataFrame(type);
+        EnterDataFrame enterDataFrame = new EnterDataFrame(type, homeFrame);
 
         if (type == Constants.USERNAME_DATA) {
             do {
@@ -172,7 +172,7 @@ public class Client {
     }
 
     public void createRoom() {
-        CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame();
+        CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame(homeFrame);
         room = roomFrame.getCode();
         do {
             colour = roomFrame.getColourChosen();;
@@ -199,7 +199,7 @@ public class Client {
     }
 
     public void pickSpectateColour() {
-        EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA);
+        EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA, homeFrame);
         do {
             colour = colourChoice.getDataEntered().toLowerCase();
         } while (colourChoice.isClosed() == false);
@@ -242,7 +242,7 @@ public class Client {
                 colour = dataIn.readLine();
                 isPlayer=true;
                 System.out.println("room: "+room+"     colour: "+colour);
-                System.out.println("room name list : "+HomeFrame.roomNames);
+                System.out.println("room name list : "+ HomeFrame.roomNames);
                 findRoom.dispose();
                 startGame();
             }
