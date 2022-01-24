@@ -9,11 +9,12 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 public class Client {
     // client identity variables
-    private JFrame homeFrame;
+    // private JFrame homeFrame;
     private Client thisClient;
     private String username = "!";
     private String room;
@@ -35,8 +36,7 @@ public class Client {
     private BufferedWriter dataOut;
     private String result = "";
 
-    public Client(JFrame homeFrame) {
-        this.homeFrame = homeFrame;
+    public Client() {
         this.thisClient = this;
         this.captured = new ArrayList<Piece>();
 
@@ -99,7 +99,7 @@ public class Client {
     METHODS FOR INPUT BEFORE GAME
      */
     public void askForData(char type) {
-        EnterDataFrame enterDataFrame = new EnterDataFrame(type, homeFrame);
+        EnterDataFrame enterDataFrame = new EnterDataFrame(type, this);
 
         if (type == Constants.USERNAME_DATA) {
             do {
@@ -117,7 +117,6 @@ public class Client {
         do {
             askForData(Constants.USERNAME_DATA);
             result = verifyData(Constants.USERNAME_DATA);
-            System.out.println("USERNAME CREATION: " + result);
 
             if (result.equals(Constants.USERNAME_ERROR)) {
                 messageFrame = new MessageFrame(result);
@@ -129,7 +128,7 @@ public class Client {
     }
 
     public void createRoom() {
-        CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame(homeFrame);
+        CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame(this);
         room = roomFrame.getCode();
         do {
             colour = roomFrame.getColourChosen();;
@@ -150,7 +149,6 @@ public class Client {
         do {
             askForData(Constants.JOIN_PRIV_ROOM_DATA);
             result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
-            System.out.println("JOIN ROOM: [" + room + "] "+ result);
 
             if (result.equals(Constants.JOIN_ROOM_ERROR)) {
                 messageFrame = new MessageFrame(result);
@@ -187,7 +185,7 @@ public class Client {
     }
 
     public void pickSpectateColour() {
-        EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA, homeFrame);
+        EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA, this);
         do {
             colour = colourChoice.getDataEntered().toLowerCase();
         } while (colourChoice.isClosed() == false);
@@ -231,16 +229,13 @@ public class Client {
             dataOut.newLine();
             dataOut.flush();
             String result = dataIn.readLine();
-            System.out.println(result);
 
             result = dataIn.readLine();
             if (result.equals(Constants.QUICK_MATCH_JOINED)){
-                System.out.println(result);
                 room = dataIn.readLine();
                 colour = dataIn.readLine();
                 isPlayer=true;
-                System.out.println("room: "+room+"     colour: "+colour);
-                System.out.println("room name list : "+ HomeFrame.roomNames);
+
                 findRoom.dispose();
                 if (isWhite()) {
                     turn = true;
@@ -496,9 +491,12 @@ public class Client {
             e.printStackTrace();
         }
         gameFrame.dispose();
-        homeFrame.dispose(); // call earlier up if this works
-        //room = "";
-        new HomeFrame();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                new HomeFrame();
+            }
+        }).start();
         quitGame(false);
     }
 
@@ -529,40 +527,43 @@ public class Client {
             public void run() {
                 while (socket.isConnected()) {
                     try {
-                        String data = dataIn.readLine();
-                        char type = data.charAt(0); // corresponds to the data type identifiers in Constants
-                        data = data.substring(1); // actual information
+                        try {
+                            String data = dataIn.readLine();
+                            char type = data.charAt(0); // corresponds to the data type identifiers in Constants
+                            data = data.substring(1); // actual information
 
-                        if (type == Constants.START_DATA) {
-                            if (isWhite()) {
-                                turn = true;
+                            if (type == Constants.START_DATA) {
+                                if (isWhite()) {
+                                    turn = true;
+                                }
+
+                            } else if (type == Constants.CHAT_DATA) {
+                                gameFrame.addMessage(data);
+                            } else if (type == Constants.MOVE_DATA) {
+                                readMove(data);
+
+                            } else if (type == Constants.UPDATE_LIST) {
+                                HomeFrame.roomNames = getRoomNames();
+                                HomeFrame.list = new JList(HomeFrame.roomNames.toArray());
+
+                            } else if (type == Constants.BOARD_DATA) {
+                                if (isPlayer) {
+                                    sendBoard(data);
+                                } else {
+                                    receiveBoard(data);
+                                }
+                            } else if (type == Constants.DRAW_DATA) {
+                                receiveDrawInfo(data);
+                            } else if (type == Constants.LEAVE_ROOM_DATA) {
+                                if (data.equals("true")) { // a player has surrendered the game
+                                    // show pop-up that game over/which side won
+                                    leaveRoom();
+                                }
+                            } else if (type == Constants.GAME_OVER_DATA) {
+                                // for checkmate, stalemate, and when draw requests are successful
+                                new EndFrame(gameFrame);
                             }
-
-                        } else if (type == Constants.CHAT_DATA) {
-                            gameFrame.addMessage(data);
-                        } else if (type == Constants.MOVE_DATA) {
-                            readMove(data);
-
-                        } else if (type == Constants.UPDATE_LIST) {
-                            HomeFrame.roomNames = getRoomNames();
-                            HomeFrame.list = new JList(HomeFrame.roomNames.toArray());
-
-                        } else if (type == Constants.BOARD_DATA) {
-                            if (isPlayer) {
-                                sendBoard(data);
-                            } else {
-                                receiveBoard(data);
-                            }
-                        } else if (type == Constants.DRAW_DATA) {
-                            receiveDrawInfo(data);
-                        } else if (type == Constants.LEAVE_ROOM_DATA) {
-                            if (data.equals("true")) { // a player has surrendered the game
-                                // show pop-up that game over/which side won
-                                leaveRoom();
-                            }
-                        } else if (type == Constants.GAME_OVER_DATA) {
-                            // for checkmate, stalemate, and when draw requests are successful
-                            new EndFrame(gameFrame);
+                        } catch (SocketException e) {
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

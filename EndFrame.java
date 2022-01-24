@@ -48,7 +48,6 @@ public class EndFrame extends JFrame {
         exitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                currentGameFrame.getClient().leaveRoom();
             }
         });
         exitButton.setForeground(new Color(0, 100, 0));

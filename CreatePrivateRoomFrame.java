@@ -24,7 +24,7 @@ public class CreatePrivateRoomFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public CreatePrivateRoomFrame(JFrame homeFrame) {
+    public CreatePrivateRoomFrame(Client client) {
         JFrame frame = this;
 
         setTitle("Creating private room");
@@ -70,7 +70,8 @@ public class CreatePrivateRoomFrame extends JFrame {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                homeFrame.setVisible(true);
+                client.quitGame(false);
+                new HomeFrame();
             }
         });
         cancelButton.setForeground(new Color(178, 34, 34));

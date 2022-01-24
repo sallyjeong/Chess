@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 public class Server {
-    public ServerSocket serverSocket; 
+    public ServerSocket serverSocket;
     public Set<ClientHandler> clientHandlers = new HashSet<>();
     public Map <String, ArrayList<ClientHandler>> publicRooms = new LinkedHashMap<>();
     public Map <String, ArrayList<ClientHandler>> privateRooms = new HashMap<>();
@@ -70,7 +70,7 @@ public class Server {
 
         @Override
         public void run() {
-            while (socket.isConnected()) {
+            while (!socket.isClosed() && socket.isConnected()) {
                 try {
                     String input = dataIn.readLine();
                     if (input != null) {
@@ -82,15 +82,15 @@ public class Server {
                             broadcastMessage(Constants.CHAT_DATA + input);
                         } else if (type == Constants.MOVE_DATA) {
                             broadcastMessage(Constants.MOVE_DATA + input);
-                            
-                        // start game data    
+
+                        // start game data
                         } else if (type == Constants.USERNAME_DATA) {
                             addUsername(input);
-                        } else if (type == Constants.CREATE_ROOM_DATA) { 
+                        } else if (type == Constants.CREATE_ROOM_DATA) {
                             createRoom(input);
                         } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
                             joinPrivateRoom(input);
-                        } else if (type == Constants.QUICK_MATCH_DATA) { 
+                        } else if (type == Constants.QUICK_MATCH_DATA) {
                             startMatchmaking(input);
                         } else if (type == Constants.JOIN_PUB_ROOM_DATA) {
                             joinPublicRoom(input);
@@ -99,9 +99,9 @@ public class Server {
                         } else if (type == Constants.BOARD_DATA) {
                             shareBoard(input);
                         } else if (type==Constants.ROOM_NAMES_DATA) {
-                            sendRoomNames(input);  
-                            
-                        // end game data    
+                            sendRoomNames(input);
+
+                        // end game data
                         } else if (type == Constants.LEAVE_ROOM_DATA) {
                             leaveRoom(input);
                         } else if (type == Constants.DRAW_DATA) {
@@ -120,20 +120,20 @@ public class Server {
                 }
             }
         }
-        
+
         /*
         METHODS FOR SENDING DATA
          */
 
-        // sends information to everyone else in the same room as the origin 
-        public void broadcastMessage(String msg) { 
+        // sends information to everyone else in the same room as the origin
+        public void broadcastMessage(String msg) {
             ArrayList<ClientHandler> roomMembers;
             if (priv) {
                 roomMembers = privateRooms.get(room);
             } else {
                 roomMembers = publicRooms.get(room);
             }
-            
+
             if (roomMembers!= null && roomMembers.size() > 1) {
                 for (ClientHandler member : roomMembers) {
                     try {
@@ -222,7 +222,7 @@ public class Server {
                 writeData(Constants.JOIN_ROOM_ERROR);
             }
         }
-        
+
         public void startMatchmaking(String input) {
             writeData(Constants.QUICK_MATCH_WAIT);
             quickMatch.add(this);
@@ -232,11 +232,11 @@ public class Server {
                 room = CodeGenerator.generateCode();
                 publicRooms.put(room, new ArrayList<ClientHandler>());
                 colour="white";
-                
+
                 while (quickMatch.size()%2!=0){
                     // waiting for another user to click matchmaking
                 }
-            } else { 
+            } else {
                 System.out.println("quick match:"+quickMatch);
                 room = quickMatch.peek().getRoom();
                 colour="black";
@@ -256,7 +256,7 @@ public class Server {
                 roomNames.add(roomName);
             }
         }
-        
+
         public void joinPublicRoom(String input) {
             List<String> keys = new ArrayList<String>(publicRooms.keySet());
             String room = keys.get((roomNames.indexOf(input)));
@@ -264,7 +264,7 @@ public class Server {
 
             broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
         }
-        
+
         public void addColour(String input) {
             // first player (room creator)
             if (input.equals("black") || input.equals("white")) {
@@ -282,14 +282,14 @@ public class Server {
                         colour = "white";
                     }
                     writeData(colour);
-                    
+
                     // spectators
                 } else {
                     writeData(Constants.COLOUR_DATA + "");
                 }
             }
         }
-        
+
         public void shareBoard(String input) {
             Map<String, ArrayList<ClientHandler>> rooms;
             if (priv) {
@@ -297,7 +297,7 @@ public class Server {
             } else {
                 rooms = publicRooms;
             }
-            
+
             // spectator sends request to copy board from player of the same colour POV
             if (input.equals(Constants.REQUEST)) {
                 try {
@@ -305,7 +305,7 @@ public class Server {
                         rooms.get(room).get(0).dataOut.write(Constants.BOARD_DATA + username);
                         rooms.get(room).get(0).dataOut.newLine();
                         rooms.get(room).get(0).dataOut.flush();
-                    } else { //colour matches second player or neither players
+                    } else { //colour matches second player
                         rooms.get(room).get(1).dataOut.write(Constants.BOARD_DATA + username);
                         rooms.get(room).get(1).dataOut.newLine();
                         rooms.get(room).get(1).dataOut.flush();
@@ -313,9 +313,9 @@ public class Server {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                
-            // player sending board data back to spectator that requested it    
-            } else { 
+
+            // player sending board data back to spectator that requested it
+            } else {
                 // input format: username + " " + [row][col][piece symbol][b/w])
                 // example: chess 00Pw
                 String sendToUser = input.substring(0, input.indexOf(" "));
@@ -332,19 +332,19 @@ public class Server {
                 }
             }
         }
-        
+
         public void sendRoomNames(String input) {
             writeData(""+roomNames.size());
             for (String roomName: roomNames){
                 writeData(roomName);
             }
         }
-        
+
         /*
         METHODS FOR ENDING GAMES
          */
-        
-        public void sendDraw(String input) { 
+
+        public void sendDraw(String input) {
             // input is either "!request" or "denied"
             Map<String, ArrayList<ClientHandler>> rooms;
             if (priv) {
@@ -352,9 +352,9 @@ public class Server {
             } else {
                 rooms = publicRooms;
             }
-            
+
             try {
-                if (rooms.get(room).size() > 1) { 
+                if (rooms.get(room).size() > 1) {
                     // sending draw request or result to opponent
                     if (rooms.get(room).get(0).username.equals(username)) {
                         rooms.get(room).get(1).dataOut.write(Constants.DRAW_DATA + input);
@@ -370,7 +370,7 @@ public class Server {
                 e.printStackTrace();
             }
         }
-        
+
         public void leaveRoom(String input) {
             Map<String, ArrayList<ClientHandler>> rooms;
             if (priv){
@@ -396,7 +396,6 @@ public class Server {
                 }
                 broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has left the chat ***");
             }
-            room = "";
         }
 
         public void closeConnection() {
