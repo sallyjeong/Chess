@@ -6,11 +6,11 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
-public class Pawn extends Piece {
-
+public class Pawn extends Piece {	
+	
 	private boolean enPassant;
 	private boolean forward;
-
+	
 	public Pawn(boolean w, boolean m, int p, char s, int r, int c, boolean f) {
 		super(w, m, p, s, r, c);
 		this.forward = f;
@@ -19,8 +19,8 @@ public class Pawn extends Piece {
 	@Override
 	public void loadImage() {
 		try {
-			this.setImage(ImageIO.read(new File("06_classic2/w-pawn2.png")), 0);
-			this.setImage(ImageIO.read(new File("06_classic2/b-pawn2.png")), 1);
+			this.setImage(ImageIO.read(new File("06_classic2\\w-pawn2.png")), 0);
+			this.setImage(ImageIO.read(new File("06_classic2\\b-pawn2.png")), 1);
 		} catch (IOException e) {
 			System.out.println("error loading sprite");
 		}
@@ -73,7 +73,7 @@ public class Pawn extends Piece {
 					}
 				}
 			}
-
+			
 		}
 		else{
 			curSpot= board[row+1][col];
@@ -113,16 +113,21 @@ public class Pawn extends Piece {
 				}
 			}
 		}
-
+		
 		return super.getMoveList();
-
+		
 	}
 
 	public boolean getEnPassant() {
 		return this.enPassant;
 	}
-
+	
 	public void setEnPassant(boolean b) {
 		this.enPassant = b;
 	}
+	
+	public boolean getForward() {
+		return this.forward;
+	}
+
 }

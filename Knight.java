@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 public class Knight extends Piece {
-
+	
 	public Knight(boolean w, boolean m, int p, char s, int r, int c) {
 		super(w, m, p, s, r, c);
 	}
@@ -15,8 +15,8 @@ public class Knight extends Piece {
 	@Override
 	public void loadImage() {
 		try {
-			this.setImage(ImageIO.read(new File("06_classic2/w-knight2.png")), 0);
-			this.setImage(ImageIO.read(new File("06_classic2/b-knight2.png")), 1);
+			this.setImage(ImageIO.read(new File("06_classic2\\w-knight2.png")), 0);
+			this.setImage(ImageIO.read(new File("06_classic2\\b-knight2.png")), 1);
 		} catch (IOException e) {
 			System.out.println("error loading sprite");
 		}

@@ -11,9 +11,8 @@ public abstract class Piece {
 	private HashSet<Spot> possibleMoves;
 	private char symbol;
 	private BufferedImage image[] = new BufferedImage[2];
-	private boolean captured = false;
 	private int row, col;
-
+	
 	public Piece(boolean w, boolean m, int p, char s, int r, int c) {
 		this.white = w;
 		this.moved = m;
@@ -28,17 +27,8 @@ public abstract class Piece {
 
 	public abstract void loadImage();
 
-	public void captured(){
-		captured= true;
-	}
-
-	public boolean isCaptured(){
-		return captured;
-	}
-
-
 	public abstract Set<Spot> validMoves(Board board);
-
+	
 	public BufferedImage[] getImage() {
 		return this.image;
 	}
@@ -56,7 +46,7 @@ public abstract class Piece {
 	}
 
 	public int getPoints(){
-		return points;
+		return this.points;
 	}
 
 	public int getRow() {

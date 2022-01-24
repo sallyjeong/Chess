@@ -4,10 +4,8 @@ public class Move {
 	private Spot start;
 	private Spot end;
 	private Piece sourcePiece, capturedPiece;
-	private Client player;
 
-	public Move (Client player, Spot start, Spot end) {
-		this.player = player;
+	public Move (Spot start, Spot end) {
 		this.start = start;
 		this.end = end;
 		this.sourcePiece = start.getPiece();
@@ -31,14 +29,19 @@ public class Move {
 	}
 
 	public boolean isPromotionMove() {
+		if(sourcePiece instanceof Pawn) {
+			if(end.getRow()==0 || end.getRow()==7) {
+				return true;
+			}
+		}
 		return false;
 	}
-
+	
 	public String toString() {
 		if(isCastlingMove()) {
-			if(end.getColumn()==1 || end.getColumn()==6) {
+			if(end.getColumn()==6 || end.getColumn()==1) {
 				return "O-O";
-			} else {
+			}else {
 				return "O-O-O";
 			}
 		}
@@ -46,24 +49,23 @@ public class Move {
 		String ret = "";
 		if(!(sourcePiece instanceof Pawn)) {
 			ret+=sourcePiece.getSymbol();
-		} else if (isEnPassantMove()) {
-			ret+="P";
-		} else {
-			ret+=" ";
 		}
 		ret+=start.getID();
 		if(capturedPiece==null) {
 			ret+="-";
+		}else if(capturedPiece instanceof Pawn) {
+			ret+="x";
 		}else {
 			ret+="x"+capturedPiece.getSymbol();
 		}
 		ret+=end.getID();
 
+		if(isPromotionMove()) {
+			ret+="=";
+			ret+=end.getPiece().getSymbol();
+		}
+		
 		return ret;
-	}
-
-	public Client getPlayer() {
-		return this.player;
 	}
 
 	public Spot getStart() {

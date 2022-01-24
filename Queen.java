@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 public class Queen extends Piece {
-
+	
 	public Queen(boolean w, boolean m, int p, char s, int r, int c) {
 		super(w, m, p, s, r, c);
 	}
@@ -15,8 +15,8 @@ public class Queen extends Piece {
 	@Override
 	public void loadImage() {
 		try {
-			this.setImage(ImageIO.read(new File("06_classic2/w-queen2.png")), 0);
-			this.setImage(ImageIO.read(new File("06_classic2/b-queen2.png")), 1);
+			this.setImage(ImageIO.read(new File("06_classic2\\w-queen2.png")), 0);
+			this.setImage(ImageIO.read(new File("06_classic2\\b-queen2.png")), 1);
 		} catch (IOException e) {
 			System.out.println("error loading sprite");
 		}
@@ -34,5 +34,4 @@ public class Queen extends Piece {
 		return super.getMoveList();
 	}
 
-	
 }
