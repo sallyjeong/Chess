@@ -253,6 +253,9 @@ public class Client {
                 System.out.println("room: "+room+"     colour: "+colour);
                 System.out.println("room name list : "+ HomeFrame.roomNames);
                 findRoom.dispose();
+                if (isWhite()) {
+                    turn = true;
+                }
                 startGame();
             }
             //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
