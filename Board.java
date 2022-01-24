@@ -199,26 +199,31 @@ public class Board implements Drawable {
 		return completeSet;
 	}
 
-	public boolean isInsufficientMat() {
-		int wMinorCnt = 0, bMinorCnt = 0;
+	public boolean isInsufficientMat() { //method doesn't check if the bishops are on the same colour squares or not: 2 bishops of same colored diagonals cannot checkmate
+		int wKnights = 0, int wBishops = 0, int bBishops = 0, bKnights = 0;
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
 				Piece p = board[i][j].getPiece();
 				if(p!=null) {
-					if(p instanceof Knight || p instanceof Bishop) {
+					if(p instanceof Knight) {
 						if(p.isWhite()) {
-							wMinorCnt++;
+							wKnights++;
 						}else {
-							bMinorCnt++;
+							bKnights++;
 						}
-					}else if(!(p instanceof King)) {
+					} else if(p instanceof Bishop) {
+						if(p.isWhite()) {
+							wBishops++;
+						}else {
+							bBishops++;
+						}
+					} else if(!(p instanceof King)) {
 						return false;
 					}
 				}
-				
 			}
 		}
-		if(wMinorCnt<=2 && bMinorCnt<=2) {
+		if((bKnights<=2 && bBishops == 0) || (wKnights <= 2 && wBishops ==0)) {
 			return true;
 		}
 		return false;
