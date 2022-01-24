@@ -10,7 +10,7 @@ import java.util.Scanner;
 // remember to call closeConnection after the game ends/client leaves (IN SERVER CLASS)
 public class Client {
     //private Thread gameThread;
-    private JFrame homeFrame;
+    //private JFrame homeFrame;
     private String username = "!";
     private String room;
     private String colour = " "; // "white" or "black"
@@ -34,8 +34,8 @@ public class Client {
 //        Client client = new Client(new HomeFrame());
 //    }
 
-    public Client(JFrame homeFrame) {
-        this.homeFrame = homeFrame; // use this variable to setVisible after you leave the game
+    public Client() {
+        //this.homeFrame = homeFrame; // use this variable to setVisible after you leave the game
         this.thisClient = this;
         this.captured = new ArrayList<Piece>();
 
@@ -74,7 +74,7 @@ public class Client {
     }
 
     public void askForData(char type) {
-        EnterDataFrame enterDataFrame = new EnterDataFrame(type, homeFrame);
+        EnterDataFrame enterDataFrame = new EnterDataFrame(type, this);
 
         if (type == Constants.USERNAME_DATA) {
             do {
@@ -181,7 +181,7 @@ public class Client {
     }
 
     public void createRoom() {
-        CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame(homeFrame);
+        CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame(this);
         room = roomFrame.getCode();
         do {
             colour = roomFrame.getColourChosen();;
@@ -208,7 +208,7 @@ public class Client {
     }
 
     public void pickSpectateColour() {
-        EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA, homeFrame);
+        EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA, this);
         do {
             colour = colourChoice.getDataEntered().toLowerCase();
         } while (colourChoice.isClosed() == false);
@@ -377,18 +377,19 @@ public class Client {
             e.printStackTrace();
         }
         gameFrame.dispose();
-        homeFrame.setVisible(true);
         System.out.println(username + " left room [" + room +"]");
         room = "";
         inGame = false;
+        quitGame(false);
+        new HomeFrame();
     }
 
     public void listenForUpdates() { // this will be the place you determine what type of data it is?
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (socket.isConnected() && inGame == true) {
-                    try {
+                try {
+                while (!socket.isClosed() && inGame) {
                         String data = dataIn.readLine();
                         char type = data.charAt(0);
                         data = data.substring(1);
@@ -468,9 +469,9 @@ public class Client {
 //                        else if (type == Constants.CREATE_ROOM_DATA) {
 //                            System.out.println("oh..");
 //                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
@@ -486,7 +487,7 @@ public class Client {
         }
     }
 
-    public void quitGame() {
+    public void quitGame(boolean real) {
         sendData(Constants.QUIT_DATA + "");
         try {
             if (socket != null) {
@@ -501,7 +502,9 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.exit(0);
+        if (real) {
+            System.exit(0);
+        }
     }
 
 
@@ -524,9 +527,6 @@ public class Client {
 
     public String getUsername() {
         return username;
-    }
-    public JFrame getHomeFrame() {
-        return homeFrame;
     }
     public String getRoom() {
         return room;

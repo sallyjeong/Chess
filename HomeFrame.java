@@ -56,7 +56,7 @@ public class HomeFrame extends JFrame {
      * Create the frame.
      */
     public HomeFrame() {
-        thisClient = new Client(this);
+        thisClient = new Client();
 
         //setting up the frame
         JFrame frame = this;
@@ -108,7 +108,7 @@ public class HomeFrame extends JFrame {
         quitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                thisClient.quitGame();
+                thisClient.quitGame(true);
             }
         });
         quitButton.setBounds(26, 287, 343, 80);
@@ -147,13 +147,11 @@ public class HomeFrame extends JFrame {
         JButton playButton = new JButton("Enter matchmaking");
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false);
+                frame.dispose();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (thisClient.getUsername().equals("!")) {
-                            thisClient.getUsernameInput();
-                        }
+                        thisClient.getUsernameInput();
                         thisClient.quickMatch();
                     }
                 }).start();
@@ -174,13 +172,11 @@ public class HomeFrame extends JFrame {
         JButton enterCodeButton = new JButton("Join room");
         enterCodeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false); //instead of dispose, so they can setVisble(true) after the game ends
+                frame.dispose();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (thisClient.getUsername().equals("!")) {
-                            thisClient.getUsernameInput();
-                        }
+                        thisClient.getUsernameInput();
                         thisClient.getRoomInput();
                     }
                 }).start();
@@ -192,13 +188,11 @@ public class HomeFrame extends JFrame {
         JButton createRoomLabel = new JButton("Create room");
         createRoomLabel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false); //instead of dispose, so they can setVisble(true) after the game ends
+                frame.dispose();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (thisClient.getUsername().equals("!")) {
-                            thisClient.getUsernameInput();
-                        }
+                        thisClient.getUsernameInput();
                         thisClient.createRoom();
                     }
                 }).start();
@@ -218,7 +212,7 @@ public class HomeFrame extends JFrame {
         playComputerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new PlayComputerFrame(frame);
+                new PlayComputerFrame();
             }
         });
         playComputerButton.setBackground(SystemColor.windowBorder);
@@ -252,14 +246,12 @@ public class HomeFrame extends JFrame {
 
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.setVisible(false); //instead of dispose, so they can setVisble(true) after the game ends
+                frame.dispose();
                 String roomName = (String)list.getSelectedValue();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if (thisClient.getUsername().equals("!")) {
-                            thisClient.getUsernameInput();
-                        }
+                        thisClient.getUsernameInput();
                         thisClient.spectate(roomName);
 
                     }
@@ -267,16 +259,8 @@ public class HomeFrame extends JFrame {
             }
         });
 
-        confirmButton.setBounds(559, 82, 278, 57);
+        confirmButton.setBounds(560, 114, 278, 65);
         lobbyPanel.add(confirmButton);
-        
-        JButton reloadButton = new JButton("Reload");
-        reloadButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                
-            }
-        });
-        reloadButton.setBounds(559, 151, 278, 57);
-        lobbyPanel.add(reloadButton);
     }
+
 }
