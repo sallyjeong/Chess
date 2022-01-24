@@ -23,7 +23,7 @@ public class EnterDataFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public EnterDataFrame(char data) {
+    public EnterDataFrame(char data, JFrame homeFrame) {
         JFrame frame = this;
         if (data == Constants.USERNAME_DATA) {
             setTitle("Enter username");
@@ -74,6 +74,7 @@ public class EnterDataFrame extends JFrame {
         cancelButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		frame.dispose();
+        		homeFrame.setVisible(true);
         	}
         });
         cancelButton.setBounds(152, 92, 104, 29);
