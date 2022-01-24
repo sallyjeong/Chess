@@ -55,8 +55,8 @@ public class CreatePrivateRoomFrame extends JFrame {
         contentPane.add(colourLabel);
 
         String[] colours = {"white", "black", "random"};
-		//colourChoices = new JComboBox<>(colours);//use this one for drop down list
-        JComboBox colourChoices = new JComboBox();
+	colourChoices = new JComboBox<>(colours);//use this one for drop down list
+        //JComboBox colourChoices = new JComboBox();
         colourChoices.setBounds(134, 66, 121, 27);
         contentPane.add(colourChoices);
 
