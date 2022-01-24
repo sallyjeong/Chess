@@ -13,9 +13,9 @@ public class Constants {
     public static final char CHAT_DATA = 'a';
     public static final char MOVE_DATA = 'b';
     public static final char USERNAME_DATA = 'c';
-    public static final char JOIN_PRIV_ROOM_DATA = 'd';//for private room
-    public static final char CREATE_ROOM_DATA = 'e';//for private room
-    public static final char QUICK_MATCH_DATA = 'f';//for public room
+    public static final char CREATE_ROOM_DATA = 'd';
+    public static final char JOIN_PRIV_ROOM_DATA = 'e';
+    public static final char QUICK_MATCH_DATA = 'f';
     public static final char JOIN_PUB_ROOM_DATA = 'g';
     public static final char COLOUR_DATA = 'h';
     public static final char BOARD_DATA = 'i';

@@ -15,23 +15,6 @@ import java.awt.Color;
 public class ConfirmFrame extends JFrame {
 
     private JPanel contentPane;
-//	public static String leave = "unconfirmed";
-
-    /**
-     * Launch the application.
-     */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-////					ConfirmFrame frame = new ConfirmFrame();
-//					//frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
     /**
      * Create the frame.
@@ -77,8 +60,6 @@ public class ConfirmFrame extends JFrame {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                //frame.dispose();
-                //client.leaveRoom();
             }
         });
         cancelButton.setForeground(new Color(220, 20, 60));
