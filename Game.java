@@ -32,38 +32,34 @@ public class Game {
 	//	System.out.println(move.getStart().getRow()+" "+move.getStart().getColumn()+" "+move.getEnd().getRow()+" "+move.getEnd().getColumn());
 		Piece sourcePiece = move.getStart().getPiece();
 		Player player = turn;
-		
+
 		if(sourcePiece.isWhite()!=turn.isWhite()) {
-			return false;
+		    return false;
 		}
-		
+
 		Piece destPiece = move.getEnd().removePiece();
 		if(destPiece!=null) {
-			player.getCaptured().add(destPiece);
+		    player.getCaptured().add(destPiece);
 		}
 		move.getStart().getPiece().displayValidMoves(false);
 		move.getEnd().addPiece(sourcePiece);
 		move.getStart().removePiece();
+		sourcePiece.setMoved(true);
+		int prevRow= sourcePiece.getRow();
+		int prevCol= sourcePiece.getCol();
+		sourcePiece.setRow(move.getEnd().getRow()); sourcePiece.setCol(move.getEnd().getColumn());
 
 		if (sourcePiece instanceof Pawn) {
-			if(((Pawn) sourcePiece).getForward()) {
-				if(sourcePiece.getRow()==0) {
-					System.out.println("yo");
-					PromotionFrame p= new PromotionFrame();
-					int choice = p.getChoice();
-					if(choice == 1){
-						move.getEnd().addPiece(new Queen(sourcePiece.isWhite(), true, 900, 'Q', 0, sourcePiece.getCol()));
-					}
-				}
-			}else {
-				if(sourcePiece.getRow()==7) {
-					PromotionFrame p= new PromotionFrame();
-					int choice = p.getChoice();
-					if(choice == 1){
-						move.getEnd().addPiece(new Queen(sourcePiece.isWhite(), true, 900, 'Q', 7, sourcePiece.getCol()));
-					}
-				}
-			}
+		    boolean isWhite= sourcePiece.isWhite();
+		    int lastRow=0;
+		    if(!isWhite){
+			lastRow+= 7;
+		    }
+		    if(sourcePiece.getRow() == lastRow) {
+			PromotionFrame promotion = new PromotionFrame(sourcePiece, destPiece, board, move);
+			System.out.println("Promotion Frame Created");
+			return false;
+		    }
 		}
 		
 		if(move.isCastlingMove()) {
