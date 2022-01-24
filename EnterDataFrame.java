@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
+import java.awt.Color;
 
 public class EnterDataFrame extends JFrame {
 
@@ -17,6 +18,7 @@ public class EnterDataFrame extends JFrame {
     private JLabel prompt;
     private String dataEntered;
     private boolean closed = false;
+    private JButton cancelButton;
 
     /**
      * Create the frame.
@@ -54,6 +56,7 @@ public class EnterDataFrame extends JFrame {
         text.setColumns(10);
 
         JButton doneButton = new JButton("Done");
+        doneButton.setForeground(new Color(0, 100, 0));
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dataEntered = text.getText();
@@ -63,8 +66,18 @@ public class EnterDataFrame extends JFrame {
             }
         });
 
-        doneButton.setBounds(44, 92, 204, 29);
+        doneButton.setBounds(44, 92, 104, 29);
         contentPane.add(doneButton);
+        
+        cancelButton = new JButton("Cancel");
+        cancelButton.setForeground(new Color(178, 34, 34));
+        cancelButton.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		frame.dispose();
+        	}
+        });
+        cancelButton.setBounds(152, 92, 104, 29);
+        contentPane.add(cancelButton);
         setVisible(true);
     }
 
