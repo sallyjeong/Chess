@@ -22,5 +22,7 @@ public class Constants {
     public static final char ROOM_NAMES_DATA = 'l';
     public static final char UPDATE_LIST = 'm';
     public static final char START_DATA = 'n';
+    public static final char DRAW_DATA = 'o';
+    public static final char GAME_OVER_DATA = 'p';
 
 }

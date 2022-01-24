@@ -189,6 +189,25 @@ public class Server {
                             publicRooms.get(room).add(this);
 
                             broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
+                        } else if (type == Constants.DRAW_DATA) {
+                            System.out.println("draw data received: " + input);
+                            Map<String, ArrayList<ClientHandler>> rooms;
+                            if (this.priv){
+                                rooms = privateRooms;
+                            }else{
+                                rooms = publicRooms;
+                            }
+                            if (rooms.get(room).get(0).username.equals(username)) {
+                                rooms.get(room).get(1).dataOut.write(Constants.DRAW_DATA + input);
+                                rooms.get(room).get(1).dataOut.newLine();
+                                rooms.get(room).get(1).dataOut.flush();
+                                System.out.println("sent to player " + rooms.get(room).get(1).username);
+                            } else {
+                                rooms.get(room).get(0).dataOut.write(Constants.DRAW_DATA + input);
+                                rooms.get(room).get(0).dataOut.newLine();
+                                rooms.get(room).get(0).dataOut.flush();
+                                System.out.println("sent to player " + rooms.get(room).get(0).username);
+                            }
                         } else if (type == Constants.LEAVE_ROOM_DATA) {
                             Map<String, ArrayList<ClientHandler>> rooms;
                             if (this.priv){
@@ -219,6 +238,9 @@ public class Server {
                                 broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has left the chat ***");
                             }
                             room = "";
+                        } else if (type==Constants.GAME_OVER_DATA){
+                            broadcastMessage(Constants.GAME_OVER_DATA + input);
+                            broadcastMessage(Constants.LEAVE_ROOM_DATA + "true"); // pretty sure this will work
                         } else if(type==Constants.ROOM_NAMES_DATA){
                             writeData(""+roomNames.size());
                             for (String roomName: roomNames){

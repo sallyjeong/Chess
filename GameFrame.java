@@ -33,8 +33,9 @@ public class GameFrame extends JFrame {
     private GameFrame frame;
     private JTextField userInputField;
     private JTextArea textArea;
+    private JTextArea movesArea;
     private Client client;
-    private String message;
+    //private int numMoves;
 
 //    public static void main(String[] args) {
 //        // TODO Auto-generated method stub
@@ -70,7 +71,17 @@ public class GameFrame extends JFrame {
         JPanel movesPanel = new JPanel();
         movesPanel.setBorder(new TitledBorder(null, "Moves", TitledBorder.CENTER, TitledBorder.TOP, null, null));
         movesPanel.setBounds(52, 118, 564, 237);
+        //movesPanel.setLayout(new FlowLayout());
         contentPane.add(movesPanel);
+
+        movesArea = new JTextArea(12,43);
+        movesArea.setEditable(false);
+
+        JScrollPane scrollMoves = new JScrollPane (movesArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollMoves.setVisible(true);
+
+        movesPanel.add(scrollMoves);
+        // movesArea.setText(pastMoves);
 
         JPanel chatPanel = new JPanel();
         chatPanel.setBorder(new TitledBorder(null, "Chat", TitledBorder.CENTER, TitledBorder.TOP, null, null));
@@ -86,7 +97,7 @@ public class GameFrame extends JFrame {
 
         chatPanel.add(scroll);
 
-        textArea.setText(message);
+        //textArea.setText(message);
 
         JTextField userInputField = new JTextField();
         //userInputField.setBounds(6, 198, 437, 33);
@@ -119,6 +130,7 @@ public class GameFrame extends JFrame {
             JButton drawButton = new JButton("Draw");
             drawButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
+                    new ConfirmFrame(frame, false);
                     //frame.dispose();
                     // send information to other user
                     // (request to opponent and not spectators)
@@ -133,7 +145,7 @@ public class GameFrame extends JFrame {
             JButton surrenderButton = new JButton("Surrender");
             surrenderButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    new ConfirmFrame(frame);
+                    new ConfirmFrame(frame, true);
                 }
             });
             surrenderButton.setBounds(237,  50, 175, 29);
@@ -161,7 +173,7 @@ public class GameFrame extends JFrame {
             JButton leaveButton = new JButton("Leave");
             leaveButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    new ConfirmFrame(frame);
+                    new ConfirmFrame(frame, true);
                 }
             });
             leaveButton.setBounds(52, 50, 267, 29);
@@ -176,6 +188,10 @@ public class GameFrame extends JFrame {
     public void addMessage(String text) {
         textArea.append(text + "\n");
     }
+    public void addMove(String move) {
+        movesArea.append(move + "\n");
+    }
+
     class GamePanel extends JPanel implements MouseListener {
 
         private Spot source = null;

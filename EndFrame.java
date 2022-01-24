@@ -16,11 +16,11 @@ import java.awt.Color;
 
 public class EndFrame extends JFrame {
 
-	private JPanel contentPane;
+    private JPanel contentPane;
 
-	/**
-	 * Launch the application.
-	 */
+    /**
+     * Launch the application.
+     */
 //	public static void main(String[] args) {
 //		EventQueue.invokeLater(new Runnable() {
 //			public void run() {
@@ -34,40 +34,42 @@ public class EndFrame extends JFrame {
 //		});
 //	}
 
-	/**
-	 * Create the frame.
-	 */
-	public EndFrame(GameFrame currentGameFrame) {
-		JFrame frame = this;
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		JLabel overLabel = new JLabel("GAME OVER");
-		overLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		overLabel.setBounds(164, 37, 120, 36);
-		contentPane.add(overLabel);
-		
-		JLabel winnerLabel = new JLabel("New label");
-		winnerLabel.setBounds(192, 96, 61, 16);
-		contentPane.add(winnerLabel);
-		
-		JLabel resultLabel = new JLabel("New label");
-		resultLabel.setBounds(192, 139, 61, 16);
-		contentPane.add(resultLabel);
-		
-		JButton exitButton = new JButton("Exit");
-		exitButton.addActionListener(new ActionListener() {
+    /**
+     * Create the frame.
+     */
+    public EndFrame(GameFrame currentGameFrame) {
+        currentGameFrame.dispose();
+        JFrame frame = this;
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setBounds(100, 100, 450, 300);
+        contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
+
+        JLabel overLabel = new JLabel("GAME OVER");
+        overLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
+        overLabel.setBounds(164, 37, 120, 36);
+        contentPane.add(overLabel);
+
+        JLabel winnerLabel = new JLabel("New label");
+        winnerLabel.setBounds(192, 96, 61, 16);
+        contentPane.add(winnerLabel);
+
+        JLabel resultLabel = new JLabel("New label");
+        resultLabel.setBounds(192, 139, 61, 16);
+        contentPane.add(resultLabel);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
                 currentGameFrame.getClient().leaveRoom();
             }
         });
-		exitButton.setForeground(new Color(0, 100, 0));
-		exitButton.setBounds(167, 184, 117, 29);
-		contentPane.add(exitButton);
-	}
+        exitButton.setForeground(new Color(0, 100, 0));
+        exitButton.setBounds(167, 184, 117, 29);
+        contentPane.add(exitButton);
+        setVisible(true);
+    }
 }

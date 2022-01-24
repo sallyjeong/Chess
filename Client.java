@@ -121,6 +121,15 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        if (data.charAt(0) == Constants.MOVE_DATA) {
+            if (data.charAt(1) == 'P') {
+                data = data.substring(2);
+            } else {
+                data = data.substring(1);
+            }
+            gameFrame.addMove(data);
+        }
     }
 
     public void getUsernameInput() {
@@ -391,7 +400,7 @@ public class Client {
                             //System.out.println("CHAT: " + data); // display message (maybe store chat in a multiline string
                             gameFrame.addMessage(data);
                         } else if (type == Constants.MOVE_DATA) {
-                            System.out.println("MOVE: " + data);
+                            //System.out.println("MOVE: " + data);
                             if (data.equals("O-O") || data.equals("O-O-O")) {
                                 receiveMove(data);
                             } else {
@@ -400,23 +409,57 @@ public class Client {
 
                                 if (data.charAt(0) == 'P') {
                                     receiveMove(startId, endId, true);
+                                    data = " " + data.substring(1);
                                     // ^^ also don't print out the P in display moves if this happens
                                 } else {
                                     receiveMove(startId, endId, false);
                                 }
                             }
-
+                            gameFrame.addMove(data);
 
                         } else if (type == Constants.QUICK_MATCH_DATA){
 
                         } else if (type == Constants.UPDATE_LIST) {
                             HomeFrame.roomNames = getRoomNames();
                             HomeFrame.list = new JList(HomeFrame.roomNames.toArray());
+                        } else if (type == Constants.DRAW_DATA) {
+                            System.out.println("draw data received: " + data);
+                            if (data.equals("request")) {
+                                DrawFrame drawFrame = new DrawFrame();
+                                // System.out.println("new frame?");
+                                do {
+                                    result = drawFrame.getResult();
+                                } while (result.equals(""));
+                                drawFrame.dispose();
+
+                                if (result.equals("confirmed")) {
+                                    // gameFrame.dispose();
+                                    new EndFrame(gameFrame); // might need to send more data to determine the text
+                                    // ^^ (game frame will close here)
+                                    sendData(Constants.GAME_OVER_DATA + "draw");
+                                } else {
+                                    sendData(Constants.DRAW_DATA + "denied");
+                                }
+
+                                /**
+                                 * new draw frame
+                                 * if confirmed, send back Constants.DRAW_DATA + confirmed
+                                 * close the gameFrame, open endFrame
+                                 *       send Constants.GAME_OVER_DATA + "draw" or smth
+                                 * else, send back Constants.DRAW_DATA + denied
+                                 */
+                            } else if (data.equals("denied")) {
+                                System.out.println("new frame?");
+                                gameFrame.addMessage("*** DRAW REQUEST DENIED ***");
+                            }
+
                         } else if (type == Constants.LEAVE_ROOM_DATA) {
                             if (data.equals("true")) { // a player has left the game
                                 // show pop-up that game over/which side won
                                 leaveRoom();
                             }
+                        } else if (type == Constants.GAME_OVER_DATA) {
+                            new EndFrame(gameFrame);
                         }
 //                        // scuffed "solution"
 //                        else if (type == Constants.CREATE_ROOM_DATA) {

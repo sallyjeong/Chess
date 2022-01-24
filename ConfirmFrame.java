@@ -36,7 +36,7 @@ public class ConfirmFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public ConfirmFrame(GameFrame currentGameFrame) {
+    public ConfirmFrame(GameFrame currentGameFrame, boolean leave) {
         JFrame frame = this;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 292, 200);
@@ -45,7 +45,12 @@ public class ConfirmFrame extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JLabel lblNewLabel = new JLabel("Leave current game");
+        JLabel lblNewLabel;
+        if (leave) {
+            lblNewLabel = new JLabel("Leave current game");
+        } else {
+            lblNewLabel = new JLabel("Request draw");
+        }
         lblNewLabel.setBounds(81, 52, 122, 16);
         contentPane.add(lblNewLabel);
 
@@ -53,8 +58,15 @@ public class ConfirmFrame extends JFrame {
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                currentGameFrame.dispose();
-                currentGameFrame.getClient().leaveRoom();
+                if (leave) {
+                    // surrender or leave button
+                    currentGameFrame.dispose();
+                    currentGameFrame.getClient().leaveRoom();
+                } else {
+                    // draw
+                    currentGameFrame.addMessage("*** DRAW REQUEST SENT ***");
+                    currentGameFrame.getClient().sendData(Constants.DRAW_DATA + "request");
+                }
             }
         });
         confirmButton.setForeground(new Color(0, 100, 0));
