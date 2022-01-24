@@ -11,14 +11,9 @@ import java.awt.image.BufferedImage;
 public class PromotionFrame extends JFrame{
 
     private JPanel contentPane;
-    private int choice = 0;
     private Board board;
     private Piece piece;
-    private Piece endPiece;
-    private Move move;
-    private King enemyKing;
     private JFrame mainFrame;
-    private Player curPlayer;
 
     /**
      * Launch the application.
@@ -30,21 +25,9 @@ public class PromotionFrame extends JFrame{
     public PromotionFrame(Piece piece, Piece endPiece, Board board, Move move, JFrame main, Game g) {
         this.board = board;
         this.piece = piece;
-        this.endPiece = endPiece;
-        this.move = move;
         boolean isWhite= piece.isWhite();
         mainFrame= main;
         mainFrame.setEnabled(false);
-        Player prevTurn= g.getTurn();
-        if(isWhite){
-            enemyKing= board.getBlackKing();
-        }
-        else{
-            enemyKing= board.getWhiteKing();
-        }
-        int prevRow= piece.getRow();
-        int prevCol= piece.getCol();
-
         JFrame frame= this;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 443, 503);
