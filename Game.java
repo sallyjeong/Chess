@@ -4,21 +4,13 @@ import java.util.ArrayList;
 
 public class Game {
 	private ArrayList<Move> pastMoves;
-	//private Player players[] = new Player[2];
-	//private CheckStatus checkStatus;
 	private boolean gameOver;
-	private Player turn;
 	private Board board;
 
 	public Game(Client player) {
-//		players[0] = p1;
-//		players[1] = p2;
 		board = new Board(player);
 		player.setBoard(board);
 		pastMoves = new ArrayList<Move>();
-//		if (player.isWhite()) {
-//			player.setTurn(true);
-//		}
 	}
 
 	public boolean playerMove(Client player, Spot start, Spot end) {
@@ -27,15 +19,8 @@ public class Game {
 	}
 
 	private boolean makeMove(Move move) {
-		//	System.out.println(move.getStart().getRow()+" "+move.getStart().getColumn()+" "+move.getEnd().getRow()+" "+move.getEnd().getColumn());
 		Piece sourcePiece = move.getStart().getPiece();
 		Client player = move.getPlayer();
-
-		// don't know if we need this part because playerMove is only called insdie the Game Frame
-		// action listener which already checks for turn
-		if(!player.getTurn()) {
-			return false;
-		}
 
 		Piece destPiece = move.getEnd().getPiece();
 		if(destPiece!=null) {
@@ -86,7 +71,6 @@ public class Game {
 			board.getBoard()[row][col].addPiece(rook);
 			rook.setRow(row);
 			rook.setCol(col);
-			System.out.println(board.getBoard()[row][col].getPiece().getRow()+ " "+board.getBoard()[row][col].getPiece().getCol());
 		}else if(move.isEnPassantMove()) {
 			Spot above = board.getBoard()[move.getEnd().getRow()-1][move.getEnd().getColumn()];
 			if(above.getPiece() instanceof Pawn && ((Pawn)above.getPiece()).getEnPassant()) {
@@ -98,30 +82,19 @@ public class Game {
 
 		pastMoves.add(move);
 		board.setEnPassant(!player.isWhite());
-		// board.getPseudoLegal(); moved to Client.receiveMove() method
 
 		Spot erase = player.getOpponentStart();
 		if (erase != null) {
 			erase.setLeft(false);
 		}
+
 		player.sendData(Constants.MOVE_DATA + move.toString());
 		player.setTurn(false);
-
-		//System.out.println(pastMoves);
-		// for testing board.print();
-
 		return true;
 
 	}
-
-
-
 	public Board getBoard() {
 		return this.board;
 	}
 
-
-	public Player getTurn() {
-		return turn;
-	}
 }

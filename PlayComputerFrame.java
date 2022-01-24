@@ -60,12 +60,12 @@ public class PlayComputerFrame extends JFrame {
         });
         doneButton.setBounds(47, 122, 98, 29);
         contentPane.add(doneButton);
-        
+
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	frame.dispose();
-            	homeFrame.setVisible(true);            }
+                frame.dispose();
+                homeFrame.setVisible(true);            }
         });
         cancelButton.setForeground(new Color(178, 34, 34));
         cancelButton.setBounds(157, 122, 98, 29);
