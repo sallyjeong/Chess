@@ -124,7 +124,7 @@ public class Client {
 
         if (data.charAt(0) == Constants.MOVE_DATA) {
             if (data.charAt(1) == 'P') {
-                data = data.substring(2);
+                data = " " + data.substring(2);
             } else {
                 data = data.substring(1);
             }
