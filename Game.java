@@ -13,7 +13,7 @@ public class Game {
 	public Game(Client player) {
 //		players[0] = p1;
 //		players[1] = p2;
-		board = new Board(player.isWhite());
+		board = new Board(player);
 		player.setBoard(board);
 		pastMoves = new ArrayList<Move>();
 //		if (player.isWhite()) {

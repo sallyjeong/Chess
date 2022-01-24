@@ -18,7 +18,7 @@ public class Client {
     private boolean turn = false; // set white to true once both players are in the game
     private Board board;
     private Spot opponentStart = null;
-    private boolean inGame = false;
+    //private boolean inGame = false;
     private ArrayList<Piece> captured;
     private Socket socket;
     private GameFrame gameFrame;
@@ -202,7 +202,7 @@ public class Client {
     }
 
     public void startGame() {
-        inGame = true;
+        //inGame = true;
         gameFrame = new GameFrame(thisClient, thisClient.isPlayer);
         listenForUpdates();
     }
@@ -355,8 +355,8 @@ public class Client {
                 oldBoard[i][j] = board.getBoard()[i][j];
             }
         }
-        for (int i = 0; i<8; i++) {
-            for (int j = 0; j<8; j++) {
+        for (int i = 0; i<board.getBoard().length; i++) {
+            for (int j = 0; j<board.getBoard()[i].length; j++) {
                 board.getBoard()[i][j] = oldBoard[7-i][7-j];
                 board.getBoard()[i][j].setRow(i);
                 board.getBoard()[i][j].setColumn(j);
@@ -368,7 +368,62 @@ public class Client {
         }
     }
 
+    public void sendBoard(String spectator) {
+        for(int i=0; i<board.getBoard().length; i++) {
+            for(int j=0; j<board.getBoard()[i].length; j++) {
+                Piece temp = board.getBoard()[i][j].getPiece();
+                if (temp != null) {
+                    String pieceColour = "b";
+                    if (temp.isWhite()) {
+                        pieceColour = "w";
+                    }
+                    if (temp instanceof Pawn) {
+                        sendData(Constants.BOARD_DATA + spectator + " " + i + j + "P" + pieceColour);
+                    } else {
+                        sendData(Constants.BOARD_DATA + spectator + " " + i + j + temp.getSymbol() + pieceColour);
+                    }
+                }
+            }
+        }
+        sendData(Constants.BOARD_DATA  + spectator + " " + Constants.DONE);
+    }
+
+    public void receiveBoard(String piece) {
+        if (piece.equals(Constants.DONE)) {
+            if ((isWhite() && board.getBoard()[0][0].getID().equals("h1"))
+            || (!isWhite() && board.getBoard()[0][0].getID().equals("a8"))) {
+                flipBoard();
+            }
+        } else {
+            int i = Character.getNumericValue(piece.charAt(0));
+            int j = Character.getNumericValue(piece.charAt(1));
+            char symbol = piece.charAt(2);
+            char pieceColour = piece.charAt(3);
+            boolean whitePiece = false;
+            Piece newPiece = null;
+            if (pieceColour == 'w') {
+                whitePiece = true;
+            }
+
+            if (symbol == 'P') {
+                newPiece = new Pawn(whitePiece, false, 1, '\u0000', i, j, whitePiece);
+            } else if (symbol == 'R') {
+                newPiece = new Rook(whitePiece, false, 5, symbol, i, j);
+            } else if (symbol == 'N') {
+                newPiece = new Knight(whitePiece, false, 3, symbol, i, j);
+            } else if (symbol == 'B') {
+                newPiece = new Bishop(whitePiece, false, 3, symbol, i, j);
+            } else if (symbol == 'Q') {
+                newPiece = new Queen(whitePiece, false, 9, symbol, i, j);
+            } else if (symbol == 'K') {
+                newPiece = new King(whitePiece, false, 1000, symbol, i, j);
+            }
+            board.getBoard()[i][j].addPiece(newPiece);
+        }
+    }
+
     public void leaveRoom() {
+        //inGame = false;
         try {
             dataOut.write(Constants.LEAVE_ROOM_DATA + "" + isPlayer);
             dataOut.newLine();
@@ -380,14 +435,16 @@ public class Client {
         homeFrame.setVisible(true);
         System.out.println(username + " left room [" + room +"]");
         room = "";
-        inGame = false;
+//        new HomeFrame();
+//        quitGame();
+
     }
 
     public void listenForUpdates() { // this will be the place you determine what type of data it is?
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (socket.isConnected() && inGame == true) {
+                while (socket.isConnected()) {
                     try {
                         String data = dataIn.readLine();
                         char type = data.charAt(0);
@@ -425,9 +482,17 @@ public class Client {
                         } else if (type == Constants.UPDATE_LIST) {
                             HomeFrame.roomNames = getRoomNames();
                             HomeFrame.list = new JList(HomeFrame.roomNames.toArray());
+                        } else if (type == Constants.BOARD_DATA) {
+                            //System.out.println("BOARD DATA: " + data);
+                            if (isPlayer) {
+                                sendBoard(data);
+                            } else {
+                                receiveBoard(data);
+
+                            }
                         } else if (type == Constants.DRAW_DATA) {
                             System.out.println("draw data received: " + data);
-                            if (data.equals("request")) {
+                            if (data.equals(Constants.REQUEST)) {
                                 DrawFrame drawFrame = new DrawFrame();
                                 // System.out.println("new frame?");
                                 do {
@@ -451,7 +516,7 @@ public class Client {
                                  *       send Constants.GAME_OVER_DATA + "draw" or smth
                                  * else, send back Constants.DRAW_DATA + denied
                                  */
-                            } else if (data.equals("denied")) {
+                            } else { // used to be else if "denied"
                                 System.out.println("new frame?");
                                 gameFrame.addMessage("*** DRAW REQUEST DENIED ***");
                             }
@@ -470,6 +535,8 @@ public class Client {
 //                        }
                     } catch (IOException e) {
                         e.printStackTrace();
+                        System.out.println("2loop should end now");
+                        break;
                     }
                 }
             }
@@ -542,5 +609,8 @@ public class Client {
     }
     public Spot getOpponentStart() {
         return opponentStart;
+    }
+    public boolean getIsPlayer() {
+        return isPlayer;
     }
 }

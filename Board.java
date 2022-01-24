@@ -14,9 +14,11 @@ public class Board implements Drawable {
 	private Spot[][] board;
 	private King whiteKing, blackKing;
 	private boolean white;
+	private Client player;
 
-	public Board(boolean white) {
-		this.white = white;
+	public Board(Client player) {
+		this.player = player;
+		this.white = player.isWhite();
 		this.create();
 	}
 
@@ -27,67 +29,71 @@ public class Board implements Drawable {
 		int whiteRow, blackRow;
 		int kingCol, queenCol;
 
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
 				if (white) {
 					tempId = (char) ('a' + j) + ((8 - i) + "");
 				} else {
-					tempId = (char) ('a'+ (7 - j)) + ((i + 1) +"");
+					tempId = (char) ('a' + (7 - j)) + ((i + 1) + "");
 				}
-				if((i+j)%2==0) {
+				if ((i + j) % 2 == 0) {
 					board[i][j] = new Spot(i, j, tempId, null, whiteSquare, LENGTH);
-				}else {
+				} else {
 					board[i][j] = new Spot(i, j, tempId, null, blackSquare, LENGTH);
 				}
 			}
 		}
 
-		if (white) {
-			whiteRow = 7;
-			blackRow = 0;
-			kingCol = 4;
-			queenCol = 3;
-			for(int i=0; i<8; i++) {
-				// white pawns
-				board[whiteRow-1][i].addPiece(new Pawn(true, false, 1, '\u0000', whiteRow-1, i, white));
-				// black pawns
-				board[blackRow+1][i].addPiece(new Pawn(false, false, 1, '\u0000', blackRow+1, i, !white));
+		if (player.getIsPlayer()) {
+			if (white) {
+				whiteRow = 7;
+				blackRow = 0;
+				kingCol = 4;
+				queenCol = 3;
+				for (int i = 0; i < 8; i++) {
+					// white pawns
+					board[whiteRow - 1][i].addPiece(new Pawn(true, false, 1, '\u0000', whiteRow - 1, i, white));
+					// black pawns
+					board[blackRow + 1][i].addPiece(new Pawn(false, false, 1, '\u0000', blackRow + 1, i, !white));
+				}
+			} else {
+				whiteRow = 0;
+				blackRow = 7;
+				kingCol = 3;
+				queenCol = 4;
+				for (int i = 0; i < 8; i++) {
+					// white pawns
+					board[whiteRow + 1][i].addPiece(new Pawn(true, false, 1, '\u0000', whiteRow + 1, i, white));
+					// black pawns
+					board[blackRow - 1][i].addPiece(new Pawn(false, false, 1, '\u0000', blackRow - 1, i, !white));
+				}
 			}
+
+			board[whiteRow][0].addPiece(new Rook(true, false, 5, 'R', whiteRow, 0));
+			board[whiteRow][1].addPiece(new Knight(true, false, 3, 'N', whiteRow, 1));
+			board[whiteRow][2].addPiece(new Bishop(true, false, 3, 'B', whiteRow, 2));
+			board[whiteRow][queenCol].addPiece(new Queen(true, false, 9, 'Q', whiteRow, queenCol));
+			whiteKing = new King(true, false, 1000, 'K', whiteRow, kingCol);
+			board[whiteRow][kingCol].addPiece(whiteKing);
+			board[whiteRow][5].addPiece(new Bishop(true, false, 3, 'B', whiteRow, 5));
+			board[whiteRow][6].addPiece(new Knight(true, false, 3, 'N', whiteRow, 6));
+			board[whiteRow][7].addPiece(new Rook(true, false, 5, 'R', whiteRow, 7));
+
+			board[blackRow][0].addPiece(new Rook(false, false, 5, 'R', blackRow, 0));
+			board[blackRow][1].addPiece(new Knight(false, false, 3, 'N', blackRow, 1));
+			board[blackRow][2].addPiece(new Bishop(false, false, 3, 'B', blackRow, 2));
+			board[blackRow][queenCol].addPiece(new Queen(false, false, 9, 'Q', blackRow, queenCol));
+			blackKing = new King(false, false, 1000, 'K', blackRow, kingCol);
+			board[blackRow][kingCol].addPiece(blackKing);
+			board[blackRow][5].addPiece(new Bishop(false, false, 3, 'B', blackRow, 5));
+			board[blackRow][6].addPiece(new Knight(false, false, 3, 'N', blackRow, 6));
+			board[blackRow][7].addPiece(new Rook(false, false, 5, 'R', blackRow, 7));
+
+			getPseudoLegal();
+
 		} else {
-			whiteRow = 0;
-			blackRow = 7;
-			kingCol = 3;
-			queenCol = 4;
-			for(int i=0; i<8; i++) {
-				// white pawns
-				board[whiteRow+1][i].addPiece(new Pawn(true, false, 1, '\u0000', whiteRow+1, i, white));
-				// black pawns
-				board[blackRow-1][i].addPiece(new Pawn(false, false, 1, '\u0000', blackRow-1, i, !white));
-			}
+			player.sendData(Constants.BOARD_DATA + "!request");
 		}
-
-		board[whiteRow][0].addPiece(new Rook(true, false, 5, 'R', whiteRow, 0));
-		board[whiteRow][1].addPiece(new Knight(true, false, 3, 'N', whiteRow, 1));
-		board[whiteRow][2].addPiece(new Bishop(true, false, 3, 'B', whiteRow, 2));
-		board[whiteRow][queenCol].addPiece(new Queen(true, false, 9, 'Q', whiteRow, queenCol));
-		whiteKing = new King(true, false, 1000, 'K', whiteRow, kingCol);
-		board[whiteRow][kingCol].addPiece(whiteKing);
-		board[whiteRow][5].addPiece(new Bishop(true, false, 3, 'B', whiteRow, 5));
-		board[whiteRow][6].addPiece(new Knight(true, false, 3, 'N', whiteRow, 6));
-		board[whiteRow][7].addPiece(new Rook(true, false, 5, 'R', whiteRow, 7));
-
-		board[blackRow][0].addPiece(new Rook(false, false, 5, 'R', blackRow, 0));
-		board[blackRow][1].addPiece(new Knight(false, false, 3, 'N', blackRow, 1));
-		board[blackRow][2].addPiece(new Bishop(false, false, 3, 'B', blackRow, 2));
-		board[blackRow][queenCol].addPiece(new Queen(false, false, 9, 'Q', blackRow, queenCol));
-		blackKing = new King(false, false, 1000, 'K', blackRow, kingCol);
-		board[blackRow][kingCol].addPiece(blackKing);
-		board[blackRow][5].addPiece(new Bishop(false, false, 3, 'B', blackRow, 5));
-		board[blackRow][6].addPiece(new Knight(false, false, 3, 'N', blackRow, 6));
-		board[blackRow][7].addPiece(new Rook(false, false, 5, 'R', blackRow, 7));
-
-		getPseudoLegal();
-
 	}
 
 	public void getPseudoLegal() {
@@ -245,35 +251,7 @@ public class Board implements Drawable {
 			}
 		}
 	}
-	// for testing
-	public void print() {
-		// piece in each spot
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
-				if (board[i][j].getPiece() != null) {
-					System.out.print(board[i][j].getPiece().getSymbol());
-				} else {
-					System.out.print("-");
-				}
-			}
-			System.out.println();
-		}
-		// piece xy
-//		for(int i=0; i<8; i++) {
-//			for(int j=0; j<8; j++) {
-//				System.out.print(board[i][j].getPiece().getRow() + board[i][j].getPiece().getCol() + " ");
-//			}
-//			System.out.println();
-//		}
 
-//		// spot id
-//		for(int i=0; i<8; i++) {
-//			for(int j=0; j<8; j++) {
-//				System.out.print(board[i][j].getID() + " ");
-//			}
-//			System.out.println();
-//		}
-	}
 	public Spot[][] getBoard() {
 		return this.board;
 	}

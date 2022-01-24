@@ -35,7 +35,7 @@ public class GameFrame extends JFrame {
     private JTextArea textArea;
     private JTextArea movesArea;
     private Client client;
-    //private int numMoves;
+    private int numMoves;
 
 //    public static void main(String[] args) {
 //        // TODO Auto-generated method stub
@@ -62,7 +62,7 @@ public class GameFrame extends JFrame {
         JPanel boardPanel = new JPanel();
         //boardPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
         boardPanel.add(board);
-        board.setBounds(0,0, 576, 576);
+        board.setBounds(0, 0, 576, 576);
 
         boardPanel.setBounds(674, 50, 600, 600); // 576/8 = 72
         contentPane.add(boardPanel);
@@ -74,10 +74,10 @@ public class GameFrame extends JFrame {
         //movesPanel.setLayout(new FlowLayout());
         contentPane.add(movesPanel);
 
-        movesArea = new JTextArea(12,43);
+        movesArea = new JTextArea(12, 43);
         movesArea.setEditable(false);
 
-        JScrollPane scrollMoves = new JScrollPane (movesArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane scrollMoves = new JScrollPane(movesArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollMoves.setVisible(true);
 
         movesPanel.add(scrollMoves);
@@ -89,10 +89,10 @@ public class GameFrame extends JFrame {
         contentPane.add(chatPanel);
         //chatPanel.setLayout(new FlowLayout());;
 
-        textArea = new JTextArea(10,43);
+        textArea = new JTextArea(10, 43);
         textArea.setEditable(false);
 
-        JScrollPane scroll = new JScrollPane (textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane scroll = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setVisible(true);
 
         chatPanel.add(scroll);
@@ -110,7 +110,6 @@ public class GameFrame extends JFrame {
                 String text = userInputField.getText();
                 client.sendData(Constants.CHAT_DATA + client.getUsername() + ": " + text);
                 textArea.append("me: " + text + "\n");
-                //userInputField.selectAll();
                 textArea.setCaretPosition(textArea.getDocument().getLength());
                 userInputField.setText("");
             }
@@ -131,15 +130,9 @@ public class GameFrame extends JFrame {
             drawButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     new ConfirmFrame(frame, false);
-                    //frame.dispose();
-                    // send information to other user
-                    // (request to opponent and not spectators)
-                    // ^^ first 2 ClientHandlers of a room (HashMap) will be the players
-                    // so we can differentiate sending data this way
-                    // new ();    new frame here
                 }
             });
-            drawButton.setBounds(52,  50, 175, 29);
+            drawButton.setBounds(52, 50, 175, 29);
             contentPane.add(drawButton);
 
             JButton surrenderButton = new JButton("Surrender");
@@ -148,7 +141,7 @@ public class GameFrame extends JFrame {
                     new ConfirmFrame(frame, true);
                 }
             });
-            surrenderButton.setBounds(237,  50, 175, 29);
+            surrenderButton.setBounds(237, 50, 175, 29);
             contentPane.add(surrenderButton);
 
             JButton boardFlipButton = new JButton("Flip Board");
@@ -157,7 +150,7 @@ public class GameFrame extends JFrame {
                     client.flipBoard();
                 }
             });
-            boardFlipButton.setBounds(426,  50, 175, 29);
+            boardFlipButton.setBounds(426, 50, 175, 29);
             contentPane.add(boardFlipButton);
         } else {
 
@@ -182,15 +175,20 @@ public class GameFrame extends JFrame {
         }
         frame.setVisible(true);
     }
+
     public Client getClient() {
         return client;
     }
+
     public void addMessage(String text) {
         textArea.append(text + "\n");
     }
+
     public void addMove(String move) {
         movesArea.append(move + "\n");
+        movesArea.setCaretPosition(movesArea.getDocument().getLength());
     }
+
 
     class GamePanel extends JPanel implements MouseListener {
 
@@ -270,6 +268,4 @@ public class GameFrame extends JFrame {
         }
 
     }
-
-
 }

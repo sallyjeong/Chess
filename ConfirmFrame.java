@@ -65,7 +65,7 @@ public class ConfirmFrame extends JFrame {
                 } else {
                     // draw
                     currentGameFrame.addMessage("*** DRAW REQUEST SENT ***");
-                    currentGameFrame.getClient().sendData(Constants.DRAW_DATA + "request");
+                    currentGameFrame.getClient().sendData(Constants.DRAW_DATA + Constants.REQUEST);
                 }
             }
         });

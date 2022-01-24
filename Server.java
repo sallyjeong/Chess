@@ -97,7 +97,7 @@ public class Server {
                                 room = input;
                                 writeData("success. welcome " + username);
                                 broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has joined the chat ***");
-                                if (privateRooms.get(room).size() > 1) {
+                                if (privateRooms.get(room).size() == 2) {
                                     //writeData(Constants.START_DATA + "");
                                     broadcastMessage(Constants.START_DATA + "");
                                 }
@@ -110,7 +110,7 @@ public class Server {
                             privateRooms.get(input).add(this);
                             room = input;
                             priv = true;
-                            writeData("room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
+                            writeData(Constants.CREATE_ROOM_DATA + "room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
 
                         } else if (type == Constants.QUICK_MATCH_DATA) { //public room
                             writeData(Constants.QUICK_MATCH_WAIT);
@@ -189,24 +189,58 @@ public class Server {
                             publicRooms.get(room).add(this);
 
                             broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
-                        } else if (type == Constants.DRAW_DATA) {
-                            System.out.println("draw data received: " + input);
+                        } else if (type == Constants.BOARD_DATA) {
                             Map<String, ArrayList<ClientHandler>> rooms;
                             if (this.priv){
                                 rooms = privateRooms;
                             }else{
                                 rooms = publicRooms;
                             }
-                            if (rooms.get(room).get(0).username.equals(username)) {
-                                rooms.get(room).get(1).dataOut.write(Constants.DRAW_DATA + input);
-                                rooms.get(room).get(1).dataOut.newLine();
-                                rooms.get(room).get(1).dataOut.flush();
-                                System.out.println("sent to player " + rooms.get(room).get(1).username);
-                            } else {
-                                rooms.get(room).get(0).dataOut.write(Constants.DRAW_DATA + input);
-                                rooms.get(room).get(0).dataOut.newLine();
-                                rooms.get(room).get(0).dataOut.flush();
-                                System.out.println("sent to player " + rooms.get(room).get(0).username);
+
+                            if (input.equals(Constants.REQUEST)) {
+                                if (rooms.get(room).get(0).colour.equals(colour)) { //colour chosen matches first player
+                                    rooms.get(room).get(0).dataOut.write(Constants.BOARD_DATA + username);
+                                    rooms.get(room).get(0).dataOut.newLine();
+                                    rooms.get(room).get(0).dataOut.flush();
+                                } else { //colour matches second player or neither players
+                                    rooms.get(room).get(1).dataOut.write(Constants.BOARD_DATA + username);
+                                    rooms.get(room).get(1).dataOut.newLine();
+                                    rooms.get(room).get(1).dataOut.flush();
+                                }
+                            } else { // sending the info back to the spectator who requested
+                                // input = username + " " + [i][j][piece symbol][B/W])
+                                // example: chess 00Pw
+                                String sendToUser = input.substring(0, input.indexOf(" "));
+                                for (ClientHandler member : rooms.get(room)) {
+                                    try {
+                                        if (member.username.equals(sendToUser)) {
+                                            member.dataOut.write(Constants.BOARD_DATA + input.substring(input.indexOf(" ")+1));
+                                            member.dataOut.newLine();
+                                            member.dataOut.flush();
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        } else if (type == Constants.DRAW_DATA) {
+                            Map<String, ArrayList<ClientHandler>> rooms;
+                            if (this.priv){
+                                rooms = privateRooms;
+                            }else{
+                                rooms = publicRooms;
+                            }
+
+                            if (rooms.get(room).size()>1) {
+                                if (rooms.get(room).get(0).username.equals(username)) {
+                                    rooms.get(room).get(1).dataOut.write(Constants.DRAW_DATA + input);
+                                    rooms.get(room).get(1).dataOut.newLine();
+                                    rooms.get(room).get(1).dataOut.flush();
+                                } else {
+                                    rooms.get(room).get(0).dataOut.write(Constants.DRAW_DATA + input);
+                                    rooms.get(room).get(0).dataOut.newLine();
+                                    rooms.get(room).get(0).dataOut.flush();
+                                }
                             }
                         } else if (type == Constants.LEAVE_ROOM_DATA) {
                             Map<String, ArrayList<ClientHandler>> rooms;

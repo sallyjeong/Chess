@@ -8,6 +8,8 @@ public class Constants {
     public static final String JOIN_ROOM_ERROR = "error. invalid room"; //for private room
     public static final String QUICK_MATCH_WAIT = "waiting to be matched";
     public static final String QUICK_MATCH_JOINED = "joined game";
+    public static final String REQUEST = "!request";
+    public static final String DONE = "!done";
     public static final char CHAT_DATA = 'a';
     public static final char MOVE_DATA = 'b';
     public static final char USERNAME_DATA = 'c';
