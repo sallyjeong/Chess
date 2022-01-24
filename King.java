@@ -7,15 +7,12 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 public class King extends Piece {
-	
-	private boolean castle = false;
 
+	private boolean castled;
+	
 	public King(boolean w, boolean m, int p, char s, int r, int c) {
 		super(w, m, p, s, r, c);
-	}
-
-	public boolean isCastled() {
-		return this.castle;
+		this.castled = false;
 	}
 
 	@Override
@@ -92,4 +89,11 @@ public class King extends Piece {
 		}
 	}
 	
+	public void setCastled() {
+		this.castled = true;
+	}
+	
+	public boolean isCastled() {
+		return this.castled;
+	}
 }

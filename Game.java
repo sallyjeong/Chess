@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Game {
 	private ArrayList<Move> pastMoves;
 	private Player players[] = new Player[2];
-	//private CheckStatus checkStatus;
 	private boolean gameOver;
 	private Player turn;
 	private Board board;
@@ -44,7 +43,8 @@ public class Game {
 		move.getStart().getPiece().displayValidMoves(false);
 		move.getEnd().addPiece(sourcePiece);
 		move.getStart().removePiece();
-
+		sourcePiece.setMoved(true);
+		
 		if (sourcePiece instanceof Pawn) {
 			if(((Pawn) sourcePiece).getForward()) {
 				if(sourcePiece.getRow()==0) {
@@ -85,7 +85,8 @@ public class Game {
 			}
 			Piece rook = movingRook.removePiece();
 			board.getBoard()[row][col].addPiece(rook);
-			System.out.println(board.getBoard()[row][col].getPiece().getRow()+ " "+board.getBoard()[row][col].getPiece().getCol());
+			rook.setMoved(true);
+			((King)move.getEnd().getPiece()).setCastled();
 		}else if(move.isEnPassantMove()) {
 			Spot above = board.getBoard()[move.getEnd().getRow()-1][move.getEnd().getColumn()];
 			if(above.getPiece() instanceof Pawn && ((Pawn)above.getPiece()).getEnPassant()) {
@@ -95,8 +96,6 @@ public class Game {
 			}
 		}
 		
-		
-		pastMoves.add(move);
 		board.setEnPassant(!player.isWhite());
 		board.getPseudoLegal();
 		
@@ -106,10 +105,30 @@ public class Game {
 			this.turn = players[0];
 		}
 	
+		if(board.isCheckmateOrStalemate(turn.isWhite())==1) {
+			System.out.println("Checkmate");
+			move.setCheckmatingMove();
+			if(turn.isWhite()) {
+				new EndFrame("Black wins", "0 - 1");
+			}else {
+				new EndFrame("White wins", "1 - 0");
+			}
+			return true;
+		}else if(board.isCheckmateOrStalemate(turn.isWhite())==2 || board.isInsufficientMat()) {
+			System.out.println("Stalemate");
+			new EndFrame("Draw", "1/2 - 1/2");
+			return true;
+		}else if(board.kingInCheck(turn.isWhite())) {
+			move.setCheckMove();
+		}
+		pastMoves.add(move);
+		
 		if(turn instanceof ComputerPlayer) {
 			Move m = ((ComputerPlayer) turn).makeMove(board);
 			makeMove(m);
 		}
+		
+		
 		
 		return true;
 		

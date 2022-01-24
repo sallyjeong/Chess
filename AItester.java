@@ -16,16 +16,21 @@ public class AItester {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		p1 = new Player(true); p2 = new ComputerPlayer(false);
+		p2 = new Player(false); p1 = new ComputerPlayer(true);
 		curPlayer = p1;
-		game = new Game(true, p1, p2);
+		game = new Game(false, p1, p2);
 
+		Move m = ((ComputerPlayer) p1).makeMove(game.getBoard(), 3);
+		game.playerMove(p1, m.getStart(), m.getEnd());
+		
 		JFrame frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GamePanel v = new GamePanel();
 		frame.setSize(1000, 1000);
 		frame.setVisible(true);
 		frame.getContentPane().add(v);
+		
+		
 	}
 
 
@@ -81,7 +86,7 @@ public class AItester {
 					}
 				}
 			}
-
+			
 		}
 
 

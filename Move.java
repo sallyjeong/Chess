@@ -4,7 +4,9 @@ public class Move {
 	private Spot start;
 	private Spot end;
 	private Piece sourcePiece, capturedPiece;
-
+	
+	private boolean isCheckmatingMove, isCheckMove;
+	
 	public Move (Spot start, Spot end) {
 		this.start = start;
 		this.end = end;
@@ -64,6 +66,12 @@ public class Move {
 			ret+="=";
 			ret+=end.getPiece().getSymbol();
 		}
+
+		if(isCheckmatingMove) {
+			ret+="#";
+		}else if(isCheckMove) {
+			ret+="+";
+		}
 		
 		return ret;
 	}
@@ -76,5 +84,12 @@ public class Move {
 		return this.end;
 	}
 
+	public void setCheckmatingMove() {
+		this.isCheckmatingMove = true;
+	}
+
+	public void setCheckMove() {
+		this.isCheckMove = true;
+	}
 
 }
