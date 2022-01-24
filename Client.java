@@ -335,6 +335,27 @@ public class Client {
             rook.setCol(col+2-1);
         }
     }
+
+    public void flipBoard() {
+        Spot[][] oldBoard = new Spot[8][8];
+        for(int i=0; i<board.getBoard().length; i++) {
+            for(int j=0; j<board.getBoard()[i].length; j++) {
+                oldBoard[i][j] = board.getBoard()[i][j];
+            }
+        }
+        for (int i = 0; i<8; i++) {
+            for (int j = 0; j<8; j++) {
+                board.getBoard()[i][j] = oldBoard[7-i][7-j];
+                board.getBoard()[i][j].setRow(i);
+                board.getBoard()[i][j].setColumn(j);
+                if (board.getBoard()[i][j].getPiece() != null) {
+                    board.getBoard()[i][j].getPiece().setRow(i);
+                    board.getBoard()[i][j].getPiece().setCol(j);
+                }
+            }
+        }
+    }
+
     public void leaveRoom() {
         try {
             dataOut.write(Constants.LEAVE_ROOM_DATA + "" + isPlayer);
