@@ -1,3 +1,8 @@
+/**
+ * attempt at fixing listenForUpdates version
+ *
+ */
+
 package chessproject;
 
 import javax.swing.*;
@@ -20,27 +25,25 @@ public class Client {
     private Board board;
     //private boolean boardChanged = false;
     private Spot opponentStart = null;
-    private boolean inGame = false;
+    //private boolean inGame = false;
     private ArrayList<Piece> captured;
     private Socket socket;
     private GameFrame gameFrame;
     private BufferedReader dataIn;
     private BufferedWriter dataOut;
     private MessageFrame messageFrame;
-    private String result = "";
-    private Client thisClient;
+    private String usernameResult = Constants.USERNAME_ERROR;
+    private String joinRoomResult = Constants.JOIN_ROOM_ERROR;
+    private String quickMatchResult = "";
+    //private Client thisClient;
     //private Thread updateThread;
     final int LENGTH = 35;
 
-//    public static void main(String[] args) {
-//
-//        Client client = new Client(new HomeFrame());
-//    }
+    public static void main(String[] args) {
+        Client client = new Client();
+    }
 
-    public Client(JFrame homeFrame) {
-        this.homeFrame = homeFrame; // use this variable to setVisible after you leave the game
-        this.thisClient = this;
-        this.captured = new ArrayList<Piece>();
+    public Client() {
 
         // add variable to see if the game has been closed/left
         // send msg to client handler to remove the person from that room
@@ -56,27 +59,102 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        this.homeFrame = new HomeFrame(this); // use this variable to setVisible after you leave the game
+        this.captured = new ArrayList<Piece>();
+        listenForUpdates();
     }
 
-    public ArrayList<String> getRoomNames(){
-        ArrayList <String> roomNames = new ArrayList<>();
-        sendData(Constants.ROOM_NAMES_DATA+"");
-        try {
-            int size = Integer.parseInt(dataIn.readLine());
+    public void listenForUpdates() { // this will be the place you determine what type of data it is?
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (socket.isConnected()) {
+                    try {
+                        String data = dataIn.readLine();
+                        char type = data.charAt(0);
+                        data = data.substring(1);
+                        // check the char stuff
+                        if (type == Constants.START_DATA) {
+                            System.out.println("GAME CAN START NOW");
+                            if (isWhite()) {
+                                turn = true;
+                                //boardChanged = true;
+                            }
+                        } else if (type == Constants.CHAT_DATA) {
+                            System.out.println(data); // display message (maybe store chat in a multiline string
+                        } else if (type == Constants.MOVE_DATA) {
+                            System.out.println("MOVE: " + data);
+                            if (data.equals("O-O") || data.equals("O-O-O")) {
+                                receiveMove(data);
+                                //System.out.println("CASTLE HASN'T BEEN ACCOUNTED FOR YET");
+                            } else {
+                                String startId = data.substring(1, 3);
+                                String endId = data.substring(data.length() - 2);
+                                // check for enPassant move, charAt(0) == 'P'
+                                // ^^ also don't print out the P in display moves if this happens
+                                if (data.charAt(0) == 'P') {
+                                    receiveMove(startId, endId, true);
+                                } else {
+                                    receiveMove(startId, endId, false);
+                                }
+//                                System.out.println(board == gameFrame.game.getBoard());
+//                                System.out.println("board changed from receive move");
+                            }
 
-            for (int i = 0; i<size; i++){
-                roomNames.add(dataIn.readLine());
+                        } else if (type == Constants.USERNAME_DATA) {
+                            usernameResult = data;
+                            System.out.println("USERNAME DATA RECEIVED" +  data);
+                        } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
+                            joinRoomResult = data;
+                            System.out.println("JOIN ROOM DATA RECEIVED" +  data);
+                        } else if (type == Constants.COLOUR_DATA){
+                            colour = data;
+                            System.out.println("COLOUR DATA RECEIVED" +  data);
+                        } else if (type == Constants.QUICK_MATCH_DATA){
+                            quickMatchResult = data;
+                            System.out.println("QUICK MATCH DATA RECEIVED" +  data);
+                        } else if (type == Constants.UPDATE_LIST) {
+//                            HomeFrame.roomNames = getRoomNames();
+//                            HomeFrame.list = new JList(HomeFrame.roomNames.toArray());
+                        } else if (type == Constants.LEAVE_ROOM_DATA) {
+                            // System.out.println("DATA: " + data);
+                            if (data.equals("true")) { // a player has left the game
+                                // show pop-up that game over/which side won
+                                leaveRoom();
+                            }
+                        } else if (type == Constants.CREATE_ROOM_DATA) {
+                            System.out.println("ROOM CONFIRMED");
+                        } else if (type == Constants.ROOM_NAMES_DATA) {
+
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        return roomNames;
+        }).start();
     }
+
+//    public ArrayList<String> getRoomNames(){
+//        ArrayList <String> roomNames = new ArrayList<>();
+//        sendData(Constants.ROOM_NAMES_DATA+"");
+//        try {
+//            int size = Integer.parseInt(dataIn.readLine());
+//
+//            for (int i = 0; i<size; i++){
+//                roomNames.add(dataIn.readLine());
+//            }
+//        }catch(IOException e){
+//            e.printStackTrace();
+//        }
+//        return roomNames;
+//    }
 
     public void spectate(String roomName) {
         sendData(Constants.JOIN_PUB_ROOM_DATA + roomName);
         pickSpectateColour();
-        verifyData(Constants.COLOUR_DATA);
+        sendData(Constants.COLOUR_DATA + colour);
         System.out.println("JOINING AS: " + colour);
         isPlayer = false;
         startGame();
@@ -97,31 +175,6 @@ public class Client {
         }
     }
 
-    // not sure if we merge sendMessage/sendMove stuff with this or not
-    public String verifyData(char type) {
-        String result = "";
-        try {
-            if (type == Constants.USERNAME_DATA) {
-                dataOut.write(type + username);
-                // maybe combine both below into an
-            } else if ((type == Constants.JOIN_PRIV_ROOM_DATA) || (type == Constants.CREATE_ROOM_DATA)) {
-                dataOut.write(type + room);
-                // System.out.println("data written");
-            } else if (type == Constants.COLOUR_DATA) {
-                dataOut.write(type + colour);
-            }
-            dataOut.newLine();
-            dataOut.flush();
-
-            result = dataIn.readLine();
-            //System.out.println(dataIn.readLine());
-            //System.out.println("data saved");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
     public void sendData(String data) {
         try {
             dataOut.write(data);
@@ -136,38 +189,38 @@ public class Client {
     public void getUsernameInput() {
         do {
             askForData(Constants.USERNAME_DATA);
-            result = verifyData(Constants.USERNAME_DATA);
-            System.out.println("USERNAME CREATION: " + result);
+            sendData(Constants.USERNAME_DATA + username);
+            System.out.println("USERNAME CREATION: " + usernameResult);
 
-            if (result.equals(Constants.USERNAME_ERROR)) {
-                messageFrame = new MessageFrame(result);
+            if (usernameResult.equals(Constants.USERNAME_ERROR)) {
+                messageFrame = new MessageFrame(usernameResult);
             }
 
             waitTillClosed(messageFrame);
 
-        } while (result.equals(Constants.USERNAME_ERROR));
+        } while (usernameResult.equals(Constants.USERNAME_ERROR));
         //System.out.println("done username");
     }
 
     public void getRoomInput() {
         do {
             askForData(Constants.JOIN_PRIV_ROOM_DATA);
-            result = verifyData(Constants.JOIN_PRIV_ROOM_DATA);
-            System.out.println("JOIN ROOM: [" + room + "] "+ result);
+            sendData(Constants.JOIN_PRIV_ROOM_DATA + room);
+            System.out.println("JOIN ROOM: [" + room + "] "+ joinRoomResult);
 
-            if (result.equals(Constants.JOIN_ROOM_ERROR)) {
-                messageFrame = new MessageFrame(result);
+            if (joinRoomResult.equals(Constants.JOIN_ROOM_ERROR)) {
+                messageFrame = new MessageFrame(joinRoomResult);
             }
 
             waitTillClosed(messageFrame);
-        } while (result.equals(Constants.JOIN_ROOM_ERROR));
+        } while (joinRoomResult.equals(Constants.JOIN_ROOM_ERROR));
 
-        colour = verifyData(Constants.COLOUR_DATA);
+        sendData(Constants.COLOUR_DATA + ""); // save data in into colour variable in thread
 
         // spectator or not
-        if (colour.charAt(0) == Constants.COLOUR_DATA) {
+        if (colour.length() == 1) {
             pickSpectateColour();
-            verifyData(Constants.COLOUR_DATA);
+            sendData(Constants.COLOUR_DATA + colour);
             System.out.println("spectator");
             isPlayer = false;
         } else {
@@ -193,30 +246,19 @@ public class Client {
             randomizeColour();
         }
 
-        //System.out.println("before verify");
-        verifyData(Constants.CREATE_ROOM_DATA);
-        //System.out.println("after verify");
+        sendData(Constants.CREATE_ROOM_DATA + room);
+        sendData(Constants.COLOUR_DATA + colour);
         System.out.println("CREATE ROOM: [" + room + "] success");
-        System.out.println("CREATOR: " + verifyData(Constants.COLOUR_DATA)); // printing just to check
-
-        // waitTillClosed(roomFrame);
+        System.out.println("CREATOR: " + colour); // printing just to check
 
         isPlayer = true;
         startGame();
     }
 
     public void startGame() {
-        //System.out.println("start game called");
-        inGame = true;
-//        gameThread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-        gameFrame = new GameFrame(thisClient, thisClient.isPlayer);
-//            }
-//        });
-//
-//        gameThread.start();
-        listenForUpdates();
+        //inGame = true;
+        gameFrame = new GameFrame(this, isPlayer);
+        //listenForUpdates();
         sendMessage();
     }
 
@@ -266,7 +308,7 @@ public class Client {
                 colour = dataIn.readLine();
                 isPlayer=true;
                 System.out.println("room: "+room+"     colour: "+colour);
-                System.out.println("room name list : "+HomeFrame.roomNames);
+                //System.out.println("room name list : "+HomeFrame.roomNames);
                 findRoom.dispose();
                 startGame();
             }
@@ -281,7 +323,7 @@ public class Client {
     public void sendMessage() {
         try {
             Scanner input = new Scanner(System.in);
-            while (socket.isConnected() && inGame == true) {
+            while (socket.isConnected()) {
                 String message = input.nextLine(); //replace with jtextfield input
                 // System.out.println("message: " + message);
                 dataOut.write(Constants.CHAT_DATA + username + ": " + message);
@@ -391,70 +433,10 @@ public class Client {
         homeFrame.setVisible(true);
         System.out.println(username + " left room [" + room +"]");
         room = "";
-        inGame = false;
+        //inGame = false;
     }
 
-    public void listenForUpdates() { // this will be the place you determine what type of data it is?
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (socket.isConnected() && inGame == true) {
-                    try {
-                        String data = dataIn.readLine();
-                        char type = data.charAt(0);
-                        data = data.substring(1);
-                        // check the char stuff
-                        if (type == Constants.START_DATA) {
-                            System.out.println("GAME CAN START NOW");
-                            if (isWhite()) {
-                                turn = true;
-                                //boardChanged = true;
-                            }
-                        } else if (type == Constants.CHAT_DATA) {
-                            System.out.println(data); // display message (maybe store chat in a multiline string
-                        } else if (type == Constants.MOVE_DATA) {
-                            System.out.println("MOVE: " + data);
-                            if (data.equals("O-O") || data.equals("O-O-O")) {
-                                receiveMove(data);
-                                //System.out.println("CASTLE HASN'T BEEN ACCOUNTED FOR YET");
-                            } else {
-                                String startId = data.substring(1, 3);
-                                String endId = data.substring(data.length() - 2);
-                                // check for enPassant move, charAt(0) == 'P'
-                                // ^^ also don't print out the P in display moves if this happens
-                                if (data.charAt(0) == 'P') {
-                                    receiveMove(startId, endId, true);
-                                } else {
-                                    receiveMove(startId, endId, false);
-                                }
-//                                System.out.println(board == gameFrame.game.getBoard());
-//                                System.out.println("board changed from receive move");
-                            }
 
-
-                        } else if (type == Constants.QUICK_MATCH_DATA){
-
-                        } else if (type == Constants.UPDATE_LIST) {
-                            HomeFrame.roomNames = getRoomNames();
-                            HomeFrame.list = new JList(HomeFrame.roomNames.toArray());
-                        } else if (type == Constants.LEAVE_ROOM_DATA) {
-                            // System.out.println("DATA: " + data);
-                            if (data.equals("true")) { // a player has left the game
-                                // show pop-up that game over/which side won
-                                leaveRoom();
-                            }
-                        }
-                        // scuffed "solution"
-                        else if (type == Constants.CREATE_ROOM_DATA) {
-                            System.out.println("oh..");
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-    }
 
     public void waitTillClosed(MessageFrame frame) {
         while (frame != null && !frame.isClosed()) {

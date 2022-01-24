@@ -35,28 +35,28 @@ public class HomeFrame extends JFrame {
 
     private JPanel contentPane;
     private Client thisClient;
-    public static ArrayList<String> roomNames = new ArrayList<>();
-    public static JList list;
+//    public static ArrayList<String> roomNames = new ArrayList<>();
+//    public static JList list;
 
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    HomeFrame frame = new HomeFrame();
-                    frame.setVisible(true);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+//    public static void main(String[] args) {
+//        EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                try {
+//                    HomeFrame frame = new HomeFrame();
+//                    frame.setVisible(true);
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
 
     /**
      * Create the frame.
      */
-    public HomeFrame() {
-        thisClient = new Client(this);
+    public HomeFrame(Client thisClient) {
+        this.thisClient = thisClient;
 
         //setting up the frame
         JFrame frame = this;
@@ -151,6 +151,7 @@ public class HomeFrame extends JFrame {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        //thisClient = new Client(frame);
                         if (thisClient.getUsername().equals("!")) {
                             thisClient.getUsernameInput();
                         }
@@ -178,6 +179,7 @@ public class HomeFrame extends JFrame {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        //thisClient = new Client(frame);
                         if (thisClient.getUsername().equals("!")) {
                             thisClient.getUsernameInput();
                         }
@@ -196,6 +198,7 @@ public class HomeFrame extends JFrame {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        //thisClient = new Client(frame);
                         if (thisClient.getUsername().equals("!")) {
                             thisClient.getUsernameInput();
                         }
@@ -238,36 +241,38 @@ public class HomeFrame extends JFrame {
 
         //might have to comment this out later
 
-        roomNames = thisClient.getRoomNames();
-
-        list = new JList(roomNames.toArray());
-        scrollPane.setViewportView(list);
+//        roomNames = thisClient.getRoomNames();
+//
+//        list = new JList(roomNames.toArray());
+//        scrollPane.setViewportView(list);
 
         JLabel lblNewLabel = new JLabel("Spectate public lobbies");
         scrollPane.setColumnHeaderView(lblNewLabel);
 
-        JButton confirmButton = new JButton("Spectate");
-        confirmButton.setForeground(new Color(143, 188, 143));
-        confirmButton.setBackground(new Color(143, 188, 143));
+        JButton spectateButton = new JButton("Spectate");
+        spectateButton.setForeground(new Color(143, 188, 143));
+        spectateButton.setBackground(new Color(143, 188, 143));
 
-        confirmButton.addActionListener(new ActionListener() {
+        spectateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.setVisible(false); //instead of dispose, so they can setVisble(true) after the game ends
-                String roomName = (String)list.getSelectedValue();
+                //String roomName = (String)list.getSelectedValue();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        //thisClient = new Client(frame);
                         if (thisClient.getUsername().equals("!")) {
                             thisClient.getUsernameInput();
                         }
-                        thisClient.spectate(roomName);
+                        //thisClient.spectate(roomName);
 
                     }
                 }).start();
             }
         });
 
-        confirmButton.setBounds(560, 114, 278, 65);
-        lobbyPanel.add(confirmButton);
+        spectateButton.setBounds(560, 114, 278, 65);
+        lobbyPanel.add(spectateButton);
+        setVisible(true);
     }
 }

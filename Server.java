@@ -1,3 +1,7 @@
+/**
+ * attempt at fixing listenForUpdates version
+ *
+ */
 package chessproject;
 
 //imports for network communication
@@ -86,36 +90,46 @@ public class Server {
                             broadcastMessage(Constants.MOVE_DATA + input);
 
                         } else if (type == Constants.USERNAME_DATA) {
+                            System.out.println("USERNAME DATA IN");
                             if (validUsername(input)) {
                                 username = input;
-                                writeData("success. welcome " + username);
+                                writeData(Constants.USERNAME_DATA + "success. welcome " + username);
                             } else {
-                                writeData(Constants.USERNAME_ERROR);
+                                writeData(Constants.USERNAME_DATA + Constants.USERNAME_ERROR);
                             }
+                            System.out.println("USERNAME DATA OUT");
+
                         } else if (type == Constants.JOIN_PRIV_ROOM_DATA) { //join private room
+                            System.out.println("JOIN ROOM DATA IN");
                             if (privateRooms.containsKey(input)) {
                                 privateRooms.get(input).add(this);
                                 priv = true;
                                 room = input;
-                                writeData("success. welcome " + username);
+                                writeData(Constants.JOIN_PRIV_ROOM_DATA + "success. welcome " + username);
                                 broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
+                                System.out.println("SUCCESS JOIN ROOM DATA OUT");
                                 if (privateRooms.get(room).size() > 1) {
                                     //writeData(Constants.START_DATA + "");
                                     broadcastMessage(Constants.START_DATA + "");
+                                    System.out.println("START DATA OUT");
                                 }
 
                             } else {
-                                writeData(Constants.JOIN_ROOM_ERROR);
+                                writeData(Constants.JOIN_PRIV_ROOM_DATA + Constants.JOIN_ROOM_ERROR);
+                                System.out.println("FAILED JOIN ROOM DATA OUT");
                             }
                         } else if (type == Constants.CREATE_ROOM_DATA) { //creating new room
+                            System.out.println("CREATE ROOM DATA IN");
                             privateRooms.put(input, new ArrayList<ClientHandler>());
                             privateRooms.get(input).add(this);
                             room = input;
                             priv = true;
-                            writeData("room [" + input + "] created successfully"); //CREATE_ROOM_DATA -- add this before roomcode?
+                            writeData(Constants.CREATE_ROOM_DATA + "room [" + input + "] created successfully");
+                            System.out.println("CREATE ROOM DATA OUT");
+                            // pretty sure we don't acc need to receive create room data though
 
                         } else if (type == Constants.QUICK_MATCH_DATA) { //public room
-                            writeData(Constants.QUICK_MATCH_WAIT);
+                            writeData(Constants.QUICK_MATCH_DATA + Constants.QUICK_MATCH_WAIT);
                             quickMatch.add(this);
 
                             if (quickMatch.size()%2==1){
@@ -138,7 +152,7 @@ public class Server {
                             }
                             priv = false;
                             publicRooms.get(room).add(this);
-                            writeData(Constants.QUICK_MATCH_JOINED);
+                            writeData(Constants.QUICK_MATCH_DATA + Constants.QUICK_MATCH_JOINED);
                             writeData(room);
                             writeData(colour);
 
@@ -161,16 +175,18 @@ public class Server {
 //                                System.out.println(username + " key: " + key);
 //                            }
                         } else if (type == Constants.COLOUR_DATA) {
+                            System.out.println("COLOUR DATA IN");
 
                             // first player/room creator
                             if (input.equals("black") || input.equals("white")) {
                                 colour = input;
-                                writeData(colour);
+                                writeData(Constants.COLOUR_DATA + colour);
+                                System.out.println("COLOUR DATA OUT CREATOR");
                             } else {
                                 ArrayList<ClientHandler> existingPlayers = privateRooms.get(room);
 
                                 // second player
-                                if (existingPlayers.size() == 2) {
+                                if (existingPlayers.size() < 3) {
                                     //System.out.println("SECOND PLAYER");
                                     String existingColour = existingPlayers.get(0).colour;
                                     if (existingColour.equals("white")) {
@@ -178,11 +194,13 @@ public class Server {
                                     } else if (existingColour.equals("black")) {
                                         colour = "white";
                                     }
-                                    writeData(colour);
+                                    writeData(Constants.COLOUR_DATA + colour);
+                                    System.out.println("COLOUR DATA OUT 2ND");
 
                                     // spectators
                                 } else {
                                     writeData(Constants.COLOUR_DATA + "");
+                                    System.out.println("COLOUR DATA OUT SPECTATOR");
                                 }
                             }
                         } else if (type == Constants.JOIN_PUB_ROOM_DATA){
@@ -224,7 +242,7 @@ public class Server {
                         } else if(type==Constants.ROOM_NAMES_DATA){
                             writeData(""+roomNames.size());
                             for (String roomName: roomNames){
-                                writeData(roomName);
+                                writeData(Constants.ROOM_NAMES_DATA + roomName);
                             }
 
                         } else if (type == Constants.QUIT_DATA) {
