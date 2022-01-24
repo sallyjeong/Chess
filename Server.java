@@ -96,7 +96,7 @@ public class Server {
                                 priv = true;
                                 room = input;
                                 writeData("success. welcome " + username);
-                                broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
+                                broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has joined the chat ***");
                                 if (privateRooms.get(room).size() > 1) {
                                     //writeData(Constants.START_DATA + "");
                                     broadcastMessage(Constants.START_DATA + "");
@@ -216,7 +216,7 @@ public class Server {
                                 if (rooms.get(room) != null) {
                                     rooms.get(room).remove(username);
                                 }
-                                broadcastMessage(Constants.CHAT_DATA + username + " has left the chat");
+                                broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has left the chat ***");
                             }
                             room = "";
                         } else if(type==Constants.ROOM_NAMES_DATA){
