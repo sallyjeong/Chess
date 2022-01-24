@@ -45,7 +45,7 @@ public class Board implements Drawable {
 			{-30,  0, 15, 20, 20, 15,  0,-30},
 			{-30,  5, 10, 15, 15, 10,  5,-30},
 			{-40,-20,  0,  5,  5,  0,-20,-40},
-			{-50,-40,-30,-30,-30,-30,-40,-50}};
+			{-50,-30,-30,-30,-30,-30,-30,-50}};
 	private int pEval[][] = {{0,  0,  0,  0,  0,  0,  0,  0},
 			{50, 50, 50, 50, 50, 50, 50, 50},
 			{10, 10, 20, 30, 30, 20, 10, 10},
@@ -73,6 +73,7 @@ public class Board implements Drawable {
 	private final int CHECKMATE_BONUS = 10000;
 	private final int DEPTH_BONUS = 100;
 	private final int CASTLE_BONUS = 60;
+	private final int MOBILITY_BONUS = 2;
 	
 	public Board(boolean white) {
 		this.white = white;
@@ -108,9 +109,9 @@ public class Board implements Drawable {
 			queenCol = 3;
 			for(int i=0; i<8; i++) {
 				// white pawns
-				board[whiteRow-1][i].addPiece(new Pawn(true, false, 100, '\u0000', whiteRow-1, i, white));
+				board[whiteRow-1][i].addPiece(new Pawn(true, 100, '\u0000', whiteRow-1, i, white));
 				// black pawns
-				board[blackRow+1][i].addPiece(new Pawn(false, false, 100, '\u0000', blackRow+1, i, !white));
+				board[blackRow+1][i].addPiece(new Pawn(false, 100, '\u0000', blackRow+1, i, !white));
 			}
 		} else {
 			whiteRow = 0;
@@ -119,31 +120,31 @@ public class Board implements Drawable {
 			queenCol = 4;
 			for(int i=0; i<8; i++) {
 				// white pawns
-				board[whiteRow+1][i].addPiece(new Pawn(true, false, 100, '\u0000', whiteRow+1, i, white));
+				board[whiteRow+1][i].addPiece(new Pawn(true, 100, '\u0000', whiteRow+1, i, white));
 				// black pawns
-				board[blackRow-1][i].addPiece(new Pawn(false, false, 100, '\u0000', blackRow-1, i, !white));
+				board[blackRow-1][i].addPiece(new Pawn(false, 100, '\u0000', blackRow-1, i, !white));
 			}
 		}
 
-		board[whiteRow][0].addPiece(new Rook(true, false, 500, 'R', whiteRow, 0));
-		board[whiteRow][1].addPiece(new Knight(true, false, 320, 'N', whiteRow, 1));
-		board[whiteRow][2].addPiece(new Bishop(true, false, 330, 'B', whiteRow, 2));
-		board[whiteRow][queenCol].addPiece(new Queen(true, false, 900, 'Q', whiteRow, queenCol));
-		whiteKing = new King(true, false, 20000, 'K', whiteRow, kingCol);
+		board[whiteRow][0].addPiece(new Rook(true, 500, 'R', whiteRow, 0));
+		board[whiteRow][1].addPiece(new Knight(true, 320, 'N', whiteRow, 1));
+		board[whiteRow][2].addPiece(new Bishop(true, 330, 'B', whiteRow, 2));
+		board[whiteRow][queenCol].addPiece(new Queen(true, 900, 'Q', whiteRow, queenCol));
+		whiteKing = new King(true, 20000, 'K', whiteRow, kingCol);
 		board[whiteRow][kingCol].addPiece(whiteKing);
-		board[whiteRow][5].addPiece(new Bishop(true, false, 330, 'B', whiteRow, 5));
-		board[whiteRow][6].addPiece(new Knight(true, false, 320, 'N', whiteRow, 6));
-		board[whiteRow][7].addPiece(new Rook(true, false, 500, 'R', whiteRow, 7));
+		board[whiteRow][5].addPiece(new Bishop(true, 330, 'B', whiteRow, 5));
+		board[whiteRow][6].addPiece(new Knight(true, 320, 'N', whiteRow, 6));
+		board[whiteRow][7].addPiece(new Rook(true, 500, 'R', whiteRow, 7));
 
-		board[blackRow][0].addPiece(new Rook(false, false, 500, 'R', blackRow, 0));
-		board[blackRow][1].addPiece(new Knight(false, false, 320, 'N', blackRow, 1));
-		board[blackRow][2].addPiece(new Bishop(false, false, 330, 'B', blackRow, 2));
-		board[blackRow][queenCol].addPiece(new Queen(false, false, 900, 'Q', blackRow, queenCol));
-		blackKing = new King(false, false, 20000, 'K', blackRow, kingCol);
+		board[blackRow][0].addPiece(new Rook(false, 500, 'R', blackRow, 0));
+		board[blackRow][1].addPiece(new Knight(false, 320, 'N', blackRow, 1));
+		board[blackRow][2].addPiece(new Bishop(false, 330, 'B', blackRow, 2));
+		board[blackRow][queenCol].addPiece(new Queen(false, 900, 'Q', blackRow, queenCol));
+		blackKing = new King(false, 20000, 'K', blackRow, kingCol);
 		board[blackRow][kingCol].addPiece(blackKing);
-		board[blackRow][5].addPiece(new Bishop(false, false, 330, 'B', blackRow, 5));
-		board[blackRow][6].addPiece(new Knight(false, false, 320, 'N', blackRow, 6));
-		board[blackRow][7].addPiece(new Rook(false, false, 500, 'R', blackRow, 7));
+		board[blackRow][5].addPiece(new Bishop(false, 330, 'B', blackRow, 5));
+		board[blackRow][6].addPiece(new Knight(false, 320, 'N', blackRow, 6));
+		board[blackRow][7].addPiece(new Rook(false, 500, 'R', blackRow, 7));
 
 //		whiteKing = new King(true, true, 200000, 'K', 0, 0);
 //		board[7][6].addPiece(whiteKing);
@@ -342,10 +343,6 @@ public class Board implements Drawable {
 			}
 		}
 	}
-
-	public Spot[][] getBoard() {
-		return this.board;
-	}
 	
 	public int evaluateWhite(int depth) {
 		int cnt = 0;
@@ -354,7 +351,7 @@ public class Board implements Drawable {
 				Piece piece = board[i][j].getPiece();
 				if(piece!=null && piece.isWhite()) {
 					cnt+=piece.getPoints();
-					cnt+=piece.getMoveList().size();
+					cnt+=piece.getMoveList().size()*MOBILITY_BONUS;
 					cnt+=positionEval(piece, i, j);
 				}
 			}
@@ -375,16 +372,16 @@ public class Board implements Drawable {
 				Piece piece = board[i][j].getPiece();
 				if(piece!=null && !piece.isWhite()) {
 					cnt+=piece.getPoints();
-					cnt+=piece.getMoveList().size();
+					cnt+=piece.getMoveList().size()*MOBILITY_BONUS;
 					cnt+=positionEval(piece, i, j);
 				}
 			}
 		}
-		if(isCheckmateOrStalemate(true)==1) {
-			cnt+=CHECKMATE_BONUS + depth*DEPTH_BONUS;
-		}
 		if(blackKing.isCastled()) {
 			cnt+=CASTLE_BONUS;
+		}
+		if(isCheckmateOrStalemate(true)==1) {
+			cnt+=CHECKMATE_BONUS + depth*DEPTH_BONUS;
 		}
 		return cnt;
 	}
@@ -456,6 +453,18 @@ public class Board implements Drawable {
 			}
 		}
 		return flipped;
+	}
+	
+	public Spot[][] getBoard() {
+		return this.board;
+	}
+	
+	public void setWhiteKingChecked(boolean b) {
+		board[whiteKing.getRow()][whiteKing.getCol()].setChecked(b);
+	}
+	
+	public void setBlackKingChecked(boolean b) {
+		board[blackKing.getRow()][blackKing.getCol()].setChecked(b);
 	}
 
 }

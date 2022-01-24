@@ -6,16 +6,14 @@ import java.util.Set;
 
 public abstract class Piece {
 	private boolean white;
-	private boolean moved;
 	private int points;
 	private HashSet<Spot> possibleMoves;
 	private char symbol;
 	private BufferedImage image[] = new BufferedImage[2];
 	private int row, col;
 	
-	public Piece(boolean w, boolean m, int p, char s, int r, int c) {
+	public Piece(boolean w, int p, char s, int r, int c) {
 		this.white = w;
-		this.moved = m;
 		this.points = p;
 		this.symbol = s;
 		this.row = r;
@@ -63,14 +61,6 @@ public abstract class Piece {
 
 	public void setCol(int c) {
 		this.col = c;
-	}
-
-	public boolean getMoved() {
-		return this.moved;
-	}
-
-	public void setMoved(boolean b) {
-		this.moved = b;
 	}
 
 	public void addMove(Spot s) {

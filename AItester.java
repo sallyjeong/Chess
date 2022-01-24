@@ -2,6 +2,8 @@ package chessproject;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -20,7 +22,7 @@ public class AItester {
 		curPlayer = p1;
 		game = new Game(false, p1, p2);
 
-		Move m = ((ComputerPlayer) p1).makeMove(game.getBoard(), 3);
+		Move m = ((ComputerPlayer) p1).makeMove(game.getBoard(), 5);
 		game.playerMove(p1, m.getStart(), m.getEnd());
 		
 		JFrame frame = new JFrame();
@@ -34,13 +36,14 @@ public class AItester {
 	}
 
 
-	public static class GamePanel extends JPanel implements MouseListener {
+	public static class GamePanel extends JPanel implements MouseListener, KeyListener {
 
 		private Spot source = null;
 
 		public GamePanel() {
 			setPreferredSize(new Dimension(1000, 1000));
 			addMouseListener(this);
+			addKeyListener(this);
 			setFocusable(true);
 			requestFocusInWindow();
 		}
@@ -108,6 +111,25 @@ public class AItester {
 
 		@Override
 		public void mouseExited(MouseEvent e) {
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			if(e.getKeyChar()=='z') {
+				Move m = ((ComputerPlayer) p1).makeMove(game.getBoard(), 5);
+				game.playerMove(p1, m.getStart(), m.getEnd());
+			}
 		}
 
 	}

@@ -87,12 +87,15 @@ public class ComputerPlayer extends Player {
 		if(end.getPiece()!=null) {
 			capturedPiece = end.removePiece();
 		}
+		if(m.isCastlingMove()) {
+			((King)movingPiece).setCastled(true);
+		}
 		if(m.isPromotionMove()) {
-			end.addPiece(new Queen(movingPiece.isWhite(), true, 900, 'Q', end.getRow(), end.getColumn()));
+			end.addPiece(new Queen(movingPiece.isWhite(), 900, 'Q', end.getRow(), end.getColumn()));
 		}else {
 			end.addPiece(movingPiece);
 		}
-		movingPiece.setMoved(true);
+		
 		b.getPseudoLegal();
 		return capturedPiece;
 	}
@@ -100,6 +103,9 @@ public class ComputerPlayer extends Player {
 	public void unmakeMove(Move m, Board b, Piece captured) {
 		Spot start = m.getStart(), end = m.getEnd();
 		Piece movingPiece = end.removePiece();
+		if(m.isCastlingMove()) {
+			((King)movingPiece).setCastled(false);
+		}
 		if(m.isPromotionMove()) {
 			boolean f;
 			if(end.getRow()==7) {
@@ -107,11 +113,10 @@ public class ComputerPlayer extends Player {
 			}else {
 				f = true;
 			}
-			start.addPiece(new Pawn(movingPiece.isWhite(), true, 100, '\u0000', start.getRow(), start.getColumn(), f));
+			start.addPiece(new Pawn(movingPiece.isWhite(), 100, '\u0000', start.getRow(), start.getColumn(), f));
 		}else {
 			start.addPiece(movingPiece);
 		}
-		movingPiece.setMoved(false);
 		if(captured!=null) {
 			end.addPiece(captured);
 		}
