@@ -4,9 +4,9 @@ public class Move {
 	private Spot start;
 	private Spot end;
 	private Piece sourcePiece, capturedPiece;
-	private Player player;
+	private Client player;
 
-	public Move (Player player, Spot start, Spot end) {
+	public Move (Client player, Spot start, Spot end) {
 		this.player = player;
 		this.start = start;
 		this.end = end;
@@ -36,9 +36,9 @@ public class Move {
 
 	public String toString() {
 		if(isCastlingMove()) {
-			if(start.getColumn()==4) {
+			if(end.getColumn()==1 || end.getColumn()==6) {
 				return "O-O";
-			}else {
+			} else {
 				return "O-O-O";
 			}
 		}
@@ -46,6 +46,10 @@ public class Move {
 		String ret = "";
 		if(!(sourcePiece instanceof Pawn)) {
 			ret+=sourcePiece.getSymbol();
+		} else if (isEnPassantMove()) {
+			ret+="P";
+		} else {
+			ret+=" ";
 		}
 		ret+=start.getID();
 		if(capturedPiece==null) {
@@ -58,7 +62,7 @@ public class Move {
 		return ret;
 	}
 
-	public Player getPlayer() {
+	public Client getPlayer() {
 		return this.player;
 	}
 

@@ -22,7 +22,7 @@ public class MessageFrame extends JFrame {
     public MessageFrame(String message) {
         JFrame frame = this;
         setTitle("Message");
-        setVisible(true);
+
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 292, 200);
         contentPane = new JPanel();
@@ -45,14 +45,11 @@ public class MessageFrame extends JFrame {
                 frame.dispose();
             }
         });
-
+        setVisible(true);
     }
 
     public boolean isClosed() {
         return closed;
     }
-//
-//    public void setClosed(boolean x) {
-//        this.closed = x;
-//    }
+
 }

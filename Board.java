@@ -7,8 +7,6 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class Board implements Drawable {
-
-	//final int LENGTH = 50;
 	final int LENGTH = 72;
 
 	private Spot[][] board;
@@ -69,6 +67,7 @@ public class Board implements Drawable {
 				}
 			}
 
+			// white pieces
 			board[whiteRow][0].addPiece(new Rook(true, false, 5, 'R', whiteRow, 0));
 			board[whiteRow][1].addPiece(new Knight(true, false, 3, 'N', whiteRow, 1));
 			board[whiteRow][2].addPiece(new Bishop(true, false, 3, 'B', whiteRow, 2));
@@ -79,6 +78,7 @@ public class Board implements Drawable {
 			board[whiteRow][6].addPiece(new Knight(true, false, 3, 'N', whiteRow, 6));
 			board[whiteRow][7].addPiece(new Rook(true, false, 5, 'R', whiteRow, 7));
 
+			// black pieces
 			board[blackRow][0].addPiece(new Rook(false, false, 5, 'R', blackRow, 0));
 			board[blackRow][1].addPiece(new Knight(false, false, 3, 'N', blackRow, 1));
 			board[blackRow][2].addPiece(new Bishop(false, false, 3, 'B', blackRow, 2));
@@ -92,6 +92,7 @@ public class Board implements Drawable {
 			getPseudoLegal();
 
 		} else {
+			// request for copying a player's current board
 			player.sendData(Constants.BOARD_DATA + "!request");
 		}
 	}

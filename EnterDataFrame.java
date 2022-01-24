@@ -55,46 +55,44 @@ public class EnterDataFrame extends JFrame {
         text.setBounds(130, 50, 130, 26);
         contentPane.add(text);
         text.setColumns(10);
-        
+
         if ((data == Constants.JOIN_PRIV_ROOM_DATA) || (data == Constants.COLOUR_DATA)) {
-        	JButton doneButton = new JButton("Done");
+            JButton doneButton = new JButton("Done");
             doneButton.setForeground(new Color(0, 100, 0));
             doneButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     dataEntered = text.getText();
                     frame.dispose();
                     closed = true;
-                    //closed = false;
                 }
             });
             doneButton.setBounds(44, 92, 104, 29);
             contentPane.add(doneButton);
-            
-	        cancelButton = new JButton("Cancel");
-	        cancelButton.setForeground(new Color(178, 34, 34));
-	        cancelButton.addActionListener(new ActionListener() {
-	        	public void actionPerformed(ActionEvent e) {
-	        		frame.dispose();
-	        		homeFrame.setVisible(true);
-	        	}
-	        });
-	        cancelButton.setBounds(152, 92, 104, 29);
-	        contentPane.add(cancelButton);
+
+            cancelButton = new JButton("Cancel");
+            cancelButton.setForeground(new Color(178, 34, 34));
+            cancelButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    frame.dispose();
+                    homeFrame.setVisible(true);
+                }
+            });
+            cancelButton.setBounds(152, 92, 104, 29);
+            contentPane.add(cancelButton);
         }else {
-        	JButton doneUserButton = new JButton("Done");
+            JButton doneUserButton = new JButton("Done");
             doneUserButton.setForeground(new Color(0, 100, 0));
             doneUserButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     dataEntered = text.getText();
                     frame.dispose();
                     closed = true;
-                    //closed = false;
                 }
             });
             doneUserButton.setBounds(44, 92, 208, 29);
             contentPane.add(doneUserButton);
         }
-        
+
         setVisible(true);
     }
 
@@ -109,10 +107,7 @@ public class EnterDataFrame extends JFrame {
         return closed;
     }
     public boolean isCancelled() {
-    	return cancel;
+        return cancel;
     }
 
-//    public void setClosed (boolean x ) { //better vairable name
-//        this.closed = x;
-//    }
 }
