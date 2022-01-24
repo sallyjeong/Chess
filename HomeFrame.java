@@ -267,7 +267,16 @@ public class HomeFrame extends JFrame {
             }
         });
 
-        confirmButton.setBounds(560, 114, 278, 65);
+        confirmButton.setBounds(559, 82, 278, 57);
         lobbyPanel.add(confirmButton);
+        
+        JButton reloadButton = new JButton("Reload");
+        reloadButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        });
+        reloadButton.setBounds(559, 151, 278, 57);
+        lobbyPanel.add(reloadButton);
     }
 }
