@@ -142,6 +142,7 @@ public class GameFrame extends JFrame {
             JButton boardFlipButton = new JButton("Flip Board");
             boardFlipButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
+                    client.flipBoard();
                 }
             });
             boardFlipButton.setBounds(426,  50, 175, 29);
@@ -151,10 +152,7 @@ public class GameFrame extends JFrame {
             JButton flipButton = new JButton("Flip board");
             flipButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-
-//                frame.dispose();
-                    // remove the user from game (if player, do the same thing as surrender)
-                    // new ();    new frame here
+                    client.flipBoard();
                 }
             });
             flipButton.setBounds(343, 50, 267, 29);
