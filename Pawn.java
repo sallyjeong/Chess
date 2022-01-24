@@ -36,7 +36,7 @@ public class Pawn extends Piece {
 		validMoves.clear();
 		Spot curSpot;
 
-		if(forward){
+		if(forward && row>0){
 			curSpot= board[row-1][col];
 			if(curSpot.getPiece() == null){
 				validMoves.add(curSpot);
@@ -76,42 +76,45 @@ public class Pawn extends Piece {
 
 		}
 		else{
-			curSpot= board[row+1][col];
-			if(curSpot.getPiece() == null){
-				validMoves.add(curSpot);
-				if(!getMoved() && (board[row+2][col].getPiece()== null)){
-					validMoves.add(board[row+2][col]);
-					setEnPassant(true);
-				}
-			}
-			//captures
-			if(col-1>=0) {
-				curSpot = board[row+1][col-1];
-				if(curSpot.getPiece()!=null && curSpot.getPiece().isWhite()!=isWhite()) {
+			if(row < 7){
+				curSpot= board[row+1][col];
+				if(curSpot.getPiece() == null){
 					validMoves.add(curSpot);
+					if(!getMoved() && (board[row+2][col].getPiece()== null)){
+						validMoves.add(board[row+2][col]);
+						setEnPassant(true);
+					}
 				}
-			}
-			if(col+1<=7) {
-				curSpot = board[row+1][col+1];
-				if(curSpot.getPiece()!=null && curSpot.getPiece().isWhite()!=isWhite()) {
-					validMoves.add(curSpot);
-				}
-			}
-			//enpassant
-			if(row==4) {
+				//captures
 				if(col-1>=0) {
-					curSpot = board[row][col-1];
-					if(curSpot.getPiece() instanceof Pawn && ((Pawn)curSpot.getPiece()).getEnPassant()) {
-						validMoves.add(board[row+1][col-1]);
+					curSpot = board[row+1][col-1];
+					if(curSpot.getPiece()!=null && curSpot.getPiece().isWhite()!=isWhite()) {
+						validMoves.add(curSpot);
 					}
 				}
 				if(col+1<=7) {
-					curSpot = board[row][col+1];
-					if(curSpot.getPiece() instanceof Pawn && ((Pawn)curSpot.getPiece()).getEnPassant()) {
-						validMoves.add(board[row+1][col+1]);
+					curSpot = board[row+1][col+1];
+					if(curSpot.getPiece()!=null && curSpot.getPiece().isWhite()!=isWhite()) {
+						validMoves.add(curSpot);
+					}
+				}
+				//enpassant
+				if(row==4) {
+					if(col-1>=0) {
+						curSpot = board[row][col-1];
+						if(curSpot.getPiece() instanceof Pawn && ((Pawn)curSpot.getPiece()).getEnPassant()) {
+							validMoves.add(board[row+1][col-1]);
+						}
+					}
+					if(col+1<=7) {
+						curSpot = board[row][col+1];
+						if(curSpot.getPiece() instanceof Pawn && ((Pawn)curSpot.getPiece()).getEnPassant()) {
+							validMoves.add(board[row+1][col+1]);
+						}
 					}
 				}
 			}
+
 		}
 
 		return super.getMoveList();
