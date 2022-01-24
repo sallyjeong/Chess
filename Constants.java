@@ -2,7 +2,7 @@ package chessproject;
 
 
 public class Constants {
-    public static final String HOST = "127.0.0.1";
+    public static final String HOST = "127.0.0.1"; //35.183.5.5
     public static final int PORT = 6000;
     public static final String USERNAME_ERROR = "error. invalid username";
     public static final String JOIN_ROOM_ERROR = "error. invalid room"; //for private room
@@ -22,8 +22,5 @@ public class Constants {
     public static final char ROOM_NAMES_DATA = 'l';
     public static final char UPDATE_LIST = 'm';
     public static final char START_DATA = 'n';
-;
-
-
 
 }

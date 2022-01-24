@@ -5,7 +5,6 @@ import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Scanner;
 
 // remember to call closeConnection after the game ends/client leaves (IN SERVER CLASS)
@@ -18,7 +17,6 @@ public class Client {
     private boolean isPlayer;
     private boolean turn = false; // set white to true once both players are in the game
     private Board board;
-    //private boolean boardChanged = false;
     private Spot opponentStart = null;
     private boolean inGame = false;
     private ArrayList<Piece> captured;
@@ -29,7 +27,6 @@ public class Client {
     private MessageFrame messageFrame;
     private String result = "";
     private Client thisClient;
-    //private Thread updateThread;
     final int LENGTH = 35;
 
 //    public static void main(String[] args) {
@@ -41,12 +38,6 @@ public class Client {
         this.homeFrame = homeFrame; // use this variable to setVisible after you leave the game
         this.thisClient = this;
         this.captured = new ArrayList<Piece>();
-
-        // add variable to see if the game has been closed/left
-        // send msg to client handler to remove the person from that room
-        // do we want spectators to be able to go look at another room?
-        // is there a way to detect if X was clicked and to remove the user when that happens?
-        // otherwise a lot of null threads and all past usernames can't be used
 
         try {
             socket = new Socket(Constants.HOST, Constants.PORT);
@@ -97,7 +88,6 @@ public class Client {
         }
     }
 
-    // not sure if we merge sendMessage/sendMove stuff with this or not
     public String verifyData(char type) {
         String result = "";
         try {
@@ -146,7 +136,6 @@ public class Client {
             waitTillClosed(messageFrame);
 
         } while (result.equals(Constants.USERNAME_ERROR));
-        //System.out.println("done username");
     }
 
     public void getRoomInput() {
@@ -199,32 +188,20 @@ public class Client {
         System.out.println("CREATE ROOM: [" + room + "] success");
         System.out.println("CREATOR: " + verifyData(Constants.COLOUR_DATA)); // printing just to check
 
-        // waitTillClosed(roomFrame);
-
         isPlayer = true;
         startGame();
     }
 
     public void startGame() {
-        //System.out.println("start game called");
         inGame = true;
-//        gameThread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
         gameFrame = new GameFrame(thisClient, thisClient.isPlayer);
-//            }
-//        });
-//
-//        gameThread.start();
         listenForUpdates();
-        sendMessage();
     }
 
     public void pickSpectateColour() {
         EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA);
         do {
             colour = colourChoice.getDataEntered().toLowerCase();
-            // waitTillClosed(messageFrame);
         } while (colourChoice.isClosed() == false);
 
         if (!(colour.equals("white") || colour.equals("black"))) {
@@ -250,7 +227,6 @@ public class Client {
     }
 
     public void quickMatch() {
-        //System.out.println("quick game called");
         try {
             FindingRoomFrame findRoom = new FindingRoomFrame();
             dataOut.write(Constants.QUICK_MATCH_DATA);
@@ -276,28 +252,10 @@ public class Client {
         }
     }
 
-    // tbh i don't think we'll need this anymore because it'll send one msg at a time based on gameFrame's jtextfield
-    // replace with sendData(msg) with the msg having the right char at the front alr
-    public void sendMessage() {
-        try {
-            Scanner input = new Scanner(System.in);
-            while (socket.isConnected() && inGame == true) {
-                String message = input.nextLine(); //replace with jtextfield input
-                // System.out.println("message: " + message);
-                dataOut.write(Constants.CHAT_DATA + username + ": " + message);
-                dataOut.newLine();
-                dataOut.flush();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void receiveMove(String startId, String endId, boolean enPassant) {
         if (!isPlayer && opponentStart != null) {
             opponentStart.setLeft(false);
         }
-        //System.out.println("MOVE DIGESTION");
         Spot[][] temp = board.getBoard();
         Spot end = null;
         Piece piece = null;
@@ -325,8 +283,6 @@ public class Client {
         if (isPlayer) {
             turn = true;
         }
-
-        //System.out.println("MOVE RECEIVED");
     }
 
     public void receiveMove(String castle) {
@@ -411,24 +367,22 @@ public class Client {
                                 //boardChanged = true;
                             }
                         } else if (type == Constants.CHAT_DATA) {
-                            System.out.println(data); // display message (maybe store chat in a multiline string
+                            //System.out.println("CHAT: " + data); // display message (maybe store chat in a multiline string
+                            gameFrame.addMessage(data);
                         } else if (type == Constants.MOVE_DATA) {
                             System.out.println("MOVE: " + data);
                             if (data.equals("O-O") || data.equals("O-O-O")) {
                                 receiveMove(data);
-                                //System.out.println("CASTLE HASN'T BEEN ACCOUNTED FOR YET");
                             } else {
                                 String startId = data.substring(1, 3);
                                 String endId = data.substring(data.length() - 2);
-                                // check for enPassant move, charAt(0) == 'P'
-                                // ^^ also don't print out the P in display moves if this happens
+
                                 if (data.charAt(0) == 'P') {
                                     receiveMove(startId, endId, true);
+                                    // ^^ also don't print out the P in display moves if this happens
                                 } else {
                                     receiveMove(startId, endId, false);
                                 }
-//                                System.out.println(board == gameFrame.game.getBoard());
-//                                System.out.println("board changed from receive move");
                             }
 
 
@@ -438,16 +392,15 @@ public class Client {
                             HomeFrame.roomNames = getRoomNames();
                             HomeFrame.list = new JList(HomeFrame.roomNames.toArray());
                         } else if (type == Constants.LEAVE_ROOM_DATA) {
-                            // System.out.println("DATA: " + data);
                             if (data.equals("true")) { // a player has left the game
                                 // show pop-up that game over/which side won
                                 leaveRoom();
                             }
                         }
-                        // scuffed "solution"
-                        else if (type == Constants.CREATE_ROOM_DATA) {
-                            System.out.println("oh..");
-                        }
+//                        // scuffed "solution"
+//                        else if (type == Constants.CREATE_ROOM_DATA) {
+//                            System.out.println("oh..");
+//                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -523,10 +476,4 @@ public class Client {
     public Spot getOpponentStart() {
         return opponentStart;
     }
-//    public void setBoardChanged(boolean boardChanged) {
-//        this.boardChanged = boardChanged;
-//    }
-//    public boolean getBoardChanged() {
-//        return boardChanged;
-//    }
 }

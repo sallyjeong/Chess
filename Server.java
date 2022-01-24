@@ -79,10 +79,8 @@ public class Server {
                         //System.out.println("TYPE: " + type);
                         //System.out.println("INPUT: " + input);
                         if (type == Constants.CHAT_DATA) {
-                            //System.out.println("chat data received");
                             broadcastMessage(Constants.CHAT_DATA + input);
                         } else if (type == Constants.MOVE_DATA) {
-                            // send movement stuff
                             broadcastMessage(Constants.MOVE_DATA + input);
 
                         } else if (type == Constants.USERNAME_DATA) {

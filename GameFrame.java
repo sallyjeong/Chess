@@ -32,7 +32,9 @@ public class GameFrame extends JFrame {
     // static Player p1, p2;
     private GameFrame frame;
     private JTextField userInputField;
+    private JTextArea textArea;
     private Client client;
+    private String message;
 
 //    public static void main(String[] args) {
 //        // TODO Auto-generated method stub
@@ -76,7 +78,7 @@ public class GameFrame extends JFrame {
         contentPane.add(chatPanel);
         //chatPanel.setLayout(new FlowLayout());;
 
-        JTextArea textArea = new JTextArea(10,43);
+        textArea = new JTextArea(10,43);
         textArea.setEditable(false);
 
         JScrollPane scroll = new JScrollPane (textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -84,36 +86,7 @@ public class GameFrame extends JFrame {
 
         chatPanel.add(scroll);
 
-
-        textArea.setText("getContentPane().setLayout(\n"
-                + "                new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));\n"
-                + "        setResizable(false);\n"
-                + "\n"
-                + "        JTextArea window1 = new JTextArea(\"text\");\n"
-                + "        window1.setEditable(false);\n"
-                + "        window1.setBorder(BorderFactory.createLineBorder(Color.BLACK));\n"
-                + "        window1.setLineWrap(true);\n"
-                + "\n"
-                + "\n"
-                + "        JScrollPane scroll1 = new JScrollPane(window1);\n"
-                + "        scroll1.setPreferredSize(new Dimension(200, 250));\n"
-                + "        scroll1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);\n"
-                + "        scroll1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);\n"
-                + "        add(scroll1);\n"
-                + "\n"
-                + "        JTextArea window2 = new JTextArea();\n"
-                + "        window2.setEditable(true);\n"
-                + "        window2.setBorder(BorderFactory.createLineBorder(Color.BLACK));\n"
-                + "        window2.setLineWrap(true);\n"
-                + "        add(window2);\n"
-                + "\n"
-                + "        JScrollPane scroll2 = new JScrollPane(window2);\n"
-                + "        scroll2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);\n"
-                + "        scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);\n"
-                + "        scroll2.setPreferredSize(new Dimension(100, 50));\n"
-                + "        add(scroll2);\n"
-                + "\n"
-                + "        setDefaultCloseOperation(EXIT_ON_CLOSE);");
+        textArea.setText(message);
 
         JTextField userInputField = new JTextField();
         //userInputField.setBounds(6, 198, 437, 33);
@@ -123,8 +96,12 @@ public class GameFrame extends JFrame {
         JButton sendButton = new JButton("Send");
         sendButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // client.sendMessage(userInputField.getText());
-                // userInputField.setText("");
+                String text = userInputField.getText();
+                client.sendData(Constants.CHAT_DATA + client.getUsername() + ": " + text);
+                textArea.append("me: " + text + "\n");
+                //userInputField.selectAll();
+                textArea.setCaretPosition(textArea.getDocument().getLength());
+                userInputField.setText("");
             }
         });
         sendButton.setBounds(441, 201, 117, 29);
@@ -197,6 +174,9 @@ public class GameFrame extends JFrame {
     }
     public Client getClient() {
         return client;
+    }
+    public void addMessage(String text) {
+        textArea.append(text + "\n");
     }
     class GamePanel extends JPanel implements MouseListener {
 
