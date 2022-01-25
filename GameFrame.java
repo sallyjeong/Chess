@@ -314,7 +314,7 @@ public class GameFrame extends JFrame {
                             if (!computerGame) {
                                 game.playerMove(client, source, spot);
                             } else {
-                                if (game.playerMove(p2, source, spot)) {
+                                if (game.playerMove(p2, source, spot) && !game.getBoard().isGameOver()) {
                                     Move m = ((ComputerPlayer) p1).makeMove(game.getBoard(), determineDepth());
                                     game.playerMove(p1, m.getStart(), m.getEnd());
                                 }
