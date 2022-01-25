@@ -15,7 +15,7 @@ import javax.swing.JButton;
 
 /** [CreatePrivateRoomFrame.java]
  * The JFrame that opens when clients want to create a new private room
- * @author Rachel Liu
+ * @author Rachel Liu, Katherine Liu
  * @version 1.0 Jan 25, 2021
  */
 public class CreatePrivateRoomFrame extends JFrame {
