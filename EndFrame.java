@@ -55,5 +55,6 @@ public class EndFrame extends JFrame {
         exitButton.setBounds(167, 184, 117, 29);
         contentPane.add(exitButton);
         setVisible(true);
+        frame.toFront();
     }
 }
