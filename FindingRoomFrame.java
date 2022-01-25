@@ -23,7 +23,7 @@ public class FindingRoomFrame extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JLabel connectionStatus = new JLabel("var (connecting)");
+        JLabel connectionStatus = new JLabel("Connecting...");
         connectionStatus.setBounds(95, 65, 106, 16);
         contentPane.add(connectionStatus);
         setVisible(true);
