@@ -417,8 +417,11 @@ public class Board implements Drawable {
                 cnt+=rEval[i][j];
             }else if(piece instanceof Queen) {
                 cnt+=qEval[i][j];
-            }else {
+            }else if (piece instanceof King) {
                 if(inEndGame()) {
+                    if (kingPawnEndgame(piece)) {
+                        cnt += kingPositionKPEnding(piece);
+                    }
                     cnt+=kEvalEnd[i][j];
                 }else {
                     cnt+=kEvalMid[i][j];
@@ -439,8 +442,11 @@ public class Board implements Drawable {
                 cnt+=flipEval(rEval)[i][j];
             }else if(piece instanceof Queen) {
                 cnt+=flipEval(qEval)[i][j];
-            }else {
+            }else if (piece instanceof King) {
                 if(inEndGame()) {
+                    if (kingPawnEndgame(piece)) {
+                        cnt += kingPositionKPEnding(piece);
+                    }
                     cnt+=flipEval(kEvalEnd)[i][j];
                 }else {
                     cnt+=flipEval(kEvalMid)[i][j];
@@ -508,7 +514,89 @@ public class Board implements Drawable {
         }
         return (qcount==0 && minorPieceCount < 3) || (qcount == 1 && minorPieceCount<2);
     }
+	
+    private boolean kingPawnEndgame(Piece currentP) {
+        for(int i=0; i<8; i++) {
+            for(int j=0; j<8; j++) {
+                Piece piece = board[i][j].getPiece();
+                if(piece != null) {
+                    if (currentP.isWhite() == piece.isWhite()) {
+                        if (piece instanceof Knight || piece instanceof Bishop || piece instanceof Rook || piece instanceof Queen) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return true;
+    }
     
+    private int kingPositionKPEnding(Piece king) {
+        int positioned = 0;
+        if (king.isWhite()) { 
+            if (isRCValid(king.getRow()-2, king.getCol())) {
+                if (board[king.getRow() - 2][king.getCol()].getPiece() instanceof Pawn) {
+                    if (passedPawn(board[king.getRow() - 2][king.getCol()].getPiece()) > 30) {
+                        positioned += KINGPOSITIONAL_BONUS;
+                    }
+                }
+            }
+            if (isRCValid(king.getRow()-2, king.getCol()-1)) {
+                if (board[king.getRow() - 2][king.getCol()-1].getPiece() instanceof Pawn) {
+                    if (passedPawn(board[king.getRow() - 2][king.getCol()-1].getPiece()) > 30) {
+                        positioned += KINGPOSITIONAL_BONUS;
+                    }
+                }
+            }
+            if (isRCValid(king.getRow()-2, king.getCol()+1)) {
+                if (board[king.getRow() - 2][king.getCol()+1].getPiece() instanceof Pawn) {
+                    if (passedPawn(board[king.getRow() - 2][king.getCol()+1].getPiece()) > 30) {
+                        positioned += KINGPOSITIONAL_BONUS;
+                    }
+                }
+                
+            }
+            if (isRCValid(king.getRow()-1, king.getCol())) {
+                if (board[king.getRow() - 1][king.getCol()].getPiece() instanceof Pawn) {
+                    if (passedPawn(board[king.getRow() - 1][king.getCol()].getPiece()) > 30) {
+                        positioned += KINGPOSITIONAL_BONUS;
+                    }
+                }
+            }
+        } else {
+            if (isRCValid(king.getRow()+2, king.getCol())) {
+                if (board[king.getRow() + 2][king.getCol()].getPiece() instanceof Pawn) {
+                    if (passedPawn (board[king.getRow() + 2][king.getCol()].getPiece()) > 30) {
+                        positioned += KINGPOSITIONAL_BONUS;
+                    }
+                }
+            }
+            if (isRCValid(king.getRow()+2, king.getCol()-1)) {
+                if (board[king.getRow() + 2][king.getCol()-1].getPiece() instanceof Pawn){
+                    if (passedPawn (board[king.getRow() + 2][king.getCol()-1].getPiece()) > 30) {
+                        positioned += KINGPOSITIONAL_BONUS;
+                    }
+                }
+            }
+            if (isRCValid(king.getRow()-2, king.getCol()+1)) {
+                if (board[king.getRow() + 2][king.getCol()+1].getPiece() instanceof Pawn) {
+                    if (passedPawn (board[king.getRow() + 2][king.getCol()+1].getPiece()) > 30) {
+                        positioned += KINGPOSITIONAL_BONUS;
+                    }
+                }
+            }
+            if (isRCValid(king.getRow()+1, king.getCol())) {
+                if (board[king.getRow() +1][king.getCol()].getPiece() instanceof Pawn) {
+                    if (passedPawn (board[king.getRow() + 1][king.getCol()].getPiece()) > 30) {
+                        positioned += KINGPOSITIONAL_BONUS;
+                    }
+                }
+            }
+        }
+        return positioned;
+    }
+	
     public boolean inKQorKREndGame(boolean white) {
     	int qCount = 0, rCount = 0;
     	for(int i=0; i<8; i++) {
