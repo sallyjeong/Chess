@@ -408,7 +408,18 @@ public class Board implements Drawable {
 			}else if(piece instanceof Bishop) {
 				cnt+=bEval[i][j];
 			}else if(piece instanceof Rook) {
-				cnt+=rEval[i][j];
+				if(inEndGame()){
+					if(inRKEndgame(white)) {
+						if (white) {
+							cnt += kingRookPositionEval(whiteKing, blackKing);
+						} else {
+							cnt += kingRookPositionEval(blackKing, whiteKing);
+						}
+					}
+				}
+				else{
+					cnt+=(rEval)[i][j];
+				}
 
 			}else if(piece instanceof Queen) {
 				cnt+=qEval[i][j];
