@@ -117,8 +117,5 @@ public class EnterDataFrame extends JFrame {
     public boolean isClosed() {
         return closed;
     }
-    public boolean isCancelled() {
-        return cancel;
-    }
 
 }
