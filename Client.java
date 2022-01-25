@@ -13,7 +13,7 @@ import java.util.ArrayList;
 /** [Client.java]
  * Represents each person joining the chess program
  * Connects to the server and has the ability to play a chess game
- * @author Katherine Liu
+ * @author Katherine Liu, Sally Jeong
  * @version 1.0 Jan 25, 2021
  */
 public class Client extends Player {
