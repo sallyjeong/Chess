@@ -196,7 +196,6 @@ public class Server {
             privateRooms.put(input, new ArrayList<ClientHandler>());
             privateRooms.get(input).add(this);
             writeData(Constants.CREATE_ROOM_DATA + "room [" + input + "] created successfully");
-            writeData(Constants.CHAT_DATA + "*** PLEASE WAIT FOR OPPONENT TO JOIN ***");
         }
 
         public void joinPrivateRoom(String input) {
@@ -205,7 +204,7 @@ public class Server {
                 room = input;
                 privateRooms.get(input).add(this);
                 writeData("success. welcome " + username);
-                broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has joined the chat ***");
+                broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has joined the room ***");
                 if (privateRooms.get(room).size() == 2) {
                     broadcastMessage(Constants.START_DATA + "");
                 }
