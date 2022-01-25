@@ -208,7 +208,7 @@ public abstract class Piece {
 	}
 
 	/**
-	 * highlights all psuedo legal moves
+	 * highlights all pseudo legal moves
 	 * @param highlighted:
 	 */
 	public void displayValidMoves(boolean highlighted) {
