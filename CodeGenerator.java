@@ -1,12 +1,14 @@
 package chessproject;
 
-//maybe merge with another class later
-
 import java.util.Random;
 
+/** [CodeGenerator.java]
+ * Randomly generates a 5 letter code for rooms
+ * @author Katherine Liu, Rachel Liu, Sally Jeong
+ * @version 1.0 Jan 25, 2021
+ */
 public class CodeGenerator {
     public static String generateCode () {
-        //System.out.println("method called");
         int min = 97; // 'a'
         int max = 123; // 'z + 1'
         Random random = new Random();
@@ -15,13 +17,12 @@ public class CodeGenerator {
         do {
             generatedCode = "";
             for (int i = 0; i < 5; i++) {
-                int number = random.nextInt (max - min) + min;//random.ints (startLimit, endLimit);
-                //String generatedLetter = ((char)number).toString();
+                int number = random.nextInt (max - min) + min;
                 char letter = (char)number;
                 generatedCode += letter;
             }
-            CreatePrivateRoomFrame.roomCodes.add(generatedCode);
-        } while(!CreatePrivateRoomFrame.roomCodes.contains(generatedCode));
+            CreatePrivateRoomFrame.roomCodes.add(generatedCode); // stores in Set of all existing room Codes
+        } while(!CreatePrivateRoomFrame.roomCodes.contains(generatedCode)); // checks if already exists
 
         return generatedCode;
     }
