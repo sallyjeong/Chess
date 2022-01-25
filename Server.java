@@ -111,7 +111,6 @@ public class Server {
                             broadcastMessage(Constants.LEAVE_ROOM_DATA + "true"); // mimics player leaving room
                         } else if (type == Constants.QUIT_DATA) {
                             closeConnection();
-                            System.out.println("CLIENT HANDLER " + username + " CLOSED");
                         }
                     }
                 } catch (IOException e) {
