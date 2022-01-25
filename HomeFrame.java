@@ -2,21 +2,15 @@ package chessproject;
 
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JList;
 
 import java.awt.Font;
-import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import javax.swing.border.EtchedBorder;
-import javax.swing.JSeparator;
 import java.awt.SystemColor;
-import javax.swing.JScrollPane;
 
 import java.util.ArrayList;
 
@@ -214,7 +208,6 @@ public class HomeFrame extends JFrame {
         scrollPane.setBackground(new Color(143, 188, 143));
 
         roomNames = thisClient.getRoomNames();
-
         list = new JList(roomNames.toArray());
         scrollPane.setViewportView(list);
 
@@ -246,7 +239,13 @@ public class HomeFrame extends JFrame {
         JButton reloadButton = new JButton("Reload");
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                roomNames = thisClient.getRoomNames();
+                System.out.println(roomNames);
+//                list = new JList(roomNames.toArray());
+                list.setListData(roomNames.toArray());
+                //frame.repaint();
+//                frame.setVisible(true);
+               // SwingUtilities.updateComponentTreeUI(frame);
             }
         });
         reloadButton.setBounds(559, 151, 278, 57);
