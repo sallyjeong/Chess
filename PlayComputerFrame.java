@@ -10,9 +10,10 @@ import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.awt.Color;
+
 /** [PlayComputerFrame.java]
  * The JFrame that opens when the user needs to choose settings (playing against AI)
- * @author Rachel Liu
+ * @author Rachel Liu, Katherine Liu
  * @version 1.0 Jan 25, 2021
  */
 public class PlayComputerFrame extends JFrame {
@@ -21,11 +22,10 @@ public class PlayComputerFrame extends JFrame {
     private JComboBox colourChoices, difficulty;
 
     /**
-	 * PlayComputerFrame
-	 * This constructor creates an PlayComputerFrame
-	 * @param homeFrame refers to the frame that is first opened (home frame)
-	 */
-    public PlayComputerFrame(JFrame homeFrame) {
+     * PlayComputerFrame
+     * This constructor creates an PlayComputerFrame
+     */
+    public PlayComputerFrame() {
         JFrame frame = this;
         setTitle("Play Computer");
 
@@ -59,7 +59,7 @@ public class PlayComputerFrame extends JFrame {
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                // choosing AI difficulty
+                // choosing colour and AI difficulty 
                 new GameFrame((String)difficulty.getSelectedItem(), getWhite());
             }
         });
@@ -78,6 +78,7 @@ public class PlayComputerFrame extends JFrame {
 
         setVisible(true);
     }
+    
     /*
     METHODS FOR EXTRACTING VALUES (setters and getters)
      */
