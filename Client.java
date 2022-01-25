@@ -463,7 +463,7 @@ public class Client extends Player {
 
         if (isPlayer) {
             board.setEnPassant(isWhite()); // reset all pawns as not be able to be captured by enpassant
-            board.getPseudoLegal(); // calculate valid moves for each piece
+            board.getLegal(); // calculate valid moves for each piece
             if (!checkGameState()) { // checks endGame
                 turn = true;
             }
