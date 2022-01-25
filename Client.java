@@ -571,7 +571,7 @@ public class Client {
                 new HomeFrame();
             }
         }).start();
-        new EndFrame(gameFrame, "Game over", "Player forfeit");
+        new EndFrame(gameFrame, "Player forfeit", "");
         quitGame(false);
     }
 
