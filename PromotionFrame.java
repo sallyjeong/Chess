@@ -12,7 +12,8 @@ import java.awt.image.BufferedImage;
 
 /**
  * [PromotionFrame.java]
- * Creates the frame that user uses to promote the current pawn once it reaches the farthest rank from its original square.
+ *  Creates the frame that user uses to promote the current pawn 
+ *  once it reaches the farthest rank from its original square.
  *  @author Stanley Wang
  *  @version 1.0 Jan 25, 2021
  */
@@ -64,10 +65,13 @@ public class PromotionFrame extends JFrame{
         contentPane.add(promoText2);
 
         //queen promotion button
-        JButton queenPromoBtn = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-queen2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
+        JButton queenPromoBtn = new JButton(new ImageIcon
+                (new ImageIcon("06_classic2/w-queen2.png").getImage()
+                                .getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
         queenPromoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Queen(isWhite, 9, 'Q', piece.getRow(), piece.getCol())); //promotes the pawn to a queen
+                move.getEnd().addPiece(new Queen(isWhite, 9, 'Q', 
+                        piece.getRow(), piece.getCol())); //promotes the pawn to a queen
                 choosePiece(move);
             }
         });
@@ -76,10 +80,13 @@ public class PromotionFrame extends JFrame{
         contentPane.add(queenPromoBtn);
 
         //rook promotion button
-        JButton rookPromoBtn = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-rook2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
+        JButton rookPromoBtn = new JButton(new ImageIcon
+                (new ImageIcon("06_classic2/w-rook2.png").getImage()
+                        .getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
         rookPromoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Rook(isWhite, 5 , 'R', piece.getRow(), piece.getCol())); //promotes the pawn to a rook
+                move.getEnd().addPiece(new Rook(isWhite, 5 , 'R',
+                        piece.getRow(), piece.getCol())); //promotes the pawn to a rook
                 choosePiece(move);
             }
         });
@@ -88,10 +95,13 @@ public class PromotionFrame extends JFrame{
         contentPane.add(rookPromoBtn);
 
         //bishop promotion button
-        JButton bishopPromoBtn = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-bishop2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
+        JButton bishopPromoBtn = new JButton(new ImageIcon
+                (new ImageIcon("06_classic2/w-bishop2.png").getImage()
+                        .getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
         bishopPromoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Bishop(isWhite, 3, 'B', piece.getRow(), piece.getCol())); //promotes the pawn to a bishop
+                move.getEnd().addPiece(new Bishop(isWhite, 3, 'B',
+                        piece.getRow(), piece.getCol())); //promotes the pawn to a bishop
                 choosePiece(move);
             }
         });
@@ -100,10 +110,13 @@ public class PromotionFrame extends JFrame{
         contentPane.add(bishopPromoBtn);
 
         //knight promotion button
-        JButton knightPromoBtn = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-knight2.png").getImage().getScaledInstance(90 , 80, Image.SCALE_DEFAULT)));
+        JButton knightPromoBtn = new JButton(new ImageIcon
+                (new ImageIcon("06_classic2/w-knight2.png").getImage()
+                        .getScaledInstance(90 , 80, Image.SCALE_DEFAULT)));
         knightPromoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Knight(isWhite, 3, 'N', piece.getRow(), piece.getCol())); //promotes the pawn to a knight
+                move.getEnd().addPiece(new Knight(isWhite, 3, 'N',
+                        piece.getRow(), piece.getCol())); //promotes the pawn to a knight
                 choosePiece(move);
             }
         });
