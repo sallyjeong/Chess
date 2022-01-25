@@ -1,5 +1,6 @@
 package chessproject;
 
+// imports
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,6 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.Color;
 
+/** [DrawFrame.java]
+ * The JFrame that opens when the client receives opponent's draw request
+ * @author Katherine Liu, Rachel Liu
+ * @version 1.0 Jan 25, 2021
+ */
 public class DrawFrame extends JFrame {
 
     private JPanel contentPane;
@@ -17,10 +23,13 @@ public class DrawFrame extends JFrame {
     private String result = "";
 
     /**
-     * Create the frame.
+     * DrawFrame
+     * This constructor creates a DrawFrame
+     * @param gameFrame is the GameFrame the game is on
      */
     public DrawFrame(GameFrame gameFrame) {
-        gameFrame.setEnabled(false);
+        gameFrame.setEnabled(false); // user must respond to request before continuing gam
+        
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 450, 300);
         contentPane = new JPanel();
