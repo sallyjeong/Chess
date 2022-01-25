@@ -14,7 +14,7 @@ public class ComputerPlayer extends Player {
 
     public Move makeMove(Board board, int depth) {
         Move bestMove;
-        if(board.inKQorKREndGame(isWhite())) {
+        if(board.inKQEndGame(isWhite())) {
             bestMove = minimax(board, 7, Integer.MIN_VALUE, Integer.MAX_VALUE, true).move;
         }else {
             bestMove = minimax(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true).move;
