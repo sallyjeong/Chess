@@ -72,7 +72,6 @@ public class Server {
         public void run() {
             while (!socket.isClosed() && socket.isConnected()) {
                 try {
-                    System.out.println ("room names "+ roomNames);
                     String input = dataIn.readLine();
                     if (input != null) {
                         char type = input.charAt(0); // corresponds to the data type identifiers in Constants
@@ -385,13 +384,9 @@ public class Server {
                 if (priv) {
                     rooms.remove(room);
                 } else {
-                    String roomName =  rooms.get(room).get(0).username + " vs " + rooms.get(room).get(1).username;
-                    if (roomNames.contains(roomName)){
-                        roomNames.remove(roomName);
-                        publicRooms.remove(roomName);
-                        System.out.println("room removed       " + rooms.get(room).get(0).username + " vs " + rooms.get(room).get(1).username);
-                    }
-
+                    roomNames.remove(rooms.get(room).get(0).username + " vs " + rooms.get(room).get(0).username);
+                    publicRooms.remove(room);
+                    System.out.println("room removed       " + rooms.get(room).get(0).username + " vs " + rooms.get(room).get(0).username);
                     broadcastMessageToAll(Constants.UPDATE_LIST + "");
                 }
 

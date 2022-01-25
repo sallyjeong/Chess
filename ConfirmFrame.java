@@ -5,8 +5,11 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.JButton;
 import java.awt.Color;
 
 public class ConfirmFrame extends JFrame {
@@ -42,9 +45,6 @@ public class ConfirmFrame extends JFrame {
                     // surrender or leave button
                     currentGameFrame.dispose();
                     currentGameFrame.getClient().leaveRoom();
-                    HomeFrame.roomNames = currentGameFrame.getClient().getRoomNames();
-                    HomeFrame.list = new JList(HomeFrame.roomNames.toArray());
-
                 } else {
                     // draw
                     currentGameFrame.addMessage("*** DRAW REQUEST SENT ***");

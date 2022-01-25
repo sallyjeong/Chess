@@ -22,6 +22,7 @@ public class Client {
 
     // chess game variables
     private GameFrame gameFrame;
+    private Game game;
     private MessageFrame messageFrame;
     private boolean isPlayer;
     private boolean turn = false;
@@ -267,17 +268,31 @@ public class Client {
 
     // determine how to interpret the move
     public void readMove(String data) {
+        boolean done = false;
         if (data.equals("O-O") || data.equals("O-O-O")) {
             receiveMove(data);
         } else {
             String startId = data.substring(1, 3);
-            String endId = data.substring(data.length() - 2);
-
-            if (data.charAt(0) == 'P') {
-                receiveMove(startId, endId, true);
-                data = " " + data.substring(1);
+            String endId;
+            if (data.charAt(data.length()-1) == '+') {
+                endId = data.substring(data.length() - 3, data.length() - 1);
+            } else if (data.charAt(data.length()-2) == '=') {
+                System.out.println("PROMOTEYEA?: " + data);
+                endId = data.substring(data.length() - 4, data.length() - 2);
+                char symbol = data.charAt(data.length()-1);
+                promotePawn(startId, endId, symbol);
+                done = true;
             } else {
-                receiveMove(startId, endId, false);
+                endId = data.substring(data.length() - 2);
+            }
+
+            if (!done) {
+                if (data.charAt(0) == 'P') {
+                    receiveMove(startId, endId, true);
+                    data = " " + data.substring(1);
+                } else {
+                    receiveMove(startId, endId, false);
+                }
             }
         }
         gameFrame.addMove(data);
@@ -308,14 +323,14 @@ public class Client {
         }
         // moving pieces on the board
         end.addPiece(piece);
-        piece.setCol(end.getColumn());
-        piece.setRow(end.getRow());
 
         opponentStart.setLeft(true);
 
         if (isPlayer) {
             board.getPseudoLegal(); // calculate valid moves for each piece
-            turn = true;
+            if (!checkGameState()) {
+                turn = true;
+            }
         }
     }
 
@@ -337,7 +352,10 @@ public class Client {
         }
 
         if (isPlayer) {
-            turn = true;
+            board.getPseudoLegal();
+            if (!checkGameState()) {
+                turn = true;
+            }
         }
     }
 
@@ -362,17 +380,76 @@ public class Client {
             rook = temp[0][0].removePiece();
             temp[0][col-2].addPiece(king);
             temp[0][col-2+1].addPiece(rook);
-            king.setCol(col-2);
-            rook.setCol(col-2+1);
         } else {
             rook = temp[0][7].removePiece();
             temp[0][col+2].addPiece(king);
             temp[0][col+2-1].addPiece(rook);
-            king.setCol(col+2);
-            rook.setCol(col+2-1);
         }
     }
 
+    public void promotePawn(String startId, String endId, char symbol) {
+        System.out.println("entered promote pawn");
+        Spot[][] temp = board.getBoard();
+        Piece newPiece = null;
+        Spot end = null;
+        int row = 0, col = 0;
+        for (int i = 0; i<temp.length; i++) {
+            for (int j = 0; j<temp.length; j++) {
+                if (temp[i][j].getID().equals(startId)) {
+                    opponentStart = temp[i][j];
+                    opponentStart.removePiece();
+                } else if (temp[i][j].getID().equals(endId)) {
+                    end = temp[i][j];
+                    row = i;
+                    col = j;
+                }
+            }
+        }
+        // moving pieces on the board
+        if (symbol == 'R') {
+            newPiece = new Rook(!isWhite(),  5, symbol, row, col);
+        } else if (symbol == 'N') {
+            newPiece = new Knight(!isWhite(),  3, symbol, row, col);
+        } else if (symbol == 'B') {
+            newPiece = new Bishop(!isWhite(),  3, symbol, row, col);
+        } else if (symbol == 'Q') {
+            newPiece = new Queen(!isWhite(),  9, symbol, row, col);
+        }
+
+        end.addPiece(newPiece);
+
+        opponentStart.setLeft(true);
+
+        if (isPlayer) {
+            board.getPseudoLegal(); // calculate valid moves for each piece
+            if (!checkGameState()) {
+                turn = true;
+            }
+        }
+    }
+
+    public boolean checkGameState() {
+        //checkmate
+        if(board.isCheckmateOrStalemate(isWhite())==1) {
+            System.out.println("checkmate");
+            game.getPastMoves().get(game.getPastMoves().size()-1).setCheckmatingMove();
+
+            if(isWhite()) {
+                new EndFrame(gameFrame,"Black wins", "0 - 1");
+                sendData(Constants.GAME_OVER_DATA + "Black wins" + "!0 - 1");
+            }else {
+                new EndFrame(gameFrame,"White wins", "1 - 0");
+                sendData(Constants.GAME_OVER_DATA + "White wins" + "!1 - 0");
+            }
+            return true;
+            //stalemate
+        }else if(board.isCheckmateOrStalemate(isWhite())==2 || board.isInsufficientMat()) {
+            new EndFrame(gameFrame,"Draw", "1/2 - 1/2");
+            sendData(Constants.GAME_OVER_DATA + "Draw" + "!1/2 - 1/2");
+            return true;
+        }
+        return false;
+    }
     // called on players when spectators join a new game in order to replicate board
     public void sendBoard(String spectator) {
         for (int i=0; i<board.getBoard().length; i++) {
@@ -422,17 +499,17 @@ public class Client {
 
             // creating a new Piece based on data interpreted
             if (symbol == 'P') {
-                newPiece = new Pawn(whitePiece, false, 1, '\u0000', i, j, whitePiece);
+                newPiece = new Pawn(whitePiece,  1, '\u0000', i, j, whitePiece);
             } else if (symbol == 'R') {
-                newPiece = new Rook(whitePiece, false, 5, symbol, i, j);
+                newPiece = new Rook(whitePiece,  5, symbol, i, j);
             } else if (symbol == 'N') {
-                newPiece = new Knight(whitePiece, false, 3, symbol, i, j);
+                newPiece = new Knight(whitePiece,  3, symbol, i, j);
             } else if (symbol == 'B') {
-                newPiece = new Bishop(whitePiece, false, 3, symbol, i, j);
+                newPiece = new Bishop(whitePiece,  3, symbol, i, j);
             } else if (symbol == 'Q') {
-                newPiece = new Queen(whitePiece, false, 9, symbol, i, j);
+                newPiece = new Queen(whitePiece,  9, symbol, i, j);
             } else if (symbol == 'K') {
-                newPiece = new King(whitePiece, false, 1000, symbol, i, j);
+                newPiece = new King(whitePiece,  1000, symbol, i, j);
             }
             board.getBoard()[i][j].addPiece(newPiece);
         }
@@ -449,13 +526,6 @@ public class Client {
         for (int i = 0; i<board.getBoard().length; i++) {
             for (int j = 0; j<board.getBoard()[i].length; j++) {
                 board.getBoard()[i][j] = oldBoard[7-i][7-j];
-                board.getBoard()[i][j].setRow(i);
-                board.getBoard()[i][j].setColumn(j);
-
-                if (board.getBoard()[i][j].getPiece() != null) {
-                    board.getBoard()[i][j].getPiece().setRow(i);
-                    board.getBoard()[i][j].getPiece().setCol(j);
-                }
             }
         }
     }
@@ -470,10 +540,8 @@ public class Client {
             drawFrame.dispose();
 
             if (result.equals("confirmed")) {
-                new EndFrame(gameFrame); // might need to send more data to determine the text on the screen
-                sendData(Constants.GAME_OVER_DATA + "draw");
-                HomeFrame.roomNames = this.getRoomNames();
-                HomeFrame.list.setListData(HomeFrame.roomNames.toArray());
+                new EndFrame(gameFrame, "Draw", "1/2 - 1/2"); // might need to send more data to determine the text on the screen
+                sendData(Constants.GAME_OVER_DATA + "Draw" + "!1/2 - 1/2");
             } else {
                 sendData(Constants.DRAW_DATA + "denied");
             }
@@ -530,8 +598,6 @@ public class Client {
                 while (socket.isConnected()) {
                     try {
                         try {
-                            System.out.println ("room names: "+HomeFrame.roomNames);
-
                             String data = dataIn.readLine();
                             char type = data.charAt(0); // corresponds to the data type identifiers in Constants
                             data = data.substring(1); // actual information
@@ -544,18 +610,18 @@ public class Client {
                             } else if (type == Constants.CHAT_DATA) {
                                 gameFrame.addMessage(data);
                             } else if (type == Constants.MOVE_DATA) {
+                                System.out.println("MOVE: " + data);
                                 readMove(data);
-
                             } else if (type == Constants.UPDATE_LIST) {
                                 HomeFrame.roomNames = getRoomNames();
-                                HomeFrame.list.setListData(HomeFrame.roomNames.toArray());
-
+                                HomeFrame.list = new JList(HomeFrame.roomNames.toArray());
                             } else if (type == Constants.BOARD_DATA) {
                                 if (isPlayer) {
                                     sendBoard(data);
                                 } else {
                                     receiveBoard(data);
                                 }
+
                             } else if (type == Constants.DRAW_DATA) {
                                 receiveDrawInfo(data);
                             } else if (type == Constants.LEAVE_ROOM_DATA) {
@@ -565,7 +631,9 @@ public class Client {
                                 }
                             } else if (type == Constants.GAME_OVER_DATA) {
                                 // for checkmate, stalemate, and when draw requests are successful
-                                new EndFrame(gameFrame);
+                                String winner = data.substring(0, data.indexOf("!"));
+                                String score = data.substring(data.indexOf("!")+1);
+                                new EndFrame(gameFrame, winner, score);
                             }
                         } catch (SocketException e) {
                         }
@@ -582,9 +650,9 @@ public class Client {
         for(int i=0; i<captured.size(); i++) {
             Piece p = captured.get(i);
             if(p.isWhite()) {
-                g.drawImage(p.getImage()[0], i*LENGTH, 0, LENGTH, LENGTH, null);
+                g.drawImage(p.getImage()[0], i*LENGTH, 530, LENGTH, LENGTH, null);
             }else {
-                g.drawImage(p.getImage()[1], i*LENGTH, 520, LENGTH, LENGTH, null);
+                g.drawImage(p.getImage()[1], i*LENGTH, 530, LENGTH, LENGTH, null);
             }
 
         }
@@ -613,8 +681,9 @@ public class Client {
     public void setTurn(boolean turn) {
         this.turn = turn;
     }
-    public void setBoard(Board board) {
-        this.board = board;
+    public void setGame(Game game) {
+        this.game = game;
+        this.board = game.getBoard();
     }
     public Spot getOpponentStart() {
         return opponentStart;
@@ -624,5 +693,8 @@ public class Client {
     }
     public ArrayList<Piece> getCaptured() {
         return this.captured;
+    }
+    public GameFrame getGameFrame() {
+        return gameFrame;
     }
 }
