@@ -14,6 +14,10 @@ public class Player {
         this.captured = new ArrayList<Piece>();
     }
 
+    public Player() {
+        this.captured = new ArrayList<Piece>();
+    }
+
     public boolean isWhite() {
         return white;
     }

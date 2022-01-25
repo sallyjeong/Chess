@@ -12,9 +12,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
-public class Client {
+public class Client extends Player {
     // client identity variables
-    // private JFrame homeFrame;
     private Client thisClient;
     private String username = "!";
     private String room;
@@ -38,8 +37,8 @@ public class Client {
     private String result = "";
 
     public Client() {
+        super();
         this.thisClient = this;
-        this.captured = new ArrayList<Piece>();
 
         // connecting to server
         try {
@@ -649,18 +648,6 @@ public class Client {
         }).start();
     }
 
-    public void displayCaptured(Graphics g) {
-        for(int i=0; i<captured.size(); i++) {
-            Piece p = captured.get(i);
-            if(p.isWhite()) {
-                g.drawImage(p.getImage()[0], i*LENGTH, 530, LENGTH, LENGTH, null);
-            }else {
-                g.drawImage(p.getImage()[1], i*LENGTH, 530, LENGTH, LENGTH, null);
-            }
-
-        }
-    }
-
     /*
     METHODS FOR EXTRACTING VALUES
      */
@@ -692,9 +679,6 @@ public class Client {
     }
     public boolean getIsPlayer() {
         return isPlayer;
-    }
-    public ArrayList<Piece> getCaptured() {
-        return this.captured;
     }
     public GameFrame getGameFrame() {
         return gameFrame;

@@ -26,13 +26,33 @@ public class GameFrame extends JFrame {
     private JTextArea textArea;
     private JTextArea movesArea;
     private Client client;
+    private Player p1, p2;
+    private boolean computerGame;
+    private String difficulty;
 
     public GameFrame(Client client, boolean isPlayer) {
         frame = this;
         this.client = client;
+        computerGame = false;
         GamePanel board = new GamePanel(isPlayer);
         game = new Game(client);
+        create(board, isPlayer);
+    }
 
+
+    public GameFrame(String difficulty, boolean white) {
+        frame = this;
+        this.difficulty = difficulty;
+        p2 = new Player(white);
+        p1 = new ComputerPlayer(!white);
+        computerGame = true;
+        game = new Game(white, p1, p2, this);
+        GamePanel board = new GamePanel(true);
+
+        create(board,  true);
+    }
+
+    public void create(GamePanel board, boolean isPlayer) {
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setBounds(100, 100, 1313, 715);
         JPanel contentPane = new JPanel();
@@ -60,87 +80,115 @@ public class GameFrame extends JFrame {
 
         movesPanel.add(scrollMoves);
 
-        JPanel chatPanel = new JPanel();
-        chatPanel.setBorder(new TitledBorder(null, "Chat", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-        chatPanel.setBounds(52, 395, 564, 237);
-        contentPane.add(chatPanel);
+        if (!computerGame) {
+            JPanel chatPanel = new JPanel();
+            chatPanel.setBorder(new TitledBorder(null, "Chat", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+            chatPanel.setBounds(52, 395, 564, 237);
+            contentPane.add(chatPanel);
 
-        textArea = new JTextArea(10, 43);
-        textArea.setEditable(false);
+            textArea = new JTextArea(10, 43);
+            textArea.setEditable(false);
 
-        JScrollPane scroll = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setVisible(true);
+            JScrollPane scroll = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            scroll.setVisible(true);
 
-        chatPanel.add(scroll);
+            chatPanel.add(scroll);
 
-        JTextField userInputField = new JTextField();
-        chatPanel.add(userInputField);
-        userInputField.setColumns(37);
+            JTextField userInputField = new JTextField();
+            chatPanel.add(userInputField);
+            userInputField.setColumns(37);
 
-        JButton sendButton = new JButton("Send");
-        sendButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String text = userInputField.getText();
-                client.sendData(Constants.CHAT_DATA + client.getUsername() + ": " + text);
-                textArea.append("you: " + text + "\n");
-                textArea.setCaretPosition(textArea.getDocument().getLength());
-                userInputField.setText("");
-            }
-        });
-        sendButton.setBounds(441, 201, 117, 29);
-        chatPanel.add(sendButton);
-
-
-        JLabel roomCodeLabel = new JLabel();
-        roomCodeLabel.setForeground(new Color(0, 100, 0));
-        roomCodeLabel.setBounds(52, 652, 267, 16);
-        roomCodeLabel.setText("Room Code: " + client.getRoom());
-        contentPane.add(roomCodeLabel);
-
-        if (isPlayer) {
-
-            JButton drawButton = new JButton("Draw");
-            drawButton.addActionListener(new ActionListener() {
+            JButton sendButton = new JButton("Send");
+            sendButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    new ConfirmFrame(frame, false);
+                    String text = userInputField.getText();
+                    client.sendData(Constants.CHAT_DATA + client.getUsername() + ": " + text);
+                    textArea.append("you: " + text + "\n");
+                    textArea.setCaretPosition(textArea.getDocument().getLength());
+                    userInputField.setText("");
                 }
             });
-            drawButton.setBounds(52, 50, 267, 29);
-            contentPane.add(drawButton);
+            sendButton.setBounds(441, 201, 117, 29);
+            chatPanel.add(sendButton);
 
+
+            JLabel roomCodeLabel = new JLabel();
+            roomCodeLabel.setForeground(new Color(0, 100, 0));
+            roomCodeLabel.setBounds(52, 652, 267, 16);
+            roomCodeLabel.setText("Room Code: " + client.getRoom());
+            contentPane.add(roomCodeLabel);
+
+            if (isPlayer) {
+
+                JButton drawButton = new JButton("Draw");
+                drawButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        new ConfirmFrame(frame, false);
+                    }
+                });
+                drawButton.setBounds(52, 50, 267, 29);
+                contentPane.add(drawButton);
+
+                JButton surrenderButton = new JButton("Surrender");
+                surrenderButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        new ConfirmFrame(frame, true);
+                    }
+                });
+                surrenderButton.setBounds(343, 50, 267, 29);
+                contentPane.add(surrenderButton);
+
+            } else if (!computerGame && !isPlayer) {
+
+                JButton flipButton = new JButton("Flip board");
+                flipButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        client.flipBoard();
+                    }
+                });
+                flipButton.setBounds(343, 50, 267, 29);
+                contentPane.add(flipButton);
+
+                JButton leaveButton = new JButton("Leave");
+                leaveButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        new ConfirmFrame(frame, true);
+                    }
+                });
+                leaveButton.setBounds(52, 50, 267, 29);
+                contentPane.add(leaveButton);
+
+            }
+            frame.setVisible(true);
+
+        } else {
             JButton surrenderButton = new JButton("Surrender");
             surrenderButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    new ConfirmFrame(frame, true);
+                    frame.dispose();
+                    new HomeFrame();
                 }
             });
             surrenderButton.setBounds(343, 50, 267, 29);
             contentPane.add(surrenderButton);
 
-        } else {
-
-            JButton flipButton = new JButton("Flip board");
-            flipButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    client.flipBoard();
-                }
-            });
-            flipButton.setBounds(343, 50, 267, 29);
-            contentPane.add(flipButton);
-
-            JButton leaveButton = new JButton("Leave");
-            leaveButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    new ConfirmFrame(frame, true);
-                }
-            });
-            leaveButton.setBounds(52, 50, 267, 29);
-            contentPane.add(leaveButton);
+            JLabel roomCodeLabel = new JLabel();
+            roomCodeLabel.setForeground(new Color(0, 100, 0));
+            roomCodeLabel.setBounds(52, 652, 267, 16);
+            roomCodeLabel.setText("Playing Computer");
+            contentPane.add(roomCodeLabel);
+            frame.setVisible(true);
 
         }
-        frame.setVisible(true);
     }
 
+    public int determineDepth() {
+        if (difficulty.equals("easy")) {
+            return (int)((2) * Math.random()) + 1;
+        } else {
+            return (int)((2) * Math.random()) + 3;
+        }
+    }
     public Client getClient() {
         return client;
     }
@@ -169,20 +217,30 @@ public class GameFrame extends JFrame {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             game.getBoard().draw(g);
-            client.displayCaptured(g);
+            if (!computerGame) {
+                client.displayCaptured(g);
+            } else {
+                p2.displayCaptured(g);
+            }
             repaint();
         }
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (isPlayer && client.getTurn()) {
+            Player temp;
+            if (!computerGame) {
+                temp = client;
+            } else {
+                temp = p2;
+            }
+            if (computerGame || (isPlayer && client.getTurn()))  {
                 if (e.getX() < 8 * game.getBoard().LENGTH && e.getY() < 8 * game.getBoard().LENGTH) {
                     Spot spot = game.getBoard().getBoard()[e.getY() / game.getBoard().LENGTH][e.getX() / game.getBoard().LENGTH];
                     if (source == null) {
                         if (spot.getPiece() == null) {
                             return;
                         } else {
-                            if (client.isWhite() == spot.getPiece().isWhite()) {
+                            if (temp.isWhite() == spot.getPiece().isWhite()) {
                                 spot.setClicked(true);
                                 spot.getPiece().displayValidMoves(true);
                                 source = spot;
@@ -194,7 +252,15 @@ public class GameFrame extends JFrame {
                             spot.getPiece().displayValidMoves(false);
                             source = null;
                         } else if (source.getPiece().getMoveList().contains(spot)) {
-                            game.playerMove(client, source, spot);
+                            if (!computerGame) {
+                                game.playerMove(client, source, spot);
+                            } else {
+                                if (game.playerMove(p2, source, spot)) {
+                                    Move m = ((ComputerPlayer) p1).makeMove(game.getBoard(), determineDepth());
+                                    game.playerMove(p1, m.getStart(), m.getEnd());
+                                }
+
+                            }
                             source.setClicked(false);
                             if (source.getPiece() != null) {
                                 source.getPiece().displayValidMoves(false);

@@ -178,6 +178,7 @@ public class HomeFrame extends JFrame {
         playComputerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+                //thisClient.quitGame(false);
                 new PlayComputerFrame(frame);
             }
         });
@@ -203,6 +204,8 @@ public class HomeFrame extends JFrame {
 
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                roomNames = thisClient.getRoomNames();
+                list.setListData(roomNames.toArray());
                 String roomName = (String) list.getSelectedValue();
                 if (roomName != null) {
                     frame.dispose();
