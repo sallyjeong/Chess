@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.Color;
+import java.util.Locale;
 
 public class ConfirmFrame extends JFrame {
 
@@ -44,7 +45,8 @@ public class ConfirmFrame extends JFrame {
                 if (leave) {
                     // surrender or leave button
                     currentGameFrame.dispose();
-                    String message = Constants.CHAT_DATA + "*** PLAYER " + currentGameFrame.getClient().getUsername() + " HAS LEFT GAME ***";
+                    String colour = currentGameFrame.getClient().getColour().toUpperCase();
+                    String message = Constants.CHAT_DATA + "*** " + colour + " PLAYER HAS LEFT GAME ***";
                     currentGameFrame.getClient().sendData(message);
                     try {
                         Thread.sleep(3000);

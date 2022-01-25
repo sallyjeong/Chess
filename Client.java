@@ -656,6 +656,9 @@ public class Client extends Player {
     public String getRoom() {
         return room;
     }
+    public String getColour() {
+        return colour;
+    }
     public boolean getTurn() {
         return turn;
     }
