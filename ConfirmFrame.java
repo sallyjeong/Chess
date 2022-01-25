@@ -44,7 +44,14 @@ public class ConfirmFrame extends JFrame {
                 if (leave) {
                     // surrender or leave button
                     currentGameFrame.dispose();
+                    String message = Constants.CHAT_DATA + "*** PLAYER " + currentGameFrame.getClient().getUsername() + " HAS LEFT GAME ***";
+                    currentGameFrame.getClient().sendData(message);
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException ex) {
+                    }
                     currentGameFrame.getClient().leaveRoom();
+
                     HomeFrame.roomNames = currentGameFrame.getClient().getRoomNames();
                     HomeFrame.list.setListData(HomeFrame.roomNames.toArray());
                 } else {

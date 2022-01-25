@@ -536,7 +536,7 @@ public class Client extends Player {
     public void receiveDrawInfo(String data) {
         // shows a pop for the player to accept or reject the draw
         if (data.equals(Constants.REQUEST)) {
-            DrawFrame drawFrame = new DrawFrame();
+            DrawFrame drawFrame = new DrawFrame(gameFrame);
             do {
                 result = drawFrame.getResult();
             } while (result.equals(""));
@@ -556,13 +556,7 @@ public class Client extends Player {
     }
 
     public void leaveRoom() {
-        try {
-            dataOut.write(Constants.LEAVE_ROOM_DATA + "" + isPlayer);
-            dataOut.newLine();
-            dataOut.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        sendData(Constants.LEAVE_ROOM_DATA + "" + isPlayer);
         gameFrame.dispose();
         new Thread(new Runnable() {
             @Override
@@ -570,7 +564,6 @@ public class Client extends Player {
                 new HomeFrame();
             }
         }).start();
-        new EndFrame(gameFrame, "Player forfeit", "");
         quitGame(false);
     }
 
@@ -640,7 +633,6 @@ public class Client extends Player {
                         } catch (SocketException e) {
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
                         break;
                     }
                 }

@@ -19,7 +19,8 @@ public class DrawFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public DrawFrame() {
+    public DrawFrame(GameFrame gameFrame) {
+        gameFrame.setEnabled(false);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 450, 300);
         contentPane = new JPanel();
@@ -34,6 +35,7 @@ public class DrawFrame extends JFrame {
         agreeButton = new JButton("Agree");
         agreeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                gameFrame.setEnabled(true);
                 result = "confirmed";
             }
         });
@@ -44,6 +46,7 @@ public class DrawFrame extends JFrame {
         JButton rejectButton = new JButton("Reject");
         rejectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                gameFrame.setEnabled(true);
                 result = "denied";
             }
         });
