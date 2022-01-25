@@ -9,11 +9,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.Color;
-import java.util.Locale;
 
 /** [ConfirmFrame.java]
  * The JFrame that opens when clients need to confirm an action
- * @author Rachel Liu
+ * @author Rachel Liu, Katherine Liu
  * @version 1.0 Jan 25, 2021
  */
 public class ConfirmFrame extends JFrame {
@@ -21,11 +20,11 @@ public class ConfirmFrame extends JFrame {
     private JPanel contentPane;
 
     /**
-	 * ConfirmFrame
-	 * This constructor creates a ConfirmFrame
-	 * @param currentGameFrame is the game frame that the client is currently playing on
-	 * @param leave represents the status of the client (in the game or left the game)
-	 */
+     * ConfirmFrame
+     * This constructor creates a ConfirmFrame
+     * @param currentGameFrame is the game frame that the client is currently playing on
+     * @param leave represents the status of the client (in the game or left the game)
+     */
     public ConfirmFrame(GameFrame currentGameFrame, boolean leave) {
         JFrame frame = this;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,7 +58,7 @@ public class ConfirmFrame extends JFrame {
                     HomeFrame.roomNames = currentGameFrame.getClient().getRoomNames();
                     HomeFrame.list.setListData(HomeFrame.roomNames.toArray());
                 } else {
-                	// sending data that the client wants to draw
+                    // sending data that the client wants to draw
                     currentGameFrame.addMessage("*** DRAW REQUEST SENT ***");
                     currentGameFrame.getClient().sendData(Constants.DRAW_DATA + Constants.REQUEST);
                 }
