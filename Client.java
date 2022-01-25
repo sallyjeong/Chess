@@ -269,6 +269,7 @@ public class Client {
     // determine how to interpret the move
     public void readMove(String data) {
         boolean done = false;
+
         if (data.equals("O-O") || data.equals("O-O-O")) {
             receiveMove(data);
         } else {
@@ -276,14 +277,25 @@ public class Client {
             String endId;
             if (data.charAt(data.length()-1) == '+') {
                 endId = data.substring(data.length() - 3, data.length() - 1);
-            } else if (data.charAt(data.length()-2) == '=') {
-                System.out.println("PROMOTEYEA?: " + data);
-                endId = data.substring(data.length() - 4, data.length() - 2);
-                char symbol = data.charAt(data.length()-1);
-                promotePawn(startId, endId, symbol);
-                done = true;
+                if (isWhite()) {
+                    board.setWhiteKingChecked(true);
+                } else {
+                    board.setBlackKingChecked(true);
+                }
             } else {
-                endId = data.substring(data.length() - 2);
+                if (!isWhite()) {
+                    board.setWhiteKingChecked(false);
+                } else {
+                    board.setBlackKingChecked(false);
+                }
+                if (data.charAt(data.length()-2) == '=') {
+                    endId = data.substring(data.length() - 4, data.length() - 2);
+                    char symbol = data.charAt(data.length() - 1);
+                    promotePawn(startId, endId, symbol);
+                    done = true;
+                } else {
+                    endId = data.substring(data.length() - 2);
+                }
             }
 
             if (!done) {
@@ -293,6 +305,14 @@ public class Client {
                 } else {
                     receiveMove(startId, endId, false);
                 }
+            }
+        }
+        if (isPlayer) {
+            //reset all pawns as not be able to be captured by enpassant
+            board.setEnPassant(isWhite());
+            board.getPseudoLegal(); // calculate valid moves for each piece
+            if (!checkGameState()) {
+                turn = true;
             }
         }
         gameFrame.addMove(data);
@@ -325,13 +345,6 @@ public class Client {
         end.addPiece(piece);
 
         opponentStart.setLeft(true);
-
-        if (isPlayer) {
-            board.getPseudoLegal(); // calculate valid moves for each piece
-            if (!checkGameState()) {
-                turn = true;
-            }
-        }
     }
 
     // understanding castling moves
@@ -348,13 +361,6 @@ public class Client {
                 castle("left");
             } else {
                 castle("right");
-            }
-        }
-
-        if (isPlayer) {
-            board.getPseudoLegal();
-            if (!checkGameState()) {
-                turn = true;
             }
         }
     }
@@ -388,7 +394,6 @@ public class Client {
     }
 
     public void promotePawn(String startId, String endId, char symbol) {
-        System.out.println("entered promote pawn");
         Spot[][] temp = board.getBoard();
         Piece newPiece = null;
         Spot end = null;
@@ -419,19 +424,11 @@ public class Client {
         end.addPiece(newPiece);
 
         opponentStart.setLeft(true);
-
-        if (isPlayer) {
-            board.getPseudoLegal(); // calculate valid moves for each piece
-            if (!checkGameState()) {
-                turn = true;
-            }
-        }
     }
 
     public boolean checkGameState() {
         //checkmate
         if(board.isCheckmateOrStalemate(isWhite())==1) {
-            System.out.println("checkmate");
             game.getPastMoves().get(game.getPastMoves().size()-1).setCheckmatingMove();
 
             if(isWhite()) {
@@ -510,6 +507,11 @@ public class Client {
                 newPiece = new Queen(whitePiece,  9, symbol, i, j);
             } else if (symbol == 'K') {
                 newPiece = new King(whitePiece,  1000, symbol, i, j);
+                if (whitePiece) {
+                    board.setWhiteKing((King)newPiece);
+                } else {
+                    board.setBlackKing((King)newPiece);
+                }
             }
             board.getBoard()[i][j].addPiece(newPiece);
         }
@@ -526,6 +528,8 @@ public class Client {
         for (int i = 0; i<board.getBoard().length; i++) {
             for (int j = 0; j<board.getBoard()[i].length; j++) {
                 board.getBoard()[i][j] = oldBoard[7-i][7-j];
+                board.getBoard()[i][j].setRow(i);
+                board.getBoard()[i][j].setColumn(j);
             }
         }
     }
@@ -567,6 +571,7 @@ public class Client {
                 new HomeFrame();
             }
         }).start();
+        new EndFrame(gameFrame, "Game over", "Player forfeit");
         quitGame(false);
     }
 
@@ -610,7 +615,6 @@ public class Client {
                             } else if (type == Constants.CHAT_DATA) {
                                 gameFrame.addMessage(data);
                             } else if (type == Constants.MOVE_DATA) {
-                                System.out.println("MOVE: " + data);
                                 readMove(data);
                             } else if (type == Constants.UPDATE_LIST) {
                                 HomeFrame.roomNames = getRoomNames();
@@ -626,7 +630,6 @@ public class Client {
                                 receiveDrawInfo(data);
                             } else if (type == Constants.LEAVE_ROOM_DATA) {
                                 if (data.equals("true")) { // a player has surrendered the game
-                                    // show pop-up that game over/which side won
                                     leaveRoom();
                                 }
                             } else if (type == Constants.GAME_OVER_DATA) {
@@ -667,7 +670,6 @@ public class Client {
         }
         return false;
     }
-
 
     public String getUsername() {
         return username;

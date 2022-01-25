@@ -11,8 +11,8 @@ public class Pawn extends Piece {
 	private boolean enPassant;
 	private boolean forward;
 
-	public Pawn(boolean w, boolean m, int p, char s, int r, int c, boolean f) {
-		super(w, m, p, s, r, c);
+	public Pawn(boolean w, int p, char s, int r, int c, boolean f) {
+		super(w, p, s, r, c);
 		this.forward = f;
 	}
 
@@ -36,11 +36,11 @@ public class Pawn extends Piece {
 		validMoves.clear();
 		Spot curSpot;
 
-		if(forward && row>0){
+		if(forward && row > 0){
 			curSpot= board[row-1][col];
 			if(curSpot.getPiece() == null){
 				validMoves.add(curSpot);
-				if(!getMoved() && (board[row-2][col].getPiece()== null)){
+				if(row==6 && (board[row-2][col].getPiece()== null)){
 					validMoves.add(board[row-2][col]);
 					setEnPassant(true);
 				}
@@ -74,47 +74,43 @@ public class Pawn extends Piece {
 				}
 			}
 
-		}
-		else{
-			if(row < 7){
-				curSpot= board[row+1][col];
-				if(curSpot.getPiece() == null){
-					validMoves.add(curSpot);
-					if(!getMoved() && (board[row+2][col].getPiece()== null)){
-						validMoves.add(board[row+2][col]);
-						setEnPassant(true);
-					}
+		} else if (!forward && row <7){
+			curSpot= board[row+1][col];
+			if(curSpot.getPiece() == null){
+				validMoves.add(curSpot);
+				if(row==1 && (board[row+2][col].getPiece()== null)){
+					validMoves.add(board[row+2][col]);
+					setEnPassant(true);
 				}
-				//captures
+			}
+			//captures
+			if(col-1>=0) {
+				curSpot = board[row+1][col-1];
+				if(curSpot.getPiece()!=null && curSpot.getPiece().isWhite()!=isWhite()) {
+					validMoves.add(curSpot);
+				}
+			}
+			if(col+1<=7) {
+				curSpot = board[row+1][col+1];
+				if(curSpot.getPiece()!=null && curSpot.getPiece().isWhite()!=isWhite()) {
+					validMoves.add(curSpot);
+				}
+			}
+			//enpassant
+			if(row==4) {
 				if(col-1>=0) {
-					curSpot = board[row+1][col-1];
-					if(curSpot.getPiece()!=null && curSpot.getPiece().isWhite()!=isWhite()) {
-						validMoves.add(curSpot);
+					curSpot = board[row][col-1];
+					if(curSpot.getPiece() instanceof Pawn && ((Pawn)curSpot.getPiece()).getEnPassant()) {
+						validMoves.add(board[row+1][col-1]);
 					}
 				}
 				if(col+1<=7) {
-					curSpot = board[row+1][col+1];
-					if(curSpot.getPiece()!=null && curSpot.getPiece().isWhite()!=isWhite()) {
-						validMoves.add(curSpot);
-					}
-				}
-				//enpassant
-				if(row==4) {
-					if(col-1>=0) {
-						curSpot = board[row][col-1];
-						if(curSpot.getPiece() instanceof Pawn && ((Pawn)curSpot.getPiece()).getEnPassant()) {
-							validMoves.add(board[row+1][col-1]);
-						}
-					}
-					if(col+1<=7) {
-						curSpot = board[row][col+1];
-						if(curSpot.getPiece() instanceof Pawn && ((Pawn)curSpot.getPiece()).getEnPassant()) {
-							validMoves.add(board[row+1][col+1]);
-						}
+					curSpot = board[row][col+1];
+					if(curSpot.getPiece() instanceof Pawn && ((Pawn)curSpot.getPiece()).getEnPassant()) {
+						validMoves.add(board[row+1][col+1]);
 					}
 				}
 			}
-
 		}
 
 		return super.getMoveList();
@@ -128,4 +124,9 @@ public class Pawn extends Piece {
 	public void setEnPassant(boolean b) {
 		this.enPassant = b;
 	}
+
+	public boolean getForward() {
+		return this.forward;
+	}
+
 }

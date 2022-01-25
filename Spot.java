@@ -69,16 +69,11 @@ public class Spot implements Drawable {
 		return this.column;
 	}
 
-	public void setRow(int row) {
-		this.row = row;
-	}
-
-	public void setColumn(int column) {
-		this.column = column;
-	}
-
 	public void addPiece(Piece p) {
 		this.piece = p;
+		if(p!=null) {
+			p.setRow(row); p.setCol(column);
+		}
 	}
 
 	public Piece removePiece() {
@@ -109,5 +104,11 @@ public class Spot implements Drawable {
 
 	public void setLeft(boolean b) {
 		this.left = b;
+	}
+	public void setRow(int row) {
+		this.row = row;
+	}
+	public void setColumn(int column) {
+		this.column = column;
 	}
 }

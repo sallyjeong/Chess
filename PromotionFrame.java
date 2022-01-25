@@ -13,7 +13,7 @@ public class PromotionFrame extends JFrame{
     private JPanel contentPane;
     private Board board;
     private Piece piece;
-    private JFrame mainFrame;
+    private GameFrame mainFrame;
 
     /**
      * Launch the application.
@@ -22,13 +22,13 @@ public class PromotionFrame extends JFrame{
     /**
      * Create the frame.
      */
-    public PromotionFrame(Piece piece, Piece endPiece, Board board, Move move, JFrame main, Game g) {
+    public PromotionFrame(Piece piece, Board board, Move move, GameFrame main) {
         this.board = board;
         this.piece = piece;
         boolean isWhite= piece.isWhite();
         mainFrame= main;
         mainFrame.setEnabled(false);
-        JFrame frame= this;
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 443, 503);
         setVisible(true);
@@ -57,10 +57,8 @@ public class PromotionFrame extends JFrame{
         JButton btnNewButton = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-queen2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Queen(isWhite, false, 9, 'Q', piece.getRow(), piece.getCol()));
-                board.getPseudoLegal();
-                mainFrame.setEnabled(true);
-                frame.dispose();
+                move.getEnd().addPiece(new Queen(isWhite, 9, 'Q', piece.getRow(), piece.getCol()));
+                choosePiece(move);
             }
         });
         btnNewButton.setBackground(new Color(245, 245, 220));
@@ -70,10 +68,8 @@ public class PromotionFrame extends JFrame{
         JButton btnNewButton_1 = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-rook2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
         btnNewButton_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Rook(isWhite, false, 5 , 'R', piece.getRow(), piece.getCol()));
-                board.getPseudoLegal();
-                mainFrame.setEnabled(true);
-                frame.dispose();
+                move.getEnd().addPiece(new Rook(isWhite, 5 , 'R', piece.getRow(), piece.getCol()));
+                choosePiece(move);
             }
         });
         btnNewButton_1.setBackground(new Color(245, 245, 220));
@@ -84,10 +80,8 @@ public class PromotionFrame extends JFrame{
         JButton btnNewButton_1_1 = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-bishop2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
         btnNewButton_1_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Bishop(isWhite, false, 3, 'B', piece.getRow(), piece.getCol()));
-                board.getPseudoLegal();
-                mainFrame.setEnabled(true);
-                frame.dispose();
+                move.getEnd().addPiece(new Bishop(isWhite, 3, 'B', piece.getRow(), piece.getCol()));
+                choosePiece(move);
             }
         });
         btnNewButton_1_1.setBackground(new Color(245, 245, 220));
@@ -98,11 +92,8 @@ public class PromotionFrame extends JFrame{
         JButton btnNewButton_1_1_1 = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-knight2.png").getImage().getScaledInstance(90 , 80, Image.SCALE_DEFAULT)));
         btnNewButton_1_1_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Knight(isWhite, false, 3, 'N', piece.getRow(), piece.getCol()));
-                board.getPseudoLegal();
-                mainFrame.setEnabled(true);
-                frame.dispose();
-                
+                move.getEnd().addPiece(new Knight(isWhite, 3, 'N', piece.getRow(), piece.getCol()));
+                choosePiece(move);
             }
         });
         btnNewButton_1_1_1.setBackground(new Color(245, 245, 220));
@@ -110,5 +101,13 @@ public class PromotionFrame extends JFrame{
         contentPane.add(btnNewButton_1_1_1);
 
 
+    }
+
+    public void choosePiece(Move move) {
+        board.getPseudoLegal();
+        mainFrame.setEnabled(true);
+        //mainFrame.getClient().sendData(Constants.PROMOTION_DATA + "1"); // allow the opponent to move
+        dispose();
+        mainFrame.getClient().sendData(Constants.MOVE_DATA + move.toString());
     }
 }

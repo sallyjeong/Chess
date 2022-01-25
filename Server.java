@@ -159,6 +159,7 @@ public class Server {
             }
         }
 
+        // sends information to everyone connected to the server
         public void broadcastMessageToAll(String msg) {
             for (ClientHandler clientHandler : clientHandlers) {
                 try {
@@ -401,7 +402,6 @@ public class Server {
                 broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has left the chat ***");
             }
         }
-
 
         public void closeConnection() {
             clientHandlers.remove(this);

@@ -1,4 +1,5 @@
 package chessproject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
@@ -7,14 +8,13 @@ import javax.imageio.ImageIO;
 
 public class King extends Piece {
 
-	private boolean castle = false;
+	private boolean castled;
+	private boolean moved;
 
-	public King(boolean w, boolean m, int p, char s, int r, int c) {
-		super(w, m, p, s, r, c);
-	}
-
-	public boolean isCastled() {
-		return this.castle;
+	public King(boolean w, int p, char s, int r, int c) {
+		super(w, p, s, r, c);
+		this.moved = false;
+		this.castled = false;
 	}
 
 	@Override
@@ -30,11 +30,6 @@ public class King extends Piece {
 	@Override
 	public Set<Spot> validMoves(Board b) {
 		Spot[][] board = b.getBoard();
-		if(b.isThreatenedSpot(isWhite(), board[getRow()][getCol()])) {
-			board[getRow()][getCol()].setChecked(true);
-		}else {
-			board[getRow()][getCol()].setChecked(false);
-		}
 		int[] rowIncrements= {-1, 1, 0, 0, 1, 1, -1, -1};
 		int[] colIncrements= {0, 0 , -1, 1, 1, -1, 1, -1};
 		int row= getRow(); int col= getCol();
@@ -62,32 +57,44 @@ public class King extends Piece {
 	private void canCastle(Board b) {
 		Spot[][] board = b.getBoard();
 		int row = getRow();
-		if (!b.kingInCheck(isWhite())) {
-			if (getCol() == 4) {
-				if (!getMoved() && board[row][7].getPiece() != null && !board[row][7].getPiece().getMoved()) {
-					if (board[row][5].getPiece() == null && !b.isThreatenedSpot(isWhite(), board[row][5]) && board[row][6].getPiece() == null && !b.isThreatenedSpot(isWhite(), board[row][6])) {
+		if(!b.kingInCheck(isWhite())) {
+			if(getCol()==4) {
+				if(!moved && board[row][7].getPiece()!=null && board[row][7].getPiece() instanceof Rook) {
+					if(board[row][5].getPiece()==null && !b.isThreatenedSpot(isWhite(), board[row][5]) && board[row][6].getPiece()==null && !b.isThreatenedSpot(isWhite(), board[row][6])) {
 						getMoveList().add(board[row][6]);
 					}
 				}
-				if (!getMoved() && board[row][0].getPiece() != null && !board[row][0].getPiece().getMoved()) {
-					if (board[row][1].getPiece() == null && !b.isThreatenedSpot(isWhite(), board[row][1]) && board[row][2].getPiece() == null && !b.isThreatenedSpot(isWhite(), board[row][2])
-							&& board[row][3].getPiece() == null && !b.isThreatenedSpot(isWhite(), board[row][3])) {
+				if(!moved && board[row][0].getPiece()!=null && board[row][0].getPiece() instanceof Rook) {
+					if(board[row][1].getPiece()==null && !b.isThreatenedSpot(isWhite(), board[row][1]) && board[row][2].getPiece()==null && !b.isThreatenedSpot(isWhite(), board[row][2])
+							&& board[row][3].getPiece()==null && !b.isThreatenedSpot(isWhite(), board[row][3])) {
 						getMoveList().add(board[row][2]);
 					}
 				}
-			} else if (getCol() == 3) {
-				if (!getMoved() && board[row][0].getPiece() != null && !board[row][0].getPiece().getMoved()) {
-					if (board[row][1].getPiece() == null && !b.isThreatenedSpot(isWhite(), board[row][1]) && board[row][2].getPiece() == null && !b.isThreatenedSpot(isWhite(), board[row][2])) {
+			}else if(getCol()==3) {
+				if(!moved && board[row][0].getPiece()!=null && board[row][0].getPiece() instanceof Rook) {
+					if(board[row][1].getPiece()==null && !b.isThreatenedSpot(isWhite(), board[row][1]) && board[row][2].getPiece()==null && !b.isThreatenedSpot(isWhite(), board[row][2])) {
 						getMoveList().add(board[row][1]);
 					}
 				}
-				if (!getMoved() && board[row][7].getPiece() != null && !board[row][7].getPiece().getMoved()) {
-					if (board[row][4].getPiece() == null && !b.isThreatenedSpot(isWhite(), board[row][4]) && board[row][5].getPiece() == null && !b.isThreatenedSpot(isWhite(), board[row][5])
-							&& board[row][6].getPiece() == null && !b.isThreatenedSpot(isWhite(), board[row][6])) {
+				if(!moved && board[row][7].getPiece()!=null && board[row][7].getPiece() instanceof Rook) {
+					if(board[row][4].getPiece()==null && !b.isThreatenedSpot(isWhite(), board[row][4]) && board[row][5].getPiece()==null && !b.isThreatenedSpot(isWhite(), board[row][5])
+							&& board[row][6].getPiece()==null && !b.isThreatenedSpot(isWhite(), board[row][6])) {
 						getMoveList().add(board[row][5]);
 					}
 				}
 			}
 		}
+	}
+
+	public void setCastled(boolean b) {
+		this.castled = b;
+	}
+
+	public boolean isCastled() {
+		return this.castled;
+	}
+
+	public void setMoved() {
+		this.moved = true;
 	}
 }

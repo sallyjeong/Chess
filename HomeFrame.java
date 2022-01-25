@@ -70,28 +70,7 @@ public class HomeFrame extends JFrame {
         chessLabel.setFont(new Font("Apple Braille", Font.PLAIN, 13));
         mainPanel.add(chessLabel);
 
-        //instructions button
-        JButton instructionsButton = new JButton("Instructions");
-        instructionsButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                new InstructionsFrame();
-            }
-        });
-        instructionsButton.setBounds(26, 175, 343, 80);
-        mainPanel.add(instructionsButton);
-
-        //settings button
-        JButton settingsButton = new JButton("Settings");
-        settingsButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                new SettingsFrame();
-            }
-        });
-        settingsButton.setBounds(26, 65, 343, 80);
-        mainPanel.add(settingsButton);
-
+        //quit button
         JButton quitButton = new JButton("Quit");
         quitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -99,7 +78,7 @@ public class HomeFrame extends JFrame {
                 thisClient.quitGame(true);
             }
         });
-        quitButton.setBounds(26, 287, 343, 80);
+        quitButton.setBounds(26, 65, 343, 80);
         mainPanel.add(quitButton);
 
         //lobby panel
@@ -251,11 +230,7 @@ public class HomeFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 roomNames = thisClient.getRoomNames();
                 System.out.println(roomNames);
-//                list = new JList(roomNames.toArray());
                 list.setListData(roomNames.toArray());
-                //frame.repaint();
-//                frame.setVisible(true);
-                // SwingUtilities.updateComponentTreeUI(frame);
 
             }
         });

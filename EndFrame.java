@@ -3,15 +3,12 @@ package chessproject;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import java.awt.Color;
 
 public class EndFrame extends JFrame {
@@ -21,10 +18,11 @@ public class EndFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public EndFrame(GameFrame currentGameFrame) {
+    public EndFrame(JFrame currentGameFrame, String winner, String score) {
         currentGameFrame.dispose();
         JFrame frame = this;
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 450, 300);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -33,15 +31,18 @@ public class EndFrame extends JFrame {
 
         JLabel overLabel = new JLabel("GAME OVER");
         overLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-        overLabel.setBounds(164, 37, 120, 36);
+        overLabel.setBounds(100, 37, 250, 36);
+        overLabel.setHorizontalAlignment(SwingConstants.CENTER);
         contentPane.add(overLabel);
 
-        JLabel winnerLabel = new JLabel("New label");
-        winnerLabel.setBounds(192, 96, 61, 16);
+        JLabel winnerLabel = new JLabel(winner);
+        winnerLabel.setBounds(100, 96, 250, 16);
+        winnerLabel.setHorizontalAlignment(SwingConstants.CENTER);
         contentPane.add(winnerLabel);
 
-        JLabel resultLabel = new JLabel("New label");
-        resultLabel.setBounds(192, 139, 61, 16);
+        JLabel resultLabel = new JLabel(score);
+        resultLabel.setBounds(100, 139, 250, 16);
+        resultLabel.setHorizontalAlignment(SwingConstants.CENTER);
         contentPane.add(resultLabel);
 
         JButton exitButton = new JButton("Exit");

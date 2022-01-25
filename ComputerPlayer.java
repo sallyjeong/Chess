@@ -1,70 +1,126 @@
 package chessproject;
 
-import java.sql.Array;
-import java.util.ArrayList;
 import java.util.Set;
 
-public class ComputerPlayer extends Player{
-    private Board board;
-    private ArrayList<Piece> blackPieces;
-    public ComputerPlayer() {
-        super(false);
-        blackPieces= new ArrayList<Piece>();
+public class ComputerPlayer extends Player {
+
+    public ComputerPlayer(boolean white) {
+        super(white);
     }
 
-    public Spot[] selectSpot(){
-        Spot[] move= new Spot[2];
-        Spot src= null;
+    public Move makeMove(Board board, int depth) {
+        Move bestMove = minimax(board, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true).move;
+        System.out.println(bestMove);
+        return bestMove;
+    }
 
-        int highestPriority= -1;
-        Spot bestSpot = null;
-        for(int i= blackPieces.size()-1; i>=0; i--){
-            Piece p= blackPieces.get(i);
-            Spot r= board.getBoard()[p.getRow()][p.getCol()];
-            if(p.isCaptured()){ //Remove pieces when they get captured by white
-                blackPieces.remove(i);
-                System.out.println("captured");
 
-            }
-            else{
-                Set<Spot> validMoves= p.validMoves(board);
-                for(Spot s: validMoves){
-                    int priority=0;
-                    if(s.getPiece() != null){
-                        priority= s.getPiece().getPoints();
-                    }
-                    if(priority > highestPriority){
-                        highestPriority= priority;
-                        bestSpot= s;
-                        src= r;
-                    }
+    public int evaluate(Board board, int depth) {
+        if(isWhite()) {
+            return board.evaluateWhite(depth)-board.evaluateBlack(depth);
+        }else {
+            return board.evaluateBlack(depth)-board.evaluateWhite(depth);
+        }
+    }
+
+    public MoveAndEval minimax(Board board, int depth, int alpha, int beta, boolean maximizing) {
+        if(depth==0 || board.isGameOver()) {
+            return new MoveAndEval(null, evaluate(board, depth));
+        }
+
+        Set<Move> allMoves;
+        if(maximizing) {
+            allMoves = board.getCompleteMoveSet(isWhite());
+        }else {
+            allMoves = board.getCompleteMoveSet(!isWhite());
+        }
+        Move bestMove = null;
+        if(maximizing) {
+            int maxEval = Integer.MIN_VALUE;
+            for(Move m: allMoves) {
+                Piece captured = makeTempMove(m, board);
+                int currentEval = minimax(board, depth-1, alpha, beta, false).eval;
+                unmakeMove(m, board, captured);
+                if(currentEval>maxEval) {
+                    maxEval = currentEval;
+                    bestMove = m;
+                }
+                alpha = Math.max(alpha, currentEval);
+                if(beta<=alpha) {
+                    break;
                 }
             }
-        }
-
-        move[0]= src;
-        move[1]= bestSpot;
-
-        return move;
-
-    }
-
-    void receiveBoard(Board b){
-        board= b;
-
-        for(int i=0; i<=1; i++){
-            for(int j=0; j< 8; j++){
-                Piece blackPiece= board.getBoard()[i][j].getPiece();
-                blackPieces.add(blackPiece);
-
+            return new MoveAndEval(bestMove, maxEval);
+        }else {
+            int minEval = Integer.MAX_VALUE;
+            for(Move m: allMoves) {
+                Piece captured = makeTempMove(m, board);
+                int currentEval = minimax(board, depth-1, alpha, beta, true).eval;
+                unmakeMove(m, board, captured);
+                if(currentEval<minEval) {
+                    minEval = currentEval;
+                    bestMove = m;
+                }
+                beta = Math.min(beta, currentEval);
+                if(beta<=alpha) {
+                    break;
+                }
             }
+            return new MoveAndEval(bestMove, minEval);
         }
-
-
     }
 
+    static class MoveAndEval {
+        Move move;
+        int eval;
 
+        MoveAndEval(Move m, int e) {
+            this.move = m;
+            this.eval = e;
+        }
+    }
 
+    public Piece makeTempMove(Move m, Board b) {
+        Piece capturedPiece = null;
+        Spot start = m.getStart(), end = m.getEnd();
+        Piece movingPiece = start.removePiece();
+        if(end.getPiece()!=null) {
+            capturedPiece = end.removePiece();
+        }
+        if(m.isCastlingMove()) {
+            ((King)movingPiece).setCastled(true);
+        }
+        if(m.isPromotionMove()) {
+            end.addPiece(new Queen(movingPiece.isWhite(), 900, 'Q', end.getRow(), end.getColumn()));
+        }else {
+            end.addPiece(movingPiece);
+        }
+
+        b.getPseudoLegal();
+        return capturedPiece;
+    }
+
+    public void unmakeMove(Move m, Board b, Piece captured) {
+        Spot start = m.getStart(), end = m.getEnd();
+        Piece movingPiece = end.removePiece();
+        if(m.isCastlingMove()) {
+            ((King)movingPiece).setCastled(false);
+        }
+        if(m.isPromotionMove()) {
+            boolean f;
+            if(end.getRow()==7) {
+                f = false;
+            }else {
+                f = true;
+            }
+            start.addPiece(new Pawn(movingPiece.isWhite(), 100, '\u0000', start.getRow(), start.getColumn(), f));
+        }else {
+            start.addPiece(movingPiece);
+        }
+        if(captured!=null) {
+            end.addPiece(captured);
+        }
+    }
 
 
 }

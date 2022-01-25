@@ -4,10 +4,9 @@ public class Move {
 	private Spot start;
 	private Spot end;
 	private Piece sourcePiece, capturedPiece;
-	private Client player;
+	private boolean isCheckmatingMove, isCheckMove;
 
-	public Move (Client player, Spot start, Spot end) {
-		this.player = player;
+	public Move (Spot start, Spot end) {
 		this.start = start;
 		this.end = end;
 		this.sourcePiece = start.getPiece();
@@ -31,6 +30,11 @@ public class Move {
 	}
 
 	public boolean isPromotionMove() {
+		if(sourcePiece instanceof Pawn) {
+			if(end.getRow()==0 || end.getRow()==7) {
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -52,6 +56,7 @@ public class Move {
 			ret+=" ";
 		}
 		ret+=start.getID();
+
 		if(capturedPiece==null) {
 			ret+="-";
 		}else {
@@ -59,11 +64,18 @@ public class Move {
 		}
 		ret+=end.getID();
 
-		return ret;
-	}
+		if(isPromotionMove()) {
+			ret+="=";
+			ret+=end.getPiece().getSymbol();
+		}
 
-	public Client getPlayer() {
-		return this.player;
+		if(isCheckmatingMove) {
+			ret+="#";
+		}else if(isCheckMove) {
+			ret+="+";
+		}
+
+		return ret;
 	}
 
 	public Spot getStart() {
@@ -72,6 +84,15 @@ public class Move {
 
 	public Spot getEnd() {
 		return this.end;
+	}
+
+	public void setCheckmatingMove() {
+		this.isCheckmatingMove = true;
+	}
+
+
+	public void setCheckMove() {
+		this.isCheckMove = true;
 	}
 
 
