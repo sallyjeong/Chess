@@ -26,4 +26,12 @@ public class Constants {
     public static final char START_DATA = 'n';
     public static final char DRAW_DATA = 'o';
     public static final char GAME_OVER_DATA = 'p';
+    public static final char PAWN_INDICATOR = 'P';
+    public static final char CHECK = '+';
+    public static final char CHECKMATE = '#';
+    public static final char PROMOTE = '=';
+    public static final String CASTLE_1 = "O-O";
+    public static final String CASTLE_2 = "O-O-O";
+    public static final char MOVE = '-';
+    public static final char CAPTURE = 'x';
 }

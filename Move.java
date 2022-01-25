@@ -41,9 +41,9 @@ public class Move {
 	public String toString() {
 		if(isCastlingMove()) {
 			if(end.getColumn()==1 || end.getColumn()==6) {
-				return "O-O";
+				return Constants.CASTLE_1;
 			} else {
-				return "O-O-O";
+				return Constants.CASTLE_2;
 			}
 		}
 
@@ -51,28 +51,28 @@ public class Move {
 		if(!(sourcePiece instanceof Pawn)) {
 			ret+=sourcePiece.getSymbol();
 		} else if (isEnPassantMove()) {
-			ret+="P";
+			ret+= Constants.PAWN_INDICATOR;
 		} else {
 			ret+=" ";
 		}
 		ret+=start.getID();
 
 		if(capturedPiece==null) {
-			ret+="-";
+			ret+=Constants.MOVE;
 		}else {
-			ret+="x"+capturedPiece.getSymbol();
+			ret+=Constants.CAPTURE+capturedPiece.getSymbol();
 		}
 		ret+=end.getID();
 
 		if(isPromotionMove()) {
-			ret+="=";
+			ret+=Constants.PROMOTE;
 			ret+=end.getPiece().getSymbol();
 		}
 
 		if(isCheckmatingMove) {
-			ret+="#";
+			ret+=Constants.CHECKMATE;
 		}else if(isCheckMove) {
-			ret+="+";
+			ret+=Constants.CHECK;
 		}
 
 		return ret;

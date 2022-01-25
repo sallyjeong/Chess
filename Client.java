@@ -106,7 +106,7 @@ public class Client extends Player {
 
         // adding the move to their own screen
         if (data.charAt(0) == Constants.MOVE_DATA) {
-            if (data.charAt(1) == 'P') {
+            if (data.charAt(1) == Constants.PAWN_INDICATOR) {
                 data = " " + data.substring(2);
             } else {
                 data = data.substring(1);
@@ -343,329 +343,12 @@ public class Client extends Player {
         listenForUpdates();
     }
 
-    // determine how to interpret the move
-    public void readMove(String data) {
-        boolean done = false;
+    /**
+     * listenForUpdates
+     * Called once the Game is started in order to receive in-Game updates
+     * Receives chat, move, and ending game information
+     */
 
-        if (data.equals("O-O") || data.equals("O-O-O")) {
-            receiveMove(data);
-        } else {
-            String startId = data.substring(1, 3);
-            String endId;
-            if (data.charAt(data.length()-1) == '+') {
-                endId = data.substring(data.length() - 3, data.length() - 1);
-                if (isWhite()) {
-                    board.setWhiteKingChecked(true);
-                } else {
-                    board.setBlackKingChecked(true);
-                }
-            } else {
-                if (!isWhite()) {
-                    board.setWhiteKingChecked(false);
-                } else {
-                    board.setBlackKingChecked(false);
-                }
-                if (data.charAt(data.length()-2) == '=') {
-                    endId = data.substring(data.length() - 4, data.length() - 2);
-                    char symbol = data.charAt(data.length() - 1);
-                    promotePawn(startId, endId, symbol);
-                    done = true;
-                } else {
-                    endId = data.substring(data.length() - 2);
-                }
-            }
-
-            if (!done) {
-                if (data.charAt(0) == 'P') {
-                    receiveMove(startId, endId, true);
-                    data = " " + data.substring(1);
-                } else {
-                    receiveMove(startId, endId, false);
-                }
-            }
-        }
-        if (isPlayer) {
-            //reset all pawns as not be able to be captured by enpassant
-            board.setEnPassant(isWhite());
-            board.getPseudoLegal(); // calculate valid moves for each piece
-            if (!checkGameState()) {
-                turn = true;
-            }
-        }
-        gameFrame.addMove(data);
-    }
-
-    // regular moves
-    public void receiveMove(String startId, String endId, boolean enPassant) {
-        if (!isPlayer && opponentStart != null) {
-            opponentStart.setLeft(false);
-        }
-
-        Spot[][] temp = board.getBoard();
-        Spot end = null;
-        Piece piece = null;
-
-        for (int i = 0; i<temp.length; i++) {
-            for (int j = 0; j<temp.length; j++) {
-                if (temp[i][j].getID().equals(startId)) {
-                    opponentStart = temp[i][j];
-                    piece = opponentStart.removePiece();
-                } else if (temp[i][j].getID().equals(endId)) {
-                    end = temp[i][j];
-                    if (enPassant) {
-                        temp[i-1][j].removePiece();
-                    }
-                }
-            }
-        }
-        // moving pieces on the board
-        end.addPiece(piece);
-
-        opponentStart.setLeft(true);
-    }
-
-    // understanding castling moves
-    public void receiveMove(String castle) {
-        if (isWhite()) {
-            if (castle.equals("O-O")) {
-                castle("right");
-
-            } else {
-                castle("left");
-            }
-        } else if (!isWhite()) {
-            if (castle.equals("O-O")) {
-                castle("left");
-            } else {
-                castle("right");
-            }
-        }
-    }
-
-    // moving pieces based on castle
-    public void castle(String direction) {
-        Spot[][] temp = board.getBoard();
-        Spot kingSpot;
-        Piece king, rook;
-        int col;
-
-        if (temp[0][3].getPiece() instanceof King) {
-            kingSpot = temp[0][3];
-            col = 3;
-        } else {
-            kingSpot = temp[0][4];
-            col = 4;
-        }
-        king = kingSpot.removePiece();
-
-        // moving pieces on the board
-        if (direction.equals("left")) {
-            rook = temp[0][0].removePiece();
-            temp[0][col-2].addPiece(king);
-            temp[0][col-2+1].addPiece(rook);
-        } else {
-            rook = temp[0][7].removePiece();
-            temp[0][col+2].addPiece(king);
-            temp[0][col+2-1].addPiece(rook);
-        }
-    }
-
-    public void promotePawn(String startId, String endId, char symbol) {
-        Spot[][] temp = board.getBoard();
-        Piece newPiece = null;
-        Spot end = null;
-        int row = 0, col = 0;
-        for (int i = 0; i<temp.length; i++) {
-            for (int j = 0; j<temp.length; j++) {
-                if (temp[i][j].getID().equals(startId)) {
-                    opponentStart = temp[i][j];
-                    opponentStart.removePiece();
-                } else if (temp[i][j].getID().equals(endId)) {
-                    end = temp[i][j];
-                    row = i;
-                    col = j;
-                }
-            }
-        }
-        // moving pieces on the board
-        if (symbol == 'R') {
-            newPiece = new Rook(!isWhite(),  5, symbol, row, col);
-        } else if (symbol == 'N') {
-            newPiece = new Knight(!isWhite(),  3, symbol, row, col);
-        } else if (symbol == 'B') {
-            newPiece = new Bishop(!isWhite(),  3, symbol, row, col);
-        } else if (symbol == 'Q') {
-            newPiece = new Queen(!isWhite(),  9, symbol, row, col);
-        }
-
-        end.addPiece(newPiece);
-
-        opponentStart.setLeft(true);
-    }
-
-    public boolean checkGameState() {
-        //checkmate
-        if(board.isCheckmateOrStalemate(isWhite())==1) {
-            game.getPastMoves().get(game.getPastMoves().size()-1).setCheckmatingMove();
-
-            if(isWhite()) {
-                new EndFrame(gameFrame,"Black wins", "0 - 1");
-                sendData(Constants.GAME_OVER_DATA + "Black wins" + "!0 - 1");
-            }else {
-                new EndFrame(gameFrame,"White wins", "1 - 0");
-                sendData(Constants.GAME_OVER_DATA + "White wins" + "!1 - 0");
-            }
-            return true;
-            //stalemate
-        }else if(board.isCheckmateOrStalemate(isWhite())==2 || board.isInsufficientMat()) {
-            new EndFrame(gameFrame,"Draw", "1/2 - 1/2");
-            sendData(Constants.GAME_OVER_DATA + "Draw" + "!1/2 - 1/2");
-            return true;
-        }
-        return false;
-    }
-    // called on players when spectators join a new game in order to replicate board
-    public void sendBoard(String spectator) {
-        for (int i=0; i<board.getBoard().length; i++) {
-            for (int j=0; j<board.getBoard()[i].length; j++) {
-                Piece temp = board.getBoard()[i][j].getPiece();
-                if (temp != null) {
-
-                    String pieceColour = "b";
-                    if (temp.isWhite()) {
-                        pieceColour = "w";
-                    }
-
-                    if (temp instanceof Pawn) {
-                        sendData(Constants.BOARD_DATA + spectator + " " + i + j + "P" + pieceColour);
-                    } else {
-                        sendData(Constants.BOARD_DATA + spectator + " " + i + j + temp.getSymbol() + pieceColour);
-                    }
-                }
-            }
-        }
-        sendData(Constants.BOARD_DATA  + spectator + " " + Constants.DONE); //indicates that entire board has been sent
-    }
-
-    // called on spectators to replicate the board at the right moment in game
-    public void receiveBoard(String piece) {
-
-        // considers when both players on are the same POV but spectator requests opposite
-        if (piece.equals(Constants.DONE)) {
-            if ((isWhite() && board.getBoard()[0][0].getID().equals("h1"))
-                    || (!isWhite() && board.getBoard()[0][0].getID().equals("a8"))) {
-                flipBoard();
-            }
-
-        } else {
-            // reading the piece data sent over
-            // input format: [row][col][piece symbol][b/w])
-            // example: 00Rw would mean a white Rook at index [0][0]
-            int i = Character.getNumericValue(piece.charAt(0));
-            int j = Character.getNumericValue(piece.charAt(1));
-            char symbol = piece.charAt(2);
-            char pieceColour = piece.charAt(3);
-            boolean whitePiece = false;
-            Piece newPiece = null;
-            if (pieceColour == 'w') {
-                whitePiece = true;
-            }
-
-            // creating a new Piece based on data interpreted
-            if (symbol == 'P') {
-                newPiece = new Pawn(whitePiece,  1, '\u0000', i, j, whitePiece);
-            } else if (symbol == 'R') {
-                newPiece = new Rook(whitePiece,  5, symbol, i, j);
-            } else if (symbol == 'N') {
-                newPiece = new Knight(whitePiece,  3, symbol, i, j);
-            } else if (symbol == 'B') {
-                newPiece = new Bishop(whitePiece,  3, symbol, i, j);
-            } else if (symbol == 'Q') {
-                newPiece = new Queen(whitePiece,  9, symbol, i, j);
-            } else if (symbol == 'K') {
-                newPiece = new King(whitePiece,  1000, symbol, i, j);
-                if (whitePiece) {
-                    board.setWhiteKing((King)newPiece);
-                } else {
-                    board.setBlackKing((King)newPiece);
-                }
-            }
-            board.getBoard()[i][j].addPiece(newPiece);
-        }
-    }
-
-    public void flipBoard() {
-        Spot[][] oldBoard = new Spot[8][8];
-        for(int i=0; i<board.getBoard().length; i++) {
-            for(int j=0; j<board.getBoard()[i].length; j++) {
-                oldBoard[i][j] = board.getBoard()[i][j];
-            }
-        }
-
-        for (int i = 0; i<board.getBoard().length; i++) {
-            for (int j = 0; j<board.getBoard()[i].length; j++) {
-                board.getBoard()[i][j] = oldBoard[7-i][7-j];
-                board.getBoard()[i][j].setRow(i);
-                board.getBoard()[i][j].setColumn(j);
-            }
-        }
-    }
-
-    public void receiveDrawInfo(String data) {
-        // shows a pop for the player to accept or reject the draw
-        if (data.equals(Constants.REQUEST)) {
-            DrawFrame drawFrame = new DrawFrame(gameFrame);
-            do {
-                result = drawFrame.getResult();
-            } while (result.equals(""));
-            drawFrame.dispose();
-
-            if (result.equals("confirmed")) {
-                new EndFrame(gameFrame, "Draw", "1/2 - 1/2"); // might need to send more data to determine the text on the screen
-                sendData(Constants.GAME_OVER_DATA + "Draw" + "!1/2 - 1/2");
-            } else {
-                sendData(Constants.DRAW_DATA + "denied");
-            }
-
-        // for player who requested an unsuccessful draw
-        } else {
-            gameFrame.addMessage("*** DRAW REQUEST DENIED ***");
-        }
-    }
-
-    public void leaveRoom() {
-        sendData(Constants.LEAVE_ROOM_DATA + "" + isPlayer);
-        gameFrame.dispose();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                new HomeFrame();
-            }
-        }).start();
-        quitGame(false);
-    }
-
-    public void quitGame(boolean real) {
-        sendData(Constants.QUIT_DATA + "");
-        try {
-            if (socket != null) {
-                socket.close();
-            }
-            if (dataIn != null) {
-                dataIn.close();
-            }
-            if (dataOut != null) {
-                dataOut.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (real) {
-            System.exit(0);
-        }
-    }
-
-    // main method that receives socket inputs during the game
     public void listenForUpdates() {
         new Thread(new Runnable() {
             @Override
@@ -677,7 +360,7 @@ public class Client extends Player {
                             char type = data.charAt(0); // corresponds to the data type identifiers in Constants
                             data = data.substring(1); // actual information
 
-                            if (type == Constants.START_DATA) {
+                            if (type == Constants.START_DATA) { // for room creators
                                 if (isWhite()) {
                                     turn = true;
                                 }
@@ -704,7 +387,7 @@ public class Client extends Player {
                                 } catch (InterruptedException ex) {
                                 }
                                 if (data.equals("true")) { // a player has surrendered the game
-                                    leaveRoom();
+                                    leaveRoom(); // everyone else must leave
                                 }
                             } else if (type == Constants.GAME_OVER_DATA) {
                                 // for checkmate, stalemate, and when draw requests are successful
@@ -722,8 +405,412 @@ public class Client extends Player {
         }).start();
     }
 
+    /**
+     * readMove
+     * Determines how to interpret the data/move
+     * Called when a move string is received
+     * @param data is the String representation of a move
+     */
+    public void readMove(String data) {
+        boolean pawnPromotion = false;
+
+        // castling moves
+        if (data.equals(Constants.CASTLE_1) || data.equals(Constants.CASTLE_2)) {
+            receiveMove(data);
+
+        } else {
+            String startId = data.substring(1, 3);
+            String endId;
+
+            // check
+            if (data.charAt(data.length()-1) == Constants.CHECK) {
+                endId = data.substring(data.length() - 3, data.length() - 1);
+                if (isWhite()) {
+                    board.setWhiteKingChecked(true);
+                } else {
+                    board.setBlackKingChecked(true);
+                }
+
+            } else {
+                if (!isWhite()) {
+                    board.setWhiteKingChecked(false);
+                } else {
+                    board.setBlackKingChecked(false);
+                }
+
+                // pawn promotion
+                if (data.charAt(data.length()-2) == Constants.PROMOTE) {
+                    endId = data.substring(data.length() - 4, data.length() - 2);
+                    char symbol = data.charAt(data.length() - 1);
+                    promotePawn(startId, endId, symbol);
+                    pawnPromotion = true;
+
+                // regular move
+                } else {
+                    endId = data.substring(data.length() - 2);
+                }
+            }
+
+            if (!pawnPromotion) {
+                if (data.charAt(0) == Constants.PAWN_INDICATOR) { // checks for en passant
+                    receiveMove(startId, endId, true);
+                    data = " " + data.substring(1);
+                } else {
+                    receiveMove(startId, endId, false);
+                }
+            }
+        }
+
+        if (isPlayer) {
+            board.setEnPassant(isWhite()); // reset all pawns as not be able to be captured by enpassant
+            board.getPseudoLegal(); // calculate valid moves for each piece
+            if (!checkGameState()) { // checks endGame
+                turn = true;
+            }
+        }
+        gameFrame.addMove(data); // display the move to the screen
+    }
+
+    /**
+     * receiveMove
+     * Modifies the Client's in-Game board based on opponent's move
+     * Called when a non-castling and non-pawn promotion move occurs
+     * @param startId is the start position of the piece moved
+     * @param endId is the end position of the piece moved
+     * @param enPassant is true when the move is en passant, false otherwise
+     */
+    public void receiveMove(String startId, String endId, boolean enPassant) {
+        if (!isPlayer && opponentStart != null) { // for graphics
+            opponentStart.setLeft(false);
+        }
+
+        Spot[][] temp = board.getBoard();
+        Spot end = null;
+        Piece piece = null;
+
+        // identify which indexes of the board store the actual start and end Spot
+        for (int i = 0; i<temp.length; i++) {
+            for (int j = 0; j<temp.length; j++) {
+                if (temp[i][j].getID().equals(startId)) {
+                    opponentStart = temp[i][j];
+                    piece = opponentStart.removePiece(); // clear the start Spot
+                } else if (temp[i][j].getID().equals(endId)) {
+                    end = temp[i][j];
+
+                    // special indexing for en passant
+                    if (enPassant) {
+                        temp[i-1][j].removePiece();
+                    }
+                }
+            }
+        }
+        end.addPiece(piece); // place the piece at the end spot
+
+        opponentStart.setLeft(true);
+    }
+
+    /**
+     * receiveMove
+     * Modifies the Client's in-Game board based on opponent's move
+     * Called when a castling move is received
+     * @param castle is the String holding the castling move (either CASTLE_1 or CASTLE_2 from Constants)
+     */
+    public void receiveMove(String castle) {
+        if (isWhite()) {
+            if (castle.equals(Constants.CASTLE_1)) {
+                castle("right");
+
+            } else {
+                castle("left");
+            }
+        } else if (!isWhite()) {
+            if (castle.equals(Constants.CASTLE_2)) {
+                castle("left");
+            } else {
+                castle("right");
+            }
+        }
+    }
+
+    /**
+     * castle
+     * Modifies the Client's in-Game board based on opponent's move
+     * Called for castling move once direction is determined
+     * @param direction is either "left" or "right" and describes the opponent king's movement relative to the Client
+     */
+    public void castle(String direction) {
+        Spot[][] temp = board.getBoard();
+        Spot kingSpot;
+        Piece king, rook;
+        int col;
+
+        // king can only be on 2 different spots since castling move verification was already done
+        if (temp[0][3].getPiece() instanceof King) {
+            kingSpot = temp[0][3];
+            col = 3;
+        } else {
+            kingSpot = temp[0][4];
+            col = 4;
+        }
+        king = kingSpot.removePiece();
+
+        // moving rook and king on the board
+        if (direction.equals("left")) {
+            rook = temp[0][0].removePiece();
+            temp[0][col-2].addPiece(king);
+            temp[0][col-2+1].addPiece(rook);
+        } else {
+            rook = temp[0][7].removePiece();
+            temp[0][col+2].addPiece(king);
+            temp[0][col+2-1].addPiece(rook);
+        }
+    }
+
+    /**
+     * promotePawn
+     * Modifies the Client's in-Game board based on opponent's move
+     * Called when a pawn promotion move occurs
+     * @param startId is the start position of the piece moved
+     * @param endId is the end position of the piece moved
+     * @param symbol is the character corresponding to the piece the Pawn has been promoted to
+     */
+    public void promotePawn(String startId, String endId, char symbol) {
+        Spot[][] temp = board.getBoard();
+        Piece newPiece = null;
+        Spot end = null;
+        int row = 0, col = 0;
+
+        for (int i = 0; i<temp.length; i++) {
+            for (int j = 0; j<temp.length; j++) {
+                if (temp[i][j].getID().equals(startId)) {
+                    opponentStart = temp[i][j];
+                    opponentStart.removePiece(); // clear the starting spot
+                } else if (temp[i][j].getID().equals(endId)) {
+                    end = temp[i][j];
+                    row = i;
+                    col = j;
+                }
+            }
+        }
+        // replacing the pawn with a new piece
+        if (symbol == 'R') {
+            newPiece = new Rook(!isWhite(),  5, symbol, row, col);
+        } else if (symbol == 'N') {
+            newPiece = new Knight(!isWhite(),  3, symbol, row, col);
+        } else if (symbol == 'B') {
+            newPiece = new Bishop(!isWhite(),  3, symbol, row, col);
+        } else if (symbol == 'Q') {
+            newPiece = new Queen(!isWhite(),  9, symbol, row, col);
+        }
+
+        end.addPiece(newPiece);
+
+        opponentStart.setLeft(true);
+    }
+
+    /**
+     * checkGameState
+     * Checks for checkmate and stalemate upon receiving a move
+     * Called after each move is received
+     * Opens an EndFrame based on the winner
+     * Sends information to the other users in the room that the game has ended
+     * @return true if an end game situation (checkmate, stalemate) is reached
+     */
+    public boolean checkGameState() {
+        //checkmate
+        if(board.isCheckmateOrStalemate(isWhite())==1) {
+            game.getPastMoves().get(game.getPastMoves().size()-1).setCheckmatingMove();
+
+            if(isWhite()) {
+                new EndFrame(gameFrame,"Black wins", "0 - 1");
+                sendData(Constants.GAME_OVER_DATA + "Black wins" + "!0 - 1");
+            }else {
+                new EndFrame(gameFrame,"White wins", "1 - 0");
+                sendData(Constants.GAME_OVER_DATA + "White wins" + "!1 - 0");
+            }
+            return true;
+            //stalemate
+        }else if(board.isCheckmateOrStalemate(isWhite())==2 || board.isInsufficientMat()) {
+            new EndFrame(gameFrame,"Draw", "1/2 - 1/2");
+            sendData(Constants.GAME_OVER_DATA + "Draw" + "!1/2 - 1/2");
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * sendBoard
+     * Sends the necessary information for each Piece/non-empty Spot on the in-Game Board
+     * Called on a player when a spectator joins the game
+     * @param spectator is the String of the spectator's username which is used on the server side
+     *                  to identify who will receive the board information
+     */
+    public void sendBoard(String spectator) {
+        for (int i=0; i<board.getBoard().length; i++) {
+            for (int j=0; j<board.getBoard()[i].length; j++) {
+                Piece temp = board.getBoard()[i][j].getPiece();
+                if (temp != null) {
+
+                    String pieceColour = "b";
+                    if (temp.isWhite()) {
+                        pieceColour = "w";
+                    }
+
+                    if (temp instanceof Pawn) {
+                        sendData(Constants.BOARD_DATA + spectator + " " + i + j + Constants.PAWN_INDICATOR + pieceColour);
+                    } else {
+                        sendData(Constants.BOARD_DATA + spectator + " " + i + j + temp.getSymbol() + pieceColour);
+                    }
+                }
+            }
+        }
+        sendData(Constants.BOARD_DATA  + spectator + " " + Constants.DONE); //indicates that entire board has been sent
+    }
+
+    /**
+     * receiveBoard
+     * Saves the necessary information for each Piece/non-empty Spot on the in-Game Board
+     * Called on a spectator when joining a game in order to replicate the board
+     * @param piece is the String holding information for the piece being read
+     *              input format: [row][col][piece symbol][b/w]
+     *              example: 00Rw would mean a white Rook at index [0][0]
+     */
+    public void receiveBoard(String piece) {
+            // storing the piece data sent over
+            int i = Character.getNumericValue(piece.charAt(0));
+            int j = Character.getNumericValue(piece.charAt(1));
+            char symbol = piece.charAt(2);
+            char pieceColour = piece.charAt(3);
+            boolean whitePiece = false;
+            Piece newPiece = null;
+            if (pieceColour == 'w') {
+                whitePiece = true;
+            }
+
+            // creating a new Piece based on data interpreted
+            if (symbol == Constants.PAWN_INDICATOR) {
+                newPiece = new Pawn(whitePiece,  1, '\u0000', i, j, whitePiece);
+            } else if (symbol == 'R') {
+                newPiece = new Rook(whitePiece,  5, symbol, i, j);
+            } else if (symbol == 'N') {
+                newPiece = new Knight(whitePiece,  3, symbol, i, j);
+            } else if (symbol == 'B') {
+                newPiece = new Bishop(whitePiece,  3, symbol, i, j);
+            } else if (symbol == 'Q') {
+                newPiece = new Queen(whitePiece,  9, symbol, i, j);
+            } else if (symbol == 'K') {
+                newPiece = new King(whitePiece,  1000, symbol, i, j);
+                if (whitePiece) {
+                    board.setWhiteKing((King)newPiece);
+                } else {
+                    board.setBlackKing((King)newPiece);
+                }
+            }
+            board.getBoard()[i][j].addPiece(newPiece); // adding the new Piece to the correct Spot on the board
+    }
+
+    /**
+     * flipBoard
+     * Flips the orientation of the board (from white to black POV or vice versa)
+     */
+    public void flipBoard() {
+        Spot[][] oldBoard = new Spot[8][8];
+        for(int i=0; i<board.getBoard().length; i++) {
+            for(int j=0; j<board.getBoard()[i].length; j++) {
+                oldBoard[i][j] = board.getBoard()[i][j];
+            }
+        }
+
+        for (int i = 0; i<board.getBoard().length; i++) {
+            for (int j = 0; j<board.getBoard()[i].length; j++) {
+                board.getBoard()[i][j] = oldBoard[7-i][7-j];
+                board.getBoard()[i][j].setRow(i);
+                board.getBoard()[i][j].setColumn(j);
+            }
+        }
+    }
+
+    /**
+     * receiveDrawInfo
+     * Called when receiving a draw request from your opponent OR
+     * Called when receiving the result of your draw request
+     * Either shows an End Frame indicating a draw or continues game as per usual
+     * @param data is the String holding either the request or result of a draw
+     */
+    public void receiveDrawInfo(String data) {
+
+        if (data.equals(Constants.REQUEST)) {
+
+            // shows a pop-up for the player to accept or reject the draw
+
+            DrawFrame drawFrame = new DrawFrame(gameFrame);
+            do {
+                result = drawFrame.getResult();
+            } while (result.equals(""));
+            drawFrame.dispose();
+
+            // checks whether the request was accepted or rejected
+            if (result.equals("confirmed")) {
+                new EndFrame(gameFrame, "Draw", "1/2 - 1/2");
+                // informs the other users in the room (including opponent who requested)
+                sendData(Constants.GAME_OVER_DATA + "Draw" + "!1/2 - 1/2");
+            } else {
+                sendData(Constants.DRAW_DATA + "denied");
+            }
+
+        // for player who requested an unsuccessful draw
+        } else {
+            gameFrame.addMessage("*** DRAW REQUEST DENIED ***");
+        }
+    }
+
+    /**
+     * leaveRoom
+     * Removes the Client from the room and informs the rest of the users in the chat that they have left
+     * Closes the Game Frame and opens a new Home Frame
+     * Closes the Client connection to the server
+     */
+    public void leaveRoom() {
+        sendData(Constants.LEAVE_ROOM_DATA + "" + isPlayer);
+        gameFrame.dispose();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                new HomeFrame();
+            }
+        }).start();
+        quitGame(false);
+    }
+
+    /**
+     * quitGame
+     * Closes the Client's connection to the server
+     * @param real is true when the Client wants to entirely quit the program, false otherwise
+     */
+    public void quitGame(boolean real) {
+        sendData(Constants.QUIT_DATA + "");
+        try {
+            if (socket != null) {
+                socket.close();
+            }
+            if (dataIn != null) {
+                dataIn.close();
+            }
+            if (dataOut != null) {
+                dataOut.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (real) {
+            System.exit(0);
+        }
+    }
+
+
+
     /*
-    METHODS FOR EXTRACTING VALUES
+    METHODS FOR EXTRACTING VALUES (setters and getters)
      */
     public boolean isWhite() {
         if (colour.equals("white")) {
