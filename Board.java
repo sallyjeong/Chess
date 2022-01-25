@@ -173,7 +173,7 @@ public class Board implements Drawable {
 
 		} else {
 			// request for copying a player's current board
-			player.sendData(Constants.BOARD_DATA + "!request");
+			player.sendData(Constants.BOARD_DATA + Constants.REQUEST);
 		}
 	}
 
