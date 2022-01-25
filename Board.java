@@ -74,7 +74,9 @@ public class Board implements Drawable {
 	private final int DEPTH_BONUS = 100;
 	private final int CASTLE_BONUS = 60;
 	private final int MOBILITY_BONUS = 2;
-	
+	private final int PASSEDPAWN_BONUS = 10;
+	private final int KINGPOSITIONAL_BONUS = 30;
+
 	public Board(boolean white) {
 		this.white = white;
 		this.create();
@@ -102,56 +104,56 @@ public class Board implements Drawable {
 			}
 		}
 
-//		if (white) {
-//			whiteRow = 7;
-//			blackRow = 0;
-//			kingCol = 4;
-//			queenCol = 3;
-//			for(int i=0; i<8; i++) {
-//				// white pawns
-//				board[whiteRow-1][i].addPiece(new Pawn(true, 100, '\u0000', whiteRow-1, i, white));
-//				// black pawns
-//				board[blackRow+1][i].addPiece(new Pawn(false, 100, '\u0000', blackRow+1, i, !white));
-//			}
-//		} else {
-//			whiteRow = 0;
-//			blackRow = 7;
-//			kingCol = 3;
-//			queenCol = 4;
-//			for(int i=0; i<8; i++) {
-//				// white pawns
-//				board[whiteRow+1][i].addPiece(new Pawn(true, 100, '\u0000', whiteRow+1, i, white));
-//				// black pawns
-//				board[blackRow-1][i].addPiece(new Pawn(false, 100, '\u0000', blackRow-1, i, !white));
-//			}
-//		}
-//
-//		board[whiteRow][0].addPiece(new Rook(true, 500, 'R', whiteRow, 0));
-//		board[whiteRow][1].addPiece(new Knight(true, 320, 'N', whiteRow, 1));
-//		board[whiteRow][2].addPiece(new Bishop(true, 330, 'B', whiteRow, 2));
-//		board[whiteRow][queenCol].addPiece(new Queen(true, 900, 'Q', whiteRow, queenCol));
-//		whiteKing = new King(true, 20000, 'K', whiteRow, kingCol);
-//		board[whiteRow][kingCol].addPiece(whiteKing);
-//		board[whiteRow][5].addPiece(new Bishop(true, 330, 'B', whiteRow, 5));
-//		board[whiteRow][6].addPiece(new Knight(true, 320, 'N', whiteRow, 6));
-//		board[whiteRow][7].addPiece(new Rook(true, 500, 'R', whiteRow, 7));
-//
-//		board[blackRow][0].addPiece(new Rook(false, 500, 'R', blackRow, 0));
-//		board[blackRow][1].addPiece(new Knight(false, 320, 'N', blackRow, 1));
-//		board[blackRow][2].addPiece(new Bishop(false, 330, 'B', blackRow, 2));
-//		board[blackRow][queenCol].addPiece(new Queen(false, 900, 'Q', blackRow, queenCol));
-//		blackKing = new King(false, 20000, 'K', blackRow, kingCol);
-//		board[blackRow][kingCol].addPiece(blackKing);
-//		board[blackRow][5].addPiece(new Bishop(false, 330, 'B', blackRow, 5));
-//		board[blackRow][6].addPiece(new Knight(false, 320, 'N', blackRow, 6));
-//		board[blackRow][7].addPiece(new Rook(false, 500, 'R', blackRow, 7));
+		if (white) {
+			whiteRow = 7;
+			blackRow = 0;
+			kingCol = 4;
+			queenCol = 3;
+			for(int i=0; i<8; i++) {
+				// white pawns
+				board[whiteRow-1][i].addPiece(new Pawn(true, 100, '\u0000', whiteRow-1, i, white));
+				// black pawns
+				board[blackRow+1][i].addPiece(new Pawn(false, 100, '\u0000', blackRow+1, i, !white));
+			}
+		} else {
+			whiteRow = 0;
+			blackRow = 7;
+			kingCol = 3;
+			queenCol = 4;
+			for(int i=0; i<8; i++) {
+				// white pawns
+				board[whiteRow+1][i].addPiece(new Pawn(true, 100, '\u0000', whiteRow+1, i, white));
+				// black pawns
+				board[blackRow-1][i].addPiece(new Pawn(false, 100, '\u0000', blackRow-1, i, !white));
+			}
+		}
 
-		whiteKing = new King(true, 200000, 'K', 0, 0);
-		board[7][6].addPiece(whiteKing);
-		blackKing = new King(false, 20000, 'K', 0, 0);
-		board[4][5].addPiece(blackKing);
-		board[0][0].addPiece(new Rook(true, 900, 'Q', 0, 0));
-		board[1][0].addPiece(new Rook(true, 900, 'Q', 0, 0));
+		board[whiteRow][0].addPiece(new Rook(true, 500, 'R', whiteRow, 0));
+		board[whiteRow][1].addPiece(new Knight(true, 320, 'N', whiteRow, 1));
+		board[whiteRow][2].addPiece(new Bishop(true, 330, 'B', whiteRow, 2));
+		board[whiteRow][queenCol].addPiece(new Queen(true, 900, 'Q', whiteRow, queenCol));
+		whiteKing = new King(true, 20000, 'K', whiteRow, kingCol);
+		board[whiteRow][kingCol].addPiece(whiteKing);
+		board[whiteRow][5].addPiece(new Bishop(true, 330, 'B', whiteRow, 5));
+		board[whiteRow][6].addPiece(new Knight(true, 320, 'N', whiteRow, 6));
+		board[whiteRow][7].addPiece(new Rook(true, 500, 'R', whiteRow, 7));
+
+		board[blackRow][0].addPiece(new Rook(false, 500, 'R', blackRow, 0));
+		board[blackRow][1].addPiece(new Knight(false, 320, 'N', blackRow, 1));
+		board[blackRow][2].addPiece(new Bishop(false, 330, 'B', blackRow, 2));
+		board[blackRow][queenCol].addPiece(new Queen(false, 900, 'Q', blackRow, queenCol));
+		blackKing = new King(false, 20000, 'K', blackRow, kingCol);
+		board[blackRow][kingCol].addPiece(blackKing);
+		board[blackRow][5].addPiece(new Bishop(false, 330, 'B', blackRow, 5));
+		board[blackRow][6].addPiece(new Knight(false, 320, 'N', blackRow, 6));
+		board[blackRow][7].addPiece(new Rook(false, 500, 'R', blackRow, 7));
+
+		//		whiteKing = new King(true, 200000, 'K', 0, 0);
+		//		board[3][6].addPiece(whiteKing);
+		//		blackKing = new King(false, 20000, 'K', 0, 0);
+		//		board[4][5].addPiece(blackKing);
+		//		board[0][0].addPiece(new Rook(true, 900, 'Q', 0, 0));
+		//		board[7][0].addPiece(new Rook(true, 900, 'Q', 0, 0));
 		getPseudoLegal();
 
 	}
@@ -201,35 +203,35 @@ public class Board implements Drawable {
 	}
 
 	public boolean isInsufficientMat() { //method doesn't check if the bishops are on the same colour squares or not: 2 bishops of same colored diagonals cannot checkmate
-        int wKnights = 0, wBishops = 0, bBishops = 0, bKnights = 0;
-        for(int i=0; i<8; i++) {
-            for(int j=0; j<8; j++) {
-                Piece p = board[i][j].getPiece();
-                if(p!=null) {
-                    if(p instanceof Knight) {
-                        if(p.isWhite()) {
-                            wKnights++;
-                        }else {
-                            bKnights++;
-                        }
-                    } else if(p instanceof Bishop) {
-                        if(p.isWhite()) {
-                            wBishops++;
-                        }else {
-                            bBishops++;
-                        }
-                    } else if(!(p instanceof King)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        if((bKnights<=2 && bBishops == 0) || (wKnights <= 2 && wBishops ==0)) {
-            return true;
-        }
-        return false;
-    }
-	
+		int wKnights = 0, wBishops = 0, bBishops = 0, bKnights = 0;
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				Piece p = board[i][j].getPiece();
+				if(p!=null) {
+					if(p instanceof Knight) {
+						if(p.isWhite()) {
+							wKnights++;
+						}else {
+							bKnights++;
+						}
+					} else if(p instanceof Bishop) {
+						if(p.isWhite()) {
+							wBishops++;
+						}else {
+							bBishops++;
+						}
+					} else if(!(p instanceof King)) {
+						return false;
+					}
+				}
+			}
+		}
+		if((bKnights<=2 && bBishops == 0) || (wKnights <= 2 && wBishops ==0)) {
+			return true;
+		}
+		return false;
+	}
+
 	/*0 is not stalemate or checkmate, 1 is checkmate, 2 is stalemate.
 	 * Function is created as such because checkmate and stalemate checks are the same.
 	 */
@@ -353,7 +355,7 @@ public class Board implements Drawable {
 			}
 		}
 	}
-	
+
 	public int evaluateWhite(int depth) {
 		int cnt = 0;
 		for(int i=0; i<8; i++) {
@@ -399,228 +401,236 @@ public class Board implements Drawable {
 		}
 		return cnt;
 	}
-	
+
 	private int positionEval(Piece piece, int i, int j) {
-        int cnt = 0;
-        //forward pieces
-        if(piece.isWhite()==white) {
-            if(piece instanceof Pawn) {
-                cnt+=pEval[i][j];
-                if (inEndGame()) {
-                    cnt += passedPawn(piece);
-                }
-            }else if(piece instanceof Knight) {
-                cnt+=nEval[i][j];
-            }else if(piece instanceof Bishop) {
-                cnt+=bEval[i][j];
-            }else if(piece instanceof Rook) {
-                cnt+=rEval[i][j];
-            }else if(piece instanceof Queen) {
-                cnt+=qEval[i][j];
-            }else if (piece instanceof King) {
-                if(inEndGame()) {
-                    if (kingPawnEndgame(piece)) {
-                        cnt += kingPositionKPEnding(piece);
-                    }
-                    cnt+=kEvalEnd[i][j];
-                }else {
-                    cnt+=kEvalMid[i][j];
-                }
-            }
-            //backward pieces
-        }else {
-            if(piece instanceof Pawn) {
-                cnt+=flipEval(pEval)[i][j];
-                if (inEndGame()) {
-                    cnt += passedPawn(piece);
-                }
-            }else if(piece instanceof Knight) {
-                cnt+=flipEval(nEval)[i][j];
-            }else if(piece instanceof Bishop) {
-                cnt+=flipEval(bEval)[i][j];
-            }else if(piece instanceof Rook) {
-                cnt+=flipEval(rEval)[i][j];
-            }else if(piece instanceof Queen) {
-                cnt+=flipEval(qEval)[i][j];
-            }else if (piece instanceof King) {
-                if(inEndGame()) {
-                    if (kingPawnEndgame(piece)) {
-                        cnt += kingPositionKPEnding(piece);
-                    }
-                    cnt+=flipEval(kEvalEnd)[i][j];
-                }else {
-                    cnt+=flipEval(kEvalMid)[i][j];
-                }
-            }
-        }
-        return cnt;
-    }
-    
-    private int passedPawn(Piece pawn) {
-        int passed = 0;
-        for (int i = 0; i < board.length; i++) {
-            if (board[i][pawn.getCol()].getPiece() != null) {
-                if (board[i][pawn.getCol()].getPiece() instanceof Pawn && board[i][pawn.getCol()].getPiece().isWhite() != pawn.isWhite()) {
-                    return passed;
-                }
-            }
-        }
-        if (pawn.isWhite()) {
-            for (int i = board.length - pawn.getRow(); i < board.length; i++) {
-                if (board[i][pawn.getCol()+1].getPiece() != null) {
-                   if (board[i][pawn.getCol()+1].getPiece() instanceof Pawn && board[i][pawn.getCol()+1].getPiece().isWhite() != pawn.isWhite()) {
-                       return passed;
-                   }
-                }
-                if (board[i][pawn.getCol()-1].getPiece() != null) {
-                    if (board[i][pawn.getCol()-1].getPiece() instanceof Pawn && board[i][pawn.getCol()-1].getPiece().isWhite() != pawn.isWhite()) {
-                        return passed;
-                    }
-                }
-            }
-        } else {
-            for (int i = board.length - pawn.getRow(); i > board.length; i--) {
-                if (board[i][pawn.getCol()+1].getPiece() != null) {
-                   if (board[i][pawn.getCol()+1].getPiece() instanceof Pawn && board[i][pawn.getCol()+1].getPiece().isWhite() != pawn.isWhite()) {
-                       return passed;
-                   }
-                }
-                if (board[i][pawn.getCol()-1].getPiece() != null) {
-                    if (board[i][pawn.getCol()-1].getPiece() instanceof Pawn && board[i][pawn.getCol()-1].getPiece().isWhite() != pawn.isWhite()) {
-                        return passed;
-                    }
-                }
-            }
-        }
-        if (pawn.isWhite()==white) {
-            passed += 2 * (8-pawn.getRow()+1);
-        } else {
-            passed += 2 * (pawn.getRow()+1);
-        }
-        return passed;
-    }
-    
-    private boolean inEndGame() {
-        int qcount = 0, minorPieceCount = 0;
-        for(int i=0; i<8; i++) {
-            for(int j=0; j<8; j++) {
-                Piece piece = board[i][j].getPiece();
-                if(piece!=null && piece instanceof Queen) {
-                    qcount++;
-                }else if(piece!=null && (piece instanceof Knight || piece instanceof Bishop || piece instanceof Rook)) {
-                    minorPieceCount++;
-                }
-            }
-        }
-        return (qcount==0 && minorPieceCount < 3) || (qcount == 1 && minorPieceCount<2);
-    }
-	
-    private boolean kingPawnEndgame(Piece currentP) {
-        for(int i=0; i<8; i++) {
-            for(int j=0; j<8; j++) {
-                Piece piece = board[i][j].getPiece();
-                if(piece != null) {
-                    if (currentP.isWhite() == piece.isWhite()) {
-                        if (piece instanceof Knight || piece instanceof Bishop || piece instanceof Rook || piece instanceof Queen) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-        
-        return true;
-    }
-    
-    private int kingPositionKPEnding(Piece king) {
-        int positioned = 0;
-        if (king.isWhite()) { 
-            if (isRCValid(king.getRow()-2, king.getCol())) {
-                if (board[king.getRow() - 2][king.getCol()].getPiece() instanceof Pawn) {
-                    if (passedPawn(board[king.getRow() - 2][king.getCol()].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-            if (isRCValid(king.getRow()-2, king.getCol()-1)) {
-                if (board[king.getRow() - 2][king.getCol()-1].getPiece() instanceof Pawn) {
-                    if (passedPawn(board[king.getRow() - 2][king.getCol()-1].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-            if (isRCValid(king.getRow()-2, king.getCol()+1)) {
-                if (board[king.getRow() - 2][king.getCol()+1].getPiece() instanceof Pawn) {
-                    if (passedPawn(board[king.getRow() - 2][king.getCol()+1].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-                
-            }
-            if (isRCValid(king.getRow()-1, king.getCol())) {
-                if (board[king.getRow() - 1][king.getCol()].getPiece() instanceof Pawn) {
-                    if (passedPawn(board[king.getRow() - 1][king.getCol()].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-        } else {
-            if (isRCValid(king.getRow()+2, king.getCol())) {
-                if (board[king.getRow() + 2][king.getCol()].getPiece() instanceof Pawn) {
-                    if (passedPawn (board[king.getRow() + 2][king.getCol()].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-            if (isRCValid(king.getRow()+2, king.getCol()-1)) {
-                if (board[king.getRow() + 2][king.getCol()-1].getPiece() instanceof Pawn){
-                    if (passedPawn (board[king.getRow() + 2][king.getCol()-1].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-            if (isRCValid(king.getRow()-2, king.getCol()+1)) {
-                if (board[king.getRow() + 2][king.getCol()+1].getPiece() instanceof Pawn) {
-                    if (passedPawn (board[king.getRow() + 2][king.getCol()+1].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-            if (isRCValid(king.getRow()+1, king.getCol())) {
-                if (board[king.getRow() +1][king.getCol()].getPiece() instanceof Pawn) {
-                    if (passedPawn (board[king.getRow() + 1][king.getCol()].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-        }
-        return positioned;
-    }
-	
-    public boolean inKQorKREndGame(boolean white) {
-    	int qCount = 0, rCount = 0;
-    	for(int i=0; i<8; i++) {
-    		for(int j=0; j<8; j++) {
-    			Piece p = board[i][j].getPiece();
-    			if(p!=null && p.isWhite()==white) {
-    				if(p instanceof Queen) {
-    					qCount++;
-    				}else if(p instanceof Rook) {
-    					rCount++;
-    				}else if(!(p instanceof King)) {
-    					return false;
-    				}
-    			}else if(p!=null && !(p instanceof King)) {
-    				return false;
-    			}
-    		}
-    	}
-    	if((qCount==1 && rCount==0) || (qCount==0 && rCount==1)) {
-    		return true;
-    	}
-    	return false;
-    }
-    
+		int cnt = 0;
+		//forward pieces
+		if(piece.isWhite()==white) {
+			if(piece instanceof Pawn) {
+				cnt+=pEval[i][j];
+				if (inEndGame()) {
+					cnt += passedPawn(piece);
+				}
+			}else if(piece instanceof Knight) {
+				cnt+=nEval[i][j];
+			}else if(piece instanceof Bishop) {
+				cnt+=bEval[i][j];
+			}else if(piece instanceof Rook) {
+				cnt+=rEval[i][j];
+			}else if(piece instanceof Queen) {
+				cnt+=qEval[i][j];
+			}else if (piece instanceof King) {
+				if(inEndGame()) {
+					if (kingPawnEndgame(piece)) {
+						cnt += kingPositionKPEnding(piece);
+					}
+					cnt+=kEvalEnd[i][j];
+				}else {
+					cnt+=kEvalMid[i][j];
+				}
+			}
+			//backward pieces
+		}else {
+			if(piece instanceof Pawn) {
+				cnt+=flipEval(pEval)[i][j];
+				if (inEndGame()) {
+					cnt += passedPawn(piece);
+				}
+			}else if(piece instanceof Knight) {
+				cnt+=flipEval(nEval)[i][j];
+			}else if(piece instanceof Bishop) {
+				cnt+=flipEval(bEval)[i][j];
+			}else if(piece instanceof Rook) {
+				cnt+=flipEval(rEval)[i][j];
+			}else if(piece instanceof Queen) {
+				cnt+=flipEval(qEval)[i][j];
+			}else if (piece instanceof King) {
+				if(inEndGame()) {
+					if (kingPawnEndgame(piece)) {
+						cnt += kingPositionKPEnding(piece);
+					}
+					cnt+=flipEval(kEvalEnd)[i][j];
+				}else {
+					cnt+=flipEval(kEvalMid)[i][j];
+				}
+			}
+		}
+		return cnt;
+	}
+
+	private int passedPawn(Piece pawn) {
+		int passed = 0;
+		for (int i = 0; i < board.length; i++) {
+			if (board[i][pawn.getCol()].getPiece() != null) {
+				if (board[i][pawn.getCol()].getPiece() instanceof Pawn && board[i][pawn.getCol()].getPiece().isWhite() != pawn.isWhite()) {
+					return passed;
+				}
+			}
+		}
+		if (pawn.isWhite()) {
+			for (int i = board.length - pawn.getRow(); i < board.length; i++) {
+				if(pawn.getCol()+1<=7) {
+					if (board[i][pawn.getCol()+1].getPiece() != null) {
+						if (board[i][pawn.getCol()+1].getPiece() instanceof Pawn && board[i][pawn.getCol()+1].getPiece().isWhite() != pawn.isWhite()) {
+							return passed;
+						}
+					}
+				}
+				if(pawn.getCol()-1>=0) {
+					if (board[i][pawn.getCol()-1].getPiece() != null) {
+						if (board[i][pawn.getCol()-1].getPiece() instanceof Pawn && board[i][pawn.getCol()-1].getPiece().isWhite() != pawn.isWhite()) {
+							return passed;
+						}
+					}
+				}
+			}
+		} else {
+			for (int i = board.length - pawn.getRow(); i > board.length; i--) {
+				if(pawn.getCol()+1<=7) {
+					if (board[i][pawn.getCol()+1].getPiece() != null) {
+						if (board[i][pawn.getCol()+1].getPiece() instanceof Pawn && board[i][pawn.getCol()+1].getPiece().isWhite() != pawn.isWhite()) {
+							return passed;
+						}
+					}
+				}
+				if(pawn.getCol()-1>=0) {
+					if (board[i][pawn.getCol()-1].getPiece() != null) {
+						if (board[i][pawn.getCol()-1].getPiece() instanceof Pawn && board[i][pawn.getCol()-1].getPiece().isWhite() != pawn.isWhite()) {
+							return passed;
+						}
+					}
+				}
+			}
+		}
+		if (pawn.isWhite()==white) {
+			passed += 2 * (7-pawn.getRow()+1);
+		} else {
+			passed += 2 * (pawn.getRow()+1);
+		}
+		return passed;
+	}
+
+	private boolean inEndGame() {
+		int qcount = 0, minorPieceCount = 0;
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				Piece piece = board[i][j].getPiece();
+				if(piece!=null && piece instanceof Queen) {
+					qcount++;
+				}else if(piece!=null && (piece instanceof Knight || piece instanceof Bishop || piece instanceof Rook)) {
+					minorPieceCount++;
+				}
+			}
+		}
+		return (qcount==0 && minorPieceCount < 3) || (qcount == 1 && minorPieceCount<2);
+	}
+
+	private boolean kingPawnEndgame(Piece currentP) {
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				Piece piece = board[i][j].getPiece();
+				if(piece != null) {
+					if (currentP.isWhite() == piece.isWhite()) {
+						if (piece instanceof Knight || piece instanceof Bishop || piece instanceof Rook || piece instanceof Queen) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	private int kingPositionKPEnding(Piece king) {
+		int positioned = 0;
+		if (king.isWhite()) { 
+			if (isRCValid(king.getRow()-2, king.getCol())) {
+				if (board[king.getRow() - 2][king.getCol()].getPiece() instanceof Pawn) {
+					if (passedPawn(board[king.getRow() - 2][king.getCol()].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+			if (isRCValid(king.getRow()-2, king.getCol()-1)) {
+				if (board[king.getRow() - 2][king.getCol()-1].getPiece() instanceof Pawn) {
+					if (passedPawn(board[king.getRow() - 2][king.getCol()-1].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+			if (isRCValid(king.getRow()-2, king.getCol()+1)) {
+				if (board[king.getRow() - 2][king.getCol()+1].getPiece() instanceof Pawn) {
+					if (passedPawn(board[king.getRow() - 2][king.getCol()+1].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+
+			}
+			if (isRCValid(king.getRow()-1, king.getCol())) {
+				if (board[king.getRow() - 1][king.getCol()].getPiece() instanceof Pawn) {
+					if (passedPawn(board[king.getRow() - 1][king.getCol()].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+		} else {
+			if (isRCValid(king.getRow()+2, king.getCol())) {
+				if (board[king.getRow() + 2][king.getCol()].getPiece() instanceof Pawn) {
+					if (passedPawn (board[king.getRow() + 2][king.getCol()].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+			if (isRCValid(king.getRow()+2, king.getCol()-1)) {
+				if (board[king.getRow() + 2][king.getCol()-1].getPiece() instanceof Pawn){
+					if (passedPawn (board[king.getRow() + 2][king.getCol()-1].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+			if (isRCValid(king.getRow()-2, king.getCol()+1)) {
+				if (board[king.getRow() - 2][king.getCol()+1].getPiece() instanceof Pawn) {
+					if (passedPawn (board[king.getRow() + 2][king.getCol()+1].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+			if (isRCValid(king.getRow()+1, king.getCol())) {
+				if (board[king.getRow() +1][king.getCol()].getPiece() instanceof Pawn) {
+					if (passedPawn (board[king.getRow() + 1][king.getCol()].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+		}
+		return positioned;
+	}
+
+	public boolean inKQorKREndGame(boolean white) {
+		int qCount = 0, rCount = 0;
+		for(int i=0; i<8; i++) {
+			for(int j=0; j<8; j++) {
+				Piece p = board[i][j].getPiece();
+				if(p!=null && p.isWhite()==white) {
+					if(p instanceof Queen) {
+						qCount++;
+					}else if(p instanceof Rook) {
+						rCount++;
+					}else if(!(p instanceof King)) {
+						return false;
+					}
+				}else if(p!=null && !(p instanceof King)) {
+					return false;
+				}
+			}
+		}
+		if((qCount==1 && rCount==0) || (qCount==0 && rCount==1)) {
+			return true;
+		}
+		return false;
+	}
+
 	private int[][] flipEval(int eval[][]) {
 		int flipped[][] = new int[8][8];
 		for(int i=0; i<8; i++) {
@@ -630,15 +640,15 @@ public class Board implements Drawable {
 		}
 		return flipped;
 	}
-	
+
 	public Spot[][] getBoard() {
 		return this.board;
 	}
-	
+
 	public void setWhiteKingChecked(boolean b) {
 		board[whiteKing.getRow()][whiteKing.getCol()].setChecked(b);
 	}
-	
+
 	public void setBlackKingChecked(boolean b) {
 		board[blackKing.getRow()][blackKing.getCol()].setChecked(b);
 	}
