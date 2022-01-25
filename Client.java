@@ -74,7 +74,7 @@ public class Client {
     }
 
     public void askForData(char type) {
-        EnterDataFrame enterDataFrame = new EnterDataFrame(type, homeFrame);
+        EnterDataFrame enterDataFrame = new EnterDataFrame(type, this);
 
         if (type == Constants.USERNAME_DATA) {
             do {
@@ -172,7 +172,7 @@ public class Client {
     }
 
     public void createRoom() {
-        CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame(homeFrame);
+        CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame(this);
         room = roomFrame.getCode();
         do {
             colour = roomFrame.getColourChosen();;
@@ -199,7 +199,7 @@ public class Client {
     }
 
     public void pickSpectateColour() {
-        EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA, homeFrame);
+        EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA, this);
         do {
             colour = colourChoice.getDataEntered().toLowerCase();
         } while (colourChoice.isClosed() == false);
