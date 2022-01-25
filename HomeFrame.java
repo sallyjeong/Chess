@@ -18,9 +18,10 @@ import javax.swing.JSeparator;
 import javax.swing.JScrollPane;
 
 import java.util.ArrayList;
+
 /** [HomeFrame.java]
  * The JFrame that opens when the game is first launched (holds the options for the game)
- * @author Rachel Liu
+ * @author Rachel Liu, Katherine Liu, Sally Jeong
  * @version 1.0 Jan 25, 2021
  */
 public class HomeFrame extends JFrame {
@@ -44,9 +45,9 @@ public class HomeFrame extends JFrame {
     }
 
     /**
-	 * HomeFrame
-	 * This constructor creates an HomeFrame
-	 */
+     * HomeFrame
+     * This constructor creates an HomeFrame
+     */
     public HomeFrame() {
         thisClient = new Client();
 
@@ -198,7 +199,7 @@ public class HomeFrame extends JFrame {
         scrollPane.setBackground(new Color(143, 188, 143));
 
         roomNames = thisClient.getRoomNames();
-        
+
         //list of all public lobbies
         list = new JList(roomNames.toArray());
         scrollPane.setViewportView(list);
@@ -210,7 +211,7 @@ public class HomeFrame extends JFrame {
         confirmButton.setForeground(new Color(143, 188, 143));
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	// letting client spectate game
+                // letting client spectate game
                 roomNames = thisClient.getRoomNames();
                 list.setListData(roomNames.toArray());
                 String roomName = (String) list.getSelectedValue();
@@ -236,7 +237,6 @@ public class HomeFrame extends JFrame {
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 roomNames = thisClient.getRoomNames();
-                System.out.println(roomNames);
                 list.setListData(roomNames.toArray());
 
             }
