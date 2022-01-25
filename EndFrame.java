@@ -5,11 +5,11 @@ import javax.swing.border.EmptyBorder;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.awt.Color;
+
 /** [EndFrame.java]
  * The JFrame that opens when the game ends
- * @author Rachel Liu
+ * @author Rachel Liu, Katherine Liu
  * @version 1.0 Jan 25, 2021
  */
 public class EndFrame extends JFrame {
@@ -17,12 +17,12 @@ public class EndFrame extends JFrame {
     private JPanel contentPane;
 
     /**
-	 * EndFrame
-	 * This constructor creates an EndFrame
-	 * @param currentGameFrame is the game frame that the client is currently playing on
-	 * @param winner represents who has won the game
-	 * @param score displays the outcome of the game (black win, white win, or draw)
-	 */
+     * EndFrame
+     * This constructor creates an EndFrame
+     * @param currentGameFrame is the game frame that the client is currently playing on
+     * @param winner represents who has won the game
+     * @param score displays the outcome of the game (black win, white win, or draw)
+     */
     public EndFrame(JFrame currentGameFrame, String winner, String score) {
         JFrame frame = this;
         frame.setVisible(true);
