@@ -50,9 +50,7 @@ public class Bishop extends Piece {
 	public Set<Spot> validMoves(Board board) {
 		Spot[][] gameBoard = board.getBoard();
 		this.getMoveList().clear();
-		int row= getRow(); int col= getCol();
-
-		checkDiags(row, col, gameBoard);
+		checkDiags(gameBoard);
 
 		return super.getMoveList();
 	}

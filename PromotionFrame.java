@@ -1,5 +1,6 @@
-package chessproject;//package chessproject;
+package chessproject;
 
+//imports
 import java.awt.*;
 
 import javax.swing.*;
@@ -8,6 +9,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
+
+/**
+ * [PromotionFrame.java]
+ * Creates the frame that user uses to promote the current pawn once it reaches the farthest rank from its original square.
+ *  @author Stanley Wang
+ *  @version 1.0 Jan 25, 2021
+ */
 public class PromotionFrame extends JFrame{
 
     private JPanel contentPane;
@@ -15,19 +23,21 @@ public class PromotionFrame extends JFrame{
     private Piece piece;
     private GameFrame mainFrame;
 
-    /**
-     * Launch the application.
-     */
 
     /**
-     * Create the frame.
+     * creates the PromotionFrame.
+     * @param piece: the pawn piece being promoted
+     * @param board: the board our game is being played on
+     * @param move: the current frame being made
+     * @param mainFrame: the current GameFrame we're playing on
      */
-    public PromotionFrame(Piece piece, Board board, Move move, GameFrame main) {
+    public PromotionFrame(Pawn piece, Board board, Move move, GameFrame mainFrame) {
         this.board = board;
         this.piece = piece;
+        this.mainFrame= mainFrame;
         boolean isWhite= piece.isWhite();
-        mainFrame= main;
-        mainFrame.setEnabled(false);
+
+        mainFrame.setEnabled(false); //freezes the GameFrame until the user has finished with promotion.
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 443, 503);
@@ -37,77 +47,80 @@ public class PromotionFrame extends JFrame{
         setContentPane(contentPane);
         contentPane.setLayout(new GridLayout(0, 2, 0, 0));
 
-        JLabel lblNewLabel_4 = new JLabel("Promote y");
-        lblNewLabel_4.setOpaque(true);
-        lblNewLabel_4.setBackground(new Color(0 ,100 ,0));
-        lblNewLabel_4.setForeground(new Color(245, 245, 220));
-        lblNewLabel_4.setFont(new Font("Trebuchet MS", Font.BOLD , 30));
-        lblNewLabel_4.setHorizontalAlignment(SwingConstants.RIGHT);
-        contentPane.add(lblNewLabel_4);
+        //text that instructs users to promote
+        JLabel promoText1 = new JLabel("Promote y");
+        promoText1.setOpaque(true);
+        promoText1.setBackground(new Color(0 ,100 ,0));
+        promoText1.setForeground(new Color(245, 245, 220));
+        promoText1.setFont(new Font("Trebuchet MS", Font.BOLD , 30));
+        promoText1.setHorizontalAlignment(SwingConstants.RIGHT);
+        contentPane.add(promoText1);
+        JLabel promoText2 = new JLabel("our Pawn!");
+        promoText2.setForeground(new Color(245, 245, 220));
+        promoText2.setHorizontalAlignment(SwingConstants.LEFT);
+        promoText2.setBackground(new Color(0 ,100 ,0));
+        promoText2.setFont(new Font("Trebuchet MS", Font.BOLD , 30));
+        promoText2.setOpaque(true);
+        contentPane.add(promoText2);
 
-        JLabel lblNewLabel_5 = new JLabel("our Pawn!");
-        lblNewLabel_5.setForeground(new Color(245, 245, 220));
-        lblNewLabel_5.setHorizontalAlignment(SwingConstants.LEFT);
-        lblNewLabel_5.setBackground(new Color(0 ,100 ,0));
-        lblNewLabel_5.setFont(new Font("Trebuchet MS", Font.BOLD , 30));
-        lblNewLabel_5.setOpaque(true);
-        contentPane.add(lblNewLabel_5);
-
-
-        JButton btnNewButton = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-queen2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
-        btnNewButton.addActionListener(new ActionListener() {
+        //queen promotion button
+        JButton queenPromoBtn = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-queen2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
+        queenPromoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Queen(isWhite, 9, 'Q', piece.getRow(), piece.getCol()));
+                move.getEnd().addPiece(new Queen(isWhite, 9, 'Q', piece.getRow(), piece.getCol())); //promotes the pawn to a queen
                 choosePiece(move);
             }
         });
-        btnNewButton.setBackground(new Color(245, 245, 220));
-        btnNewButton.setOpaque(true);
-        contentPane.add(btnNewButton);
+        queenPromoBtn.setBackground(new Color(245, 245, 220));
+        queenPromoBtn.setOpaque(true);
+        contentPane.add(queenPromoBtn);
 
-        JButton btnNewButton_1 = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-rook2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
-        btnNewButton_1.addActionListener(new ActionListener() {
+        //rook promotion button
+        JButton rookPromoBtn = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-rook2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
+        rookPromoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Rook(isWhite, 5 , 'R', piece.getRow(), piece.getCol()));
+                move.getEnd().addPiece(new Rook(isWhite, 5 , 'R', piece.getRow(), piece.getCol())); //promotes the pawn to a rook
                 choosePiece(move);
             }
         });
-        btnNewButton_1.setBackground(new Color(245, 245, 220));
-        btnNewButton_1.setOpaque(true);
-        contentPane.add(btnNewButton_1);
+        rookPromoBtn.setBackground(new Color(245, 245, 220));
+        rookPromoBtn.setOpaque(true);
+        contentPane.add(rookPromoBtn);
 
-
-        JButton btnNewButton_1_1 = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-bishop2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
-        btnNewButton_1_1.addActionListener(new ActionListener() {
+        //bishop promotion button
+        JButton bishopPromoBtn = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-bishop2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
+        bishopPromoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Bishop(isWhite, 3, 'B', piece.getRow(), piece.getCol()));
+                move.getEnd().addPiece(new Bishop(isWhite, 3, 'B', piece.getRow(), piece.getCol())); //promotes the pawn to a bishop
                 choosePiece(move);
             }
         });
-        btnNewButton_1_1.setBackground(new Color(245, 245, 220));
-        btnNewButton_1_1.setOpaque(true);
-        contentPane.add(btnNewButton_1_1);
+        bishopPromoBtn.setBackground(new Color(245, 245, 220));
+        bishopPromoBtn.setOpaque(true);
+        contentPane.add(bishopPromoBtn);
 
-
-        JButton btnNewButton_1_1_1 = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-knight2.png").getImage().getScaledInstance(90 , 80, Image.SCALE_DEFAULT)));
-        btnNewButton_1_1_1.addActionListener(new ActionListener() {
+        //knight promotion button
+        JButton knightPromoBtn = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-knight2.png").getImage().getScaledInstance(90 , 80, Image.SCALE_DEFAULT)));
+        knightPromoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Knight(isWhite, 3, 'N', piece.getRow(), piece.getCol()));
+                move.getEnd().addPiece(new Knight(isWhite, 3, 'N', piece.getRow(), piece.getCol())); //promotes the pawn to a knight
                 choosePiece(move);
             }
         });
-        btnNewButton_1_1_1.setBackground(new Color(245, 245, 220));
-        btnNewButton_1_1_1.setOpaque(true);
-        contentPane.add(btnNewButton_1_1_1);
-
+        knightPromoBtn.setBackground(new Color(245, 245, 220));
+        knightPromoBtn.setOpaque(true);
+        contentPane.add(knightPromoBtn);
 
     }
 
+    /**
+     * method that performs the necessary actions required after the user has chosen the promotion piece.
+     * @param move: our current move
+     */
     public void choosePiece(Move move) {
-        board.getPseudoLegal();
-        mainFrame.setEnabled(true);
-        //mainFrame.getClient().sendData(Constants.PROMOTION_DATA + "1"); // allow the opponent to move
-        dispose();
-        mainFrame.getClient().sendData(Constants.MOVE_DATA + move.toString());
+        board.getLegal(); //reevaluate all legal moves with the new promoted piece
+        mainFrame.setEnabled(true); //unfreeze GameFrame to continue the game
+        dispose(); //closes the current frame
+        mainFrame.getClient().sendData(Constants.MOVE_DATA + move.toString()); //sends relevant data to the client
     }
 }
