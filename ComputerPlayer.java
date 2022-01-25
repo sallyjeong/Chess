@@ -1,5 +1,3 @@
-package chessproject;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Set;
@@ -14,7 +12,7 @@ public class ComputerPlayer extends Player {
 
 	public Move makeMove(Board board, int depth) {
 		Move bestMove;
-		if(board.inKQorKREndGame(isWhite())) {
+		if(board.inKQEndGame(isWhite())) {
 			System.out.println("yo");
 			bestMove = minimax(board, 7, Integer.MIN_VALUE, Integer.MAX_VALUE, true).move;
 		}else {
