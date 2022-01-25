@@ -227,16 +227,19 @@ public class HomeFrame extends JFrame {
 
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                String roomName = (String)list.getSelectedValue();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        thisClient.getUsernameInput();
-                        thisClient.spectate(roomName);
+                String roomName = (String) list.getSelectedValue();
+                if (roomName != null) {
+                    frame.dispose();
 
-                    }
-                }).start();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            thisClient.getUsernameInput();
+                            thisClient.spectate(roomName);
+
+                        }
+                    }).start();
+                }
             }
         });
 
@@ -246,6 +249,13 @@ public class HomeFrame extends JFrame {
         JButton reloadButton = new JButton("Reload");
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                roomNames = thisClient.getRoomNames();
+                System.out.println(roomNames);
+//                list = new JList(roomNames.toArray());
+                list.setListData(roomNames.toArray());
+                //frame.repaint();
+//                frame.setVisible(true);
+                // SwingUtilities.updateComponentTreeUI(frame);
 
             }
         });

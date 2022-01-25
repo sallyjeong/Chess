@@ -384,9 +384,13 @@ public class Server {
                 if (priv) {
                     rooms.remove(room);
                 } else {
-                    roomNames.remove(rooms.get(room).get(0).username + " vs " + rooms.get(room).get(0).username);
-                    publicRooms.remove(room);
-                    System.out.println("room removed       " + rooms.get(room).get(0).username + " vs " + rooms.get(room).get(0).username);
+                    String roomName =  rooms.get(room).get(0).username + " vs " + rooms.get(room).get(1).username;
+                    if (roomNames.contains(roomName)){
+                        roomNames.remove(roomName);
+                        publicRooms.remove(roomName);
+                        System.out.println("room removed       " + rooms.get(room).get(0).username + " vs " + rooms.get(room).get(1).username);
+                    }
+
                     broadcastMessageToAll(Constants.UPDATE_LIST + "");
                 }
 
@@ -397,6 +401,7 @@ public class Server {
                 broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has left the chat ***");
             }
         }
+
 
         public void closeConnection() {
             clientHandlers.remove(this);
