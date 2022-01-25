@@ -33,5 +33,5 @@ public class Constants {
     public static final String CASTLE_1 = "O-O";
     public static final String CASTLE_2 = "O-O-O";
     public static final char MOVE = '-';
-    public static final char CAPTURE = 'x';
+    public static final String CAPTURE = "x";
 }

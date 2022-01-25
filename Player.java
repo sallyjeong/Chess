@@ -30,9 +30,9 @@ public class Player {
         for(int i=0; i<captured.size(); i++) {
             Piece p = captured.get(i);
             if(p.isWhite()) {
-                g.drawImage(p.getImage()[0], 576+i*LENGTH, 0, LENGTH, LENGTH, null);
+                g.drawImage(p.getImage()[0], i*LENGTH, 535, LENGTH, LENGTH, null);
             }else {
-                g.drawImage(p.getImage()[1], 576+i*LENGTH, 520, LENGTH, LENGTH, null);
+                g.drawImage(p.getImage()[1], i*LENGTH, 535, LENGTH, LENGTH, null);
             }
 
         }
