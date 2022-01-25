@@ -15,11 +15,14 @@ import java.awt.event.ActionEvent;
 import java.awt.Color;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JSeparator;
-import java.awt.SystemColor;
 import javax.swing.JScrollPane;
 
 import java.util.ArrayList;
-
+/** [HomeFrame.java]
+ * The JFrame that opens when the game is first launched (holds the options for the game)
+ * @author Rachel Liu
+ * @version 1.0 Jan 25, 2021
+ */
 public class HomeFrame extends JFrame {
 
     private JPanel contentPane;
@@ -41,8 +44,9 @@ public class HomeFrame extends JFrame {
     }
 
     /**
-     * Create the frame.
-     */
+	 * HomeFrame
+	 * This constructor creates an HomeFrame
+	 */
     public HomeFrame() {
         thisClient = new Client();
 
@@ -115,6 +119,7 @@ public class HomeFrame extends JFrame {
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+                // creating new thread and getting username from client to put them into matchmaking 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -138,6 +143,7 @@ public class HomeFrame extends JFrame {
         enterCodeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+                // new thread, getting client username and inputting room code
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -155,6 +161,7 @@ public class HomeFrame extends JFrame {
         createRoomLabel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+                // new thread, get client username and creating a new room
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -178,7 +185,6 @@ public class HomeFrame extends JFrame {
         playComputerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                //thisClient.quitGame(false);
                 new PlayComputerFrame(frame);
             }
         });
@@ -192,7 +198,8 @@ public class HomeFrame extends JFrame {
         scrollPane.setBackground(new Color(143, 188, 143));
 
         roomNames = thisClient.getRoomNames();
-
+        
+        //list of all public lobbies
         list = new JList(roomNames.toArray());
         scrollPane.setViewportView(list);
 
@@ -201,9 +208,9 @@ public class HomeFrame extends JFrame {
 
         JButton confirmButton = new JButton("Spectate");
         confirmButton.setForeground(new Color(143, 188, 143));
-
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	// letting client spectate game
                 roomNames = thisClient.getRoomNames();
                 list.setListData(roomNames.toArray());
                 String roomName = (String) list.getSelectedValue();

@@ -10,7 +10,11 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import java.awt.Color;
-
+/** [EnterDataFrame.java]
+ * The JFrame that opens when the client needs to enter information (e.g. username)
+ * @author Rachel Liu
+ * @version 1.0 Jan 25, 2021
+ */
 public class EnterDataFrame extends JFrame {
 
     private JPanel contentPane;
@@ -22,8 +26,11 @@ public class EnterDataFrame extends JFrame {
     private boolean cancel = false;
 
     /**
-     * Create the frame.
-     */
+	 * EnterDataFrame
+	 * This constructor creates an EnterDataFrame
+	 * @param data represents the type of data (ex.username, room...)
+	 * @param client is the user/player 
+	 */
     public EnterDataFrame(char data, Client client) {
         JFrame frame = this;
         if (data == Constants.USERNAME_DATA) {
@@ -96,7 +103,9 @@ public class EnterDataFrame extends JFrame {
 
         setVisible(true);
     }
-
+    /*
+    METHODS FOR EXTRACTING VALUES (setters and getters)
+     */
     public String getDataEntered() {
         if (dataEntered == null) {
             dataEntered = text.getText();

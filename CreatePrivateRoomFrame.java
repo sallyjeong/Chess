@@ -13,6 +13,11 @@ import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 
+/** [CreatePrivateRoomFrame.java]
+ * The JFrame that opens when clients want to create a new private room
+ * @author Rachel Liu
+ * @version 1.0 Jan 25, 2021
+ */
 public class CreatePrivateRoomFrame extends JFrame {
     public static HashSet<String> roomCodes = new HashSet<String>();
     private JComboBox colourChoices;
@@ -22,8 +27,10 @@ public class CreatePrivateRoomFrame extends JFrame {
     private JPanel contentPane;
 
     /**
-     * Create the frame.
-     */
+	 * CreatePrivateRoomFrame
+	 * This constructor creates a CreatePrivateRoomFrame
+	 * @param client is the user/player 
+	 */
     public CreatePrivateRoomFrame(Client client) {
         JFrame frame = this;
 
@@ -58,6 +65,7 @@ public class CreatePrivateRoomFrame extends JFrame {
         doneButton.setForeground(new Color(0, 100, 0));
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	// getting colour preference
                 colourChosen = (String) (colourChoices.getSelectedItem());
                 closed = true;
                 frame.dispose();
@@ -71,6 +79,7 @@ public class CreatePrivateRoomFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
                 client.quitGame(false);
+                //if the player cancels, return to home frame
                 new HomeFrame();
             }
         });
@@ -80,6 +89,9 @@ public class CreatePrivateRoomFrame extends JFrame {
         setVisible(true);
     }
 
+    /*
+    METHODS FOR EXTRACTING VALUES (setters and getters)
+     */
     public boolean isClosed() {
         return closed;
     }

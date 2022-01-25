@@ -5,14 +5,19 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Color;
-
+/** [FindingRoomFrame.java]
+ * The JFrame that opens when the client is waiting to enter a public lobby
+ * @author Rachel Liu
+ * @version 1.0 Jan 25, 2021
+ */
 public class FindingRoomFrame extends JFrame {
 
     private JPanel contentPane;
 
     /**
-     * Create the frame.
-     */
+	 * FindingRoomFrame
+	 * This constructor creates a FindingRoomFrame
+	 */
     public FindingRoomFrame() {
         setTitle("Finding match");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

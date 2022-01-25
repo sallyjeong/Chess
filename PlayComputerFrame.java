@@ -10,15 +10,21 @@ import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.awt.Color;
-
+/** [PlayComputerFrame.java]
+ * The JFrame that opens when the user needs to choose settings (playing against AI)
+ * @author Rachel Liu
+ * @version 1.0 Jan 25, 2021
+ */
 public class PlayComputerFrame extends JFrame {
 
     private JPanel contentPane;
     private JComboBox colourChoices, difficulty;
 
     /**
-     * Create the frame.
-     */
+	 * PlayComputerFrame
+	 * This constructor creates an PlayComputerFrame
+	 * @param homeFrame refers to the frame that is first opened (home frame)
+	 */
     public PlayComputerFrame(JFrame homeFrame) {
         JFrame frame = this;
         setTitle("Play Computer");
@@ -39,12 +45,12 @@ public class PlayComputerFrame extends JFrame {
         contentPane.add(levelLabel);
 
         String[] colours = {"black", "white"};
-        colourChoices = new JComboBox<>(colours);//use this one for drop down list
+        colourChoices = new JComboBox<>(colours);
         colourChoices.setBounds(130, 30, 125, 27);
         contentPane.add(colourChoices);
 
         String[] levels = {"easy", "medium"};
-        difficulty = new JComboBox<>(levels);//use this one for drop down list
+        difficulty = new JComboBox<>(levels);
         difficulty.setBounds(130, 75, 125, 27);
         contentPane.add(difficulty);
 
@@ -53,6 +59,7 @@ public class PlayComputerFrame extends JFrame {
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+                // choosing AI difficulty
                 new GameFrame((String)difficulty.getSelectedItem(), getWhite());
             }
         });
@@ -63,7 +70,7 @@ public class PlayComputerFrame extends JFrame {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                homeFrame.setVisible(true);            }
+                new HomeFrame();          }
         });
         cancelButton.setForeground(new Color(178, 34, 34));
         cancelButton.setBounds(157, 122, 98, 29);
@@ -71,7 +78,9 @@ public class PlayComputerFrame extends JFrame {
 
         setVisible(true);
     }
-
+    /*
+    METHODS FOR EXTRACTING VALUES (setters and getters)
+     */
     public boolean getWhite() {
         if (colourChoices.getSelectedItem().equals("white")) {
             return true;

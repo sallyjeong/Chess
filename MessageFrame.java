@@ -10,15 +10,21 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
-
+/** [MessageFrame.java]
+ * The JFrame that opens when the a message needs to be shown (usually username error message)
+ * @author Rachel Liu
+ * @version 1.0 Jan 25, 2021
+ */
 public class MessageFrame extends JFrame {
 
     private JPanel contentPane;
     private boolean closed = false;
 
     /**
-     * Create the frame.
-     */
+	 * MessageFrame
+	 * This constructor creates an MessageFrame
+	 * @param message store the message that needs to be shown, usually a user name invalid message
+	 */
     public MessageFrame(String message) {
         JFrame frame = this;
         setTitle("Message");
@@ -47,7 +53,9 @@ public class MessageFrame extends JFrame {
         });
         setVisible(true);
     }
-
+    /*
+    METHODS FOR EXTRACTING VALUES (setters and getters)
+     */
     public boolean isClosed() {
         return closed;
     }
