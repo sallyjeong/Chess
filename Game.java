@@ -91,11 +91,11 @@ public class Game {
 			if (sourcePiece instanceof Pawn) {
 				if (((Pawn) sourcePiece).getForward()) {
 					if (sourcePiece.getRow() == 0) {
-						PromotionFrame p = new PromotionFrame(sourcePiece, board, move, gameFrame);
+						 new PromotionFrame((Pawn)sourcePiece, board, move, gameFrame);
 					}
 				} else {
 					if (sourcePiece.getRow() == 7) {
-						PromotionFrame p = new PromotionFrame(sourcePiece, board, move, gameFrame);
+						 new PromotionFrame((Pawn)sourcePiece, board, move, gameFrame);
 					}
 				}
 			}
@@ -156,7 +156,7 @@ public class Game {
 		} else {
 			//reset all pawns as not be able to be captured by enpassant
 			board.setEnPassant(!turn.isWhite());
-			board.getPseudoLegal();
+			board.getLegal();
 
 			if(this.turn==players[0]) {
 				this.turn = players[1];

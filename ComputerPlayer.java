@@ -104,7 +104,7 @@ public class ComputerPlayer extends Player {
             end.addPiece(movingPiece);
         }
 
-        b.getPseudoLegal();
+        b.getLegal();
         return capturedPiece;
     }
 

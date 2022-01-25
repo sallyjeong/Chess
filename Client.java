@@ -206,7 +206,7 @@ public class Client extends Player {
             verifyData(Constants.COLOUR_DATA);
             isPlayer = false;
 
-        // 2nd player
+            // 2nd player
         } else {
             isPlayer = true;
         }
@@ -445,7 +445,7 @@ public class Client extends Player {
                     promotePawn(startId, endId, symbol);
                     pawnPromotion = true;
 
-                // regular move
+                    // regular move
                 } else {
                     endId = data.substring(data.length() - 2);
                 }
@@ -463,7 +463,7 @@ public class Client extends Player {
 
         if (isPlayer) {
             board.setEnPassant(isWhite()); // reset all pawns as not be able to be captured by enpassant
-            board.getPseudoLegal(); // calculate valid moves for each piece
+            board.getLegal(); // calculate valid moves for each piece
             if (!checkGameState()) { // checks endGame
                 turn = true;
             }
@@ -676,37 +676,37 @@ public class Client extends Player {
      *              example: 00Rw would mean a white Rook at index [0][0]
      */
     public void receiveBoard(String piece) {
-            // storing the piece data sent over
-            int i = Character.getNumericValue(piece.charAt(0));
-            int j = Character.getNumericValue(piece.charAt(1));
-            char symbol = piece.charAt(2);
-            char pieceColour = piece.charAt(3);
-            boolean whitePiece = false;
-            Piece newPiece = null;
-            if (pieceColour == 'w') {
-                whitePiece = true;
-            }
+        // storing the piece data sent over
+        int i = Character.getNumericValue(piece.charAt(0));
+        int j = Character.getNumericValue(piece.charAt(1));
+        char symbol = piece.charAt(2);
+        char pieceColour = piece.charAt(3);
+        boolean whitePiece = false;
+        Piece newPiece = null;
+        if (pieceColour == 'w') {
+            whitePiece = true;
+        }
 
-            // creating a new Piece based on data interpreted
-            if (symbol == Constants.PAWN_INDICATOR) {
-                newPiece = new Pawn(whitePiece,  1, '\u0000', i, j, whitePiece);
-            } else if (symbol == 'R') {
-                newPiece = new Rook(whitePiece,  5, symbol, i, j);
-            } else if (symbol == 'N') {
-                newPiece = new Knight(whitePiece,  3, symbol, i, j);
-            } else if (symbol == 'B') {
-                newPiece = new Bishop(whitePiece,  3, symbol, i, j);
-            } else if (symbol == 'Q') {
-                newPiece = new Queen(whitePiece,  9, symbol, i, j);
-            } else if (symbol == 'K') {
-                newPiece = new King(whitePiece,  1000, symbol, i, j);
-                if (whitePiece) {
-                    board.setWhiteKing((King)newPiece);
-                } else {
-                    board.setBlackKing((King)newPiece);
-                }
+        // creating a new Piece based on data interpreted
+        if (symbol == Constants.PAWN_INDICATOR) {
+            newPiece = new Pawn(whitePiece,  1, '\u0000', i, j, whitePiece);
+        } else if (symbol == 'R') {
+            newPiece = new Rook(whitePiece,  5, symbol, i, j);
+        } else if (symbol == 'N') {
+            newPiece = new Knight(whitePiece,  3, symbol, i, j);
+        } else if (symbol == 'B') {
+            newPiece = new Bishop(whitePiece,  3, symbol, i, j);
+        } else if (symbol == 'Q') {
+            newPiece = new Queen(whitePiece,  9, symbol, i, j);
+        } else if (symbol == 'K') {
+            newPiece = new King(whitePiece,  1000, symbol, i, j);
+            if (whitePiece) {
+                board.setWhiteKing((King)newPiece);
+            } else {
+                board.setBlackKing((King)newPiece);
             }
-            board.getBoard()[i][j].addPiece(newPiece); // adding the new Piece to the correct Spot on the board
+        }
+        board.getBoard()[i][j].addPiece(newPiece); // adding the new Piece to the correct Spot on the board
     }
 
     /**
@@ -758,7 +758,7 @@ public class Client extends Player {
                 sendData(Constants.DRAW_DATA + "denied");
             }
 
-        // for player who requested an unsuccessful draw
+            // for player who requested an unsuccessful draw
         } else {
             gameFrame.addMessage("*** DRAW REQUEST DENIED ***");
         }
