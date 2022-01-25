@@ -125,7 +125,6 @@ public class HomeFrame extends JFrame {
 
             }
         });
-        playButton.setBackground(SystemColor.windowBorder);
         playButton.setBounds(21, 229, 825, 80);
         lobbyPanel.add(playButton);
 
@@ -182,7 +181,6 @@ public class HomeFrame extends JFrame {
                 new PlayComputerFrame(frame);
             }
         });
-        playComputerButton.setBackground(SystemColor.windowBorder);
         playComputerButton.setBounds(23, 539, 825, 80);
         lobbyPanel.add(playComputerButton);
 
