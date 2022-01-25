@@ -169,17 +169,17 @@ public class Board implements Drawable {
 			board[blackRow][6].addPiece(new Knight(false, 320, 'N', blackRow, 6));
 			board[blackRow][7].addPiece(new Rook(false, 500, 'R', blackRow, 7));
 
-			getPseudoLegal();
+			getLegal();
 
 		} else {
 			// request for copying a player's current board
-			player.sendData(Constants.BOARD_DATA + Constants.REQUEST);
+			player.sendData(Constants.BOARD_DATA + "!request");
 		}
 	}
 
 
 
-	public void getPseudoLegal() {
+	public void getLegal() {
 		Set<Spot> validM;
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
@@ -477,10 +477,8 @@ public class Board implements Drawable {
 				if(inEndGame()){
 					if(inRKEndgame(!white)) {
 						if (white) {
-							System.out.println(2.2);
 							cnt += kingRookPositionEval(blackKing, whiteKing);
 						} else {
-							System.out.println(2.3);
 							cnt += kingRookPositionEval(whiteKing, blackKing);
 						}
 					}
