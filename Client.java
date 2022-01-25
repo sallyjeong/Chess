@@ -767,11 +767,15 @@ public class Client extends Player {
     /**
      * leaveRoom
      * Removes the Client from the room and informs the rest of the users in the chat that they have left
+     *
      * Closes the Game Frame and opens a new Home Frame
      * Closes the Client connection to the server
      */
     public void leaveRoom() {
         sendData(Constants.LEAVE_ROOM_DATA + "" + isPlayer);
+        if (isPlayer && CreatePrivateRoomFrame.roomCodes.contains(room)) {
+            CreatePrivateRoomFrame.roomCodes.remove(room);
+        }
         gameFrame.dispose();
         new Thread(new Runnable() {
             @Override
