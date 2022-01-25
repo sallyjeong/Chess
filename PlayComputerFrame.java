@@ -1,7 +1,5 @@
 package chessproject;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -42,13 +40,11 @@ public class PlayComputerFrame extends JFrame {
 
         String[] colours = {"black", "white"};
         colourChoices = new JComboBox<>(colours);//use this one for drop down list
-        //JComboBox colourChoices = new JComboBox();
         colourChoices.setBounds(130, 30, 125, 27);
         contentPane.add(colourChoices);
 
         String[] levels = {"easy", "medium"};
         difficulty = new JComboBox<>(levels);//use this one for drop down list
-        //JComboBox difficulty = new JComboBox();
         difficulty.setBounds(130, 75, 125, 27);
         contentPane.add(difficulty);
 
