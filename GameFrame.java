@@ -82,7 +82,7 @@ public class GameFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String text = userInputField.getText();
                 client.sendData(Constants.CHAT_DATA + client.getUsername() + ": " + text);
-                textArea.append("me: " + text + "\n");
+                textArea.append("you: " + text + "\n");
                 textArea.setCaretPosition(textArea.getDocument().getLength());
                 userInputField.setText("");
             }
