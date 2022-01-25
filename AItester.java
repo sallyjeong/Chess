@@ -22,7 +22,7 @@ public class AItester {
 		curPlayer = p1;
 		game = new Game(false, p1, p2);
 
-		Move m = ((ComputerPlayer) p1).makeMove(game.getBoard(), 5);
+		Move m = ((ComputerPlayer) p1).makeMove(game.getBoard(), 4);
 		game.playerMove(p1, m.getStart(), m.getEnd());
 		
 		JFrame frame = new JFrame();
@@ -127,7 +127,7 @@ public class AItester {
 		@Override
 		public void keyReleased(KeyEvent e) {
 			if(e.getKeyChar()=='z') {
-				Move m = ((ComputerPlayer) p1).makeMove(game.getBoard(), 5);
+				Move m = ((ComputerPlayer) p1).makeMove(game.getBoard(), 4);
 				game.playerMove(p1, m.getStart(), m.getEnd());
 			}
 		}
