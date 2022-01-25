@@ -129,13 +129,13 @@ public class Board implements Drawable {
 
 
 		whiteKing = new King(true, 20000, 'K', whiteRow, kingCol);
-		board[2][0].addPiece(whiteKing);
+		board[0][0].addPiece(whiteKing);
 
-		board[3][4].addPiece(new Rook(true, 500, 'R', whiteRow, 7));
+		board[0][4].addPiece(new Rook(true, 500, 'R', whiteRow, 7));
 
 
 		blackKing = new King(false, 20000, 'K', blackRow, kingCol);
-		board[6][5].addPiece(blackKing);
+		board[2][3].addPiece(blackKing);
 
 
 		//		whiteKing = new King(true, 200000, 'K', 0, 0);
@@ -408,17 +408,25 @@ public class Board implements Drawable {
 			}else if(piece instanceof Bishop) {
 				cnt+=bEval[i][j];
 			}else if(piece instanceof Rook) {
-				if(inEndGame() && inKQEndGame(white)){
-					cnt+= kingRookPositionEval(blackKing, whiteKing);
+				if(inEndGame()){
+					if(inRKEndgame(!white)){
+						if(white){
+							cnt+= kingRookPositionEval(blackKing, whiteKing);
+						}
+						else{
+							cnt+= kingRookPositionEval(whiteKing, blackKing);
+						}
+					}
 				}
-				cnt+=rEval[i][j];
+				else{
+					cnt+=rEval[i][j];
+				}
 			}else if(piece instanceof Queen) {
 				cnt+=qEval[i][j];
 			}else if (piece instanceof King) {
 				if(inEndGame()) {
 					if (kingPawnEndgame(piece)) {
 						cnt += kingPositionKPEnding(piece);
-
 					}
 					cnt+=kEvalEnd[i][j];
 				}else {
@@ -437,9 +445,19 @@ public class Board implements Drawable {
 			}else if(piece instanceof Bishop) {
 				cnt+=flipEval(bEval)[i][j];
 			}else if(piece instanceof Rook) {
-				cnt+=flipEval(rEval)[i][j];
-				if(inEndGame() && inKQEndGame(white)){
-					cnt+= kingRookPositionEval(whiteKing, blackKing);
+				if(inEndGame()){
+					if(inRKEndgame(!white)) {
+						if (white) {
+							System.out.println(2.2);
+							cnt += kingRookPositionEval(blackKing, whiteKing);
+						} else {
+							System.out.println(2.3);
+							cnt += kingRookPositionEval(whiteKing, blackKing);
+						}
+					}
+				}
+				else{
+					cnt+=flipEval(rEval)[i][j];
 				}
 
 			}else if(piece instanceof Queen) {
@@ -525,7 +543,7 @@ public class Board implements Drawable {
 		return (qcount==0 && minorPieceCount < 3) || (qcount == 1 && minorPieceCount<2);
 	}
 
-	private int kingRookPositionEval(King losingKing, King winningKing){
+	private int kingRookPositionEval(King winningKing, King losingKing){
 		int lR= losingKing.getRow(); int lC= losingKing.getCol();
 		int wR= winningKing.getRow(); int wC= winningKing.getCol();
 
@@ -641,7 +659,8 @@ public class Board implements Drawable {
 		return false;
 	}
 
-	private boolean inRKEndgame(Piece currentP) {
+	private boolean inRKEndgame(boolean white) {
+
 		int rCount = 0;
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
