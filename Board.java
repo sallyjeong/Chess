@@ -371,7 +371,9 @@ public class Board implements Drawable {
         }
         if(isCheckmateOrStalemate(false)==1) {
             cnt+=CHECKMATE_BONUS + depth*DEPTH_BONUS;
-        }
+        }else if(isCheckmateOrStalemate(false)==2) {
+			return evaluateBlack(depth);
+		}
         return cnt;
     }
     
@@ -392,7 +394,9 @@ public class Board implements Drawable {
         }
         if(isCheckmateOrStalemate(true)==1) {
             cnt+=CHECKMATE_BONUS + depth*DEPTH_BONUS;
-        }
+        }else if(isCheckmateOrStalemate(true)==2) {
+			return evaluateWhite(depth);
+		}
         return cnt;
     }
     
