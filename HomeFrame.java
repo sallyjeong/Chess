@@ -120,7 +120,7 @@ public class HomeFrame extends JFrame {
         playButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                // creating new thread and getting username from client to put them into matchmaking 
+                // creating new thread and getting username from client to put them into matchmaking
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -186,7 +186,7 @@ public class HomeFrame extends JFrame {
         playComputerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                new PlayComputerFrame(frame);
+                new PlayComputerFrame();
             }
         });
         playComputerButton.setBounds(23, 539, 825, 80);
