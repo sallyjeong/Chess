@@ -170,14 +170,17 @@ public class Game {
 				pastMoves.add(move);
 				if(turn.isWhite()) {
 					new EndFrame(gameFrame, "Black wins", "0 - 1");
+					new HomeFrame();
 				}else {
 					new EndFrame(gameFrame, "White wins", "1 - 0");
+					new HomeFrame();
 				}
 				return true;
 				//stalemate
 			}else if(board.isCheckmateOrStalemate(turn.isWhite())==2 || board.isInsufficientMat()) {
 				pastMoves.add(move);
 				new EndFrame(gameFrame, "Draw", "1/2 - 1/2");
+				new HomeFrame();
 				return true;
 				//checkingmove
 			}else if(board.kingInCheck(turn.isWhite())) {
@@ -195,7 +198,6 @@ public class Game {
 			} else {
 				gameFrame.addMove(move.toString());
 			}
-
 		}
 		return true;
 

@@ -1,8 +1,6 @@
 package chessproject;
 
-import javax.swing.JFrame;
-import javax.swing.JList;
-import java.awt.Graphics;
+// imports
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,6 +10,12 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+/** [Client.java]
+ * Represents each person joining the chess program
+ * Connects to the server and has the ability to play a chess game
+ * @author Katherine Liu
+ * @version 1.0 Jan 25, 2021
+ */
 public class Client extends Player {
     // client identity variables
     private Client thisClient;
@@ -27,8 +31,6 @@ public class Client extends Player {
     private boolean turn = false;
     private Board board;
     private Spot opponentStart = null;
-    private ArrayList<Piece> captured;
-    final int LENGTH = 35;
 
     // client networking variables
     private Socket socket;
@@ -36,6 +38,10 @@ public class Client extends Player {
     private BufferedWriter dataOut;
     private String result = "";
 
+    /**
+     * Client
+     * This constructor ensures each Client connects to the server once the object is created
+     */
     public Client() {
         super();
         this.thisClient = this;
@@ -55,6 +61,12 @@ public class Client extends Player {
     METHODS FOR NETWORK COMMUNICATION (sending)
      */
 
+    /**
+     * verifyData
+     * Sends Client identity data to the server to get confirmation or rejection of input
+     * @param type is the character from the Constants class which represents the data type being sent
+     * @return result is the feedback provided once data is sent, used to check if actions were successful
+     */
     public String verifyData(char type) {
         String result = "";
         try {
@@ -75,6 +87,13 @@ public class Client extends Player {
         return result;
     }
 
+    /**
+     * sendData
+     * Sends the data specified to the server side
+     * When this method is called, the type (from Constants) is always the first character
+     * If the Client is sending a move, display the move on their own screen
+     * @param data is the String of information being sent to
+     */
     public void sendData(String data) {
         try {
             dataOut.write(data);
@@ -85,6 +104,7 @@ public class Client extends Player {
             e.printStackTrace();
         }
 
+        // adding the move to their own screen
         if (data.charAt(0) == Constants.MOVE_DATA) {
             if (data.charAt(1) == 'P') {
                 data = " " + data.substring(2);
@@ -97,6 +117,12 @@ public class Client extends Player {
 
     /*
     METHODS FOR INPUT BEFORE GAME
+     */
+
+    /**
+     * askForData
+     * Creates a pop-up frame for the user to enter identity data
+     * @param type is the character type in Constants that corresponds to the data we're asking for
      */
     public void askForData(char type) {
         EnterDataFrame enterDataFrame = new EnterDataFrame(type, this);
@@ -113,6 +139,11 @@ public class Client extends Player {
         }
     }
 
+    /**
+     * getUsernameInput
+     * Continuously prompts the user for username input until a valid response is received
+     * Controls the timing of the error message
+     */
     public void getUsernameInput() {
         do {
             askForData(Constants.USERNAME_DATA);
@@ -127,6 +158,12 @@ public class Client extends Player {
         } while (result.equals(Constants.USERNAME_ERROR));
     }
 
+    /**
+     * createRoom
+     * Creates a pop-up frame with a randomly generated room code
+     * Shows options for picking a side/colour
+     * Starts the game
+     */
     public void createRoom() {
         CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame(this);
         room = roomFrame.getCode();
@@ -145,6 +182,11 @@ public class Client extends Player {
         startGame();
     }
 
+    /**
+     * getRoomInput
+     * Continuously prompts the user for room code input until a valid response is received
+     * Controls the timing of the error message
+     */
     public void getRoomInput() {
         do {
             askForData(Constants.JOIN_PRIV_ROOM_DATA);
@@ -174,16 +216,11 @@ public class Client extends Player {
         startGame();
     }
 
-    public void waitTillClosed(MessageFrame frame) {
-        while (frame != null && !frame.isClosed()) {
-            try {
-                Thread.sleep(0, 1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
+    /**
+     * pickSpectateColour
+     * For users joining a room after there are two existing players
+     * Prompts user input, if the choice is invalid they will get a random colour
+     */
     public void pickSpectateColour() {
         EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA, this);
         do {
@@ -196,6 +233,11 @@ public class Client extends Player {
 
     }
 
+    /**
+     * randomizeColour
+     * For room creators or invalid spectator colour options
+     * Randomly chooses and assigns either "black" or "white"
+     */
     public void randomizeColour() {
         int choice = (int) Math.round(Math.random());
         if (choice == 0) {
@@ -205,8 +247,29 @@ public class Client extends Player {
         }
     }
 
+    /**
+     * waitTillClosed
+     * Stops the main thread from continuing until the message frame is closed
+     * @param frame is the pop-up MessageFrame that displays an error message during input
+     */
+    public void waitTillClosed(MessageFrame frame) {
+        while (frame != null && !frame.isClosed()) {
+            try {
+                Thread.sleep(0, 1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     /*
     METHODS FOR PUBLIC ROOMS
+     */
+
+    /**
+     * getRoomNames
+     * Used to update the list of public rooms on the Home Frame
+     * @return an ArrayList of Strings, each holding the name of a room
      */
     public ArrayList<String> getRoomNames(){
         ArrayList <String> roomNames = new ArrayList<>();
@@ -222,12 +285,17 @@ public class Client extends Player {
         return roomNames;
     }
 
+    /**
+     * quickMatch
+     * Used for Clients trying to match with a random player online
+     * Shows a pop-up while waiting for another player to enter matchmaking
+     * Adds client information based on server feedback
+     * Starts the game
+     */
     public void quickMatch() {
         try {
             FindingRoomFrame findRoom = new FindingRoomFrame();
-            dataOut.write(Constants.QUICK_MATCH_DATA);
-            dataOut.newLine();
-            dataOut.flush();
+            sendData(Constants.QUICK_MATCH_DATA + "");
             String result = dataIn.readLine();
 
             result = dataIn.readLine();
@@ -242,11 +310,16 @@ public class Client extends Player {
                 }
                 startGame();
             }
-            //in the game loop, maybe constantly check if quickMatch.size()%2==0  -- if its even
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    /**
+     * spectate
+     * Allows the user to spectate a public room
+     * @param roomName is the name of the public room displayed on the Home Frame
+     */
     public void spectate(String roomName) {
         sendData(Constants.JOIN_PUB_ROOM_DATA + roomName);
         pickSpectateColour();
@@ -259,8 +332,13 @@ public class Client extends Player {
     /*
     IN GAME METHODS
      */
+
+    /**
+     * startGame
+     * Opens a new Game Frame with the Client as a player
+     * Starts listening for in-Game updates such as chat and moves
+     */
     public void startGame() {
-        //inGame = true;
         gameFrame = new GameFrame(thisClient, thisClient.isPlayer);
         listenForUpdates();
     }
@@ -621,6 +699,10 @@ public class Client extends Player {
                             } else if (type == Constants.DRAW_DATA) {
                                 receiveDrawInfo(data);
                             } else if (type == Constants.LEAVE_ROOM_DATA) {
+                                try {
+                                    Thread.sleep(2000);
+                                } catch (InterruptedException ex) {
+                                }
                                 if (data.equals("true")) { // a player has surrendered the game
                                     leaveRoom();
                                 }

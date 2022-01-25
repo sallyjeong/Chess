@@ -48,10 +48,6 @@ public class ConfirmFrame extends JFrame {
                     String colour = currentGameFrame.getClient().getColour().toUpperCase();
                     String message = Constants.CHAT_DATA + "*** " + colour + " PLAYER HAS LEFT GAME ***";
                     currentGameFrame.getClient().sendData(message);
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException ex) {
-                    }
                     currentGameFrame.getClient().leaveRoom();
 
                     HomeFrame.roomNames = currentGameFrame.getClient().getRoomNames();

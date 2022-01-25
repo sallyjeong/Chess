@@ -19,7 +19,6 @@ public class EndFrame extends JFrame {
      * Create the frame.
      */
     public EndFrame(JFrame currentGameFrame, String winner, String score) {
-        currentGameFrame.dispose();
         JFrame frame = this;
         frame.setVisible(true);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -49,6 +48,7 @@ public class EndFrame extends JFrame {
         exitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
+                currentGameFrame.dispose();
             }
         });
         exitButton.setForeground(new Color(0, 100, 0));
