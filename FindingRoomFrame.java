@@ -1,8 +1,5 @@
 package chessproject;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -12,23 +9,11 @@ import java.awt.Color;
 public class FindingRoomFrame extends JFrame {
 
     private JPanel contentPane;
-//    public static void main(String[] args) {
-//        EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                try {
-//                    FindingRoomFrame frame = new FindingRoomFrame();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
 
     /**
      * Create the frame.
      */
     public FindingRoomFrame() {
-        // maybe replace with a pop up
         setTitle("Finding match");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setBounds(100, 100, 292, 200);

@@ -1,14 +1,9 @@
 package chessproject;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,7 +14,7 @@ import javax.swing.JComboBox;
 import javax.swing.JButton;
 
 public class CreatePrivateRoomFrame extends JFrame {
-    public static HashSet<String> roomCodes = new HashSet<String>(); //possibly make it private and add getters/setters
+    public static HashSet<String> roomCodes = new HashSet<String>();
     private JComboBox colourChoices;
     private boolean closed = false;
     private String colourChosen;
@@ -29,7 +24,7 @@ public class CreatePrivateRoomFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public CreatePrivateRoomFrame() {
+    public CreatePrivateRoomFrame(Client client) {
         JFrame frame = this;
 
         setTitle("Creating private room");
@@ -55,12 +50,12 @@ public class CreatePrivateRoomFrame extends JFrame {
         contentPane.add(colourLabel);
 
         String[] colours = {"white", "black", "random"};
-		colourChoices = new JComboBox<>(colours);//use this one for drop down list
-        //JComboBox colourChoices = new JComboBox();
+        colourChoices = new JComboBox<>(colours);
         colourChoices.setBounds(134, 66, 121, 27);
         contentPane.add(colourChoices);
 
         JButton doneButton = new JButton("Done");
+        doneButton.setForeground(new Color(0, 100, 0));
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 colourChosen = (String) (colourChoices.getSelectedItem());
@@ -68,8 +63,20 @@ public class CreatePrivateRoomFrame extends JFrame {
                 frame.dispose();
             }
         });
-        doneButton.setBounds(33, 112, 222, 29);
+        doneButton.setBounds(33, 112, 106, 29);
         contentPane.add(doneButton);
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                client.quitGame(false);
+                new HomeFrame();
+            }
+        });
+        cancelButton.setForeground(new Color(178, 34, 34));
+        cancelButton.setBounds(143, 112, 106, 29);
+        contentPane.add(cancelButton);
         setVisible(true);
     }
 

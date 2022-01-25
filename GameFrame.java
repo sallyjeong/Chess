@@ -1,52 +1,36 @@
 package chessproject;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import java.awt.GridLayout;
 import javax.swing.JTextField;
-import java.awt.ScrollPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
 
-import java.awt.CardLayout;
 import java.awt.Color;
 
 public class GameFrame extends JFrame {
 
     public static Game game;
-    //static Player curPlayer;
-    // static Player p1, p2;
     private GameFrame frame;
-    private JTextField userInputField;
+    private JTextArea textArea;
+    private JTextArea movesArea;
     private Client client;
-
-//    public static void main(String[] args) {
-//        // TODO Auto-generated method stub
-//        GameFrame game = new GameFrame(false, true);
-//
-//    }
 
     public GameFrame(Client client, boolean isPlayer) {
         frame = this;
         this.client = client;
         GamePanel board = new GamePanel(isPlayer);
-//        p1 = new Player(true);
-//        p2 = new Player(false);
-        // curPlayer = p1;
         game = new Game(client);
 
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -57,74 +41,50 @@ public class GameFrame extends JFrame {
         contentPane.setLayout(null);
 
         JPanel boardPanel = new JPanel();
-        //boardPanel.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
         boardPanel.add(board);
-        board.setBounds(0,0, 576, 576);
+        board.setBounds(0, 0, 576, 576);
 
         boardPanel.setBounds(674, 50, 600, 600); // 576/8 = 72
         contentPane.add(boardPanel);
-        //frame.add(board);
 
         JPanel movesPanel = new JPanel();
         movesPanel.setBorder(new TitledBorder(null, "Moves", TitledBorder.CENTER, TitledBorder.TOP, null, null));
         movesPanel.setBounds(52, 118, 564, 237);
         contentPane.add(movesPanel);
 
+        movesArea = new JTextArea(12, 43);
+        movesArea.setEditable(false);
+
+        JScrollPane scrollMoves = new JScrollPane(movesArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollMoves.setVisible(true);
+
+        movesPanel.add(scrollMoves);
+
         JPanel chatPanel = new JPanel();
         chatPanel.setBorder(new TitledBorder(null, "Chat", TitledBorder.CENTER, TitledBorder.TOP, null, null));
         chatPanel.setBounds(52, 395, 564, 237);
         contentPane.add(chatPanel);
-        //chatPanel.setLayout(new FlowLayout());;
 
-        JTextArea textArea = new JTextArea(10,43);
+        textArea = new JTextArea(10, 43);
         textArea.setEditable(false);
 
-        JScrollPane scroll = new JScrollPane (textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane scroll = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.setVisible(true);
 
         chatPanel.add(scroll);
 
-
-        textArea.setText("getContentPane().setLayout(\n"
-                + "                new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));\n"
-                + "        setResizable(false);\n"
-                + "\n"
-                + "        JTextArea window1 = new JTextArea(\"text\");\n"
-                + "        window1.setEditable(false);\n"
-                + "        window1.setBorder(BorderFactory.createLineBorder(Color.BLACK));\n"
-                + "        window1.setLineWrap(true);\n"
-                + "\n"
-                + "\n"
-                + "        JScrollPane scroll1 = new JScrollPane(window1);\n"
-                + "        scroll1.setPreferredSize(new Dimension(200, 250));\n"
-                + "        scroll1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);\n"
-                + "        scroll1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);\n"
-                + "        add(scroll1);\n"
-                + "\n"
-                + "        JTextArea window2 = new JTextArea();\n"
-                + "        window2.setEditable(true);\n"
-                + "        window2.setBorder(BorderFactory.createLineBorder(Color.BLACK));\n"
-                + "        window2.setLineWrap(true);\n"
-                + "        add(window2);\n"
-                + "\n"
-                + "        JScrollPane scroll2 = new JScrollPane(window2);\n"
-                + "        scroll2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);\n"
-                + "        scroll2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);\n"
-                + "        scroll2.setPreferredSize(new Dimension(100, 50));\n"
-                + "        add(scroll2);\n"
-                + "\n"
-                + "        setDefaultCloseOperation(EXIT_ON_CLOSE);");
-
         JTextField userInputField = new JTextField();
-        //userInputField.setBounds(6, 198, 437, 33);
         chatPanel.add(userInputField);
         userInputField.setColumns(37);
 
         JButton sendButton = new JButton("Send");
         sendButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // client.sendMessage(userInputField.getText());
-                // userInputField.setText("");
+                String text = userInputField.getText();
+                client.sendData(Constants.CHAT_DATA + client.getUsername() + ": " + text);
+                textArea.append("me: " + text + "\n");
+                textArea.setCaretPosition(textArea.getDocument().getLength());
+                userInputField.setText("");
             }
         });
         sendButton.setBounds(441, 201, 117, 29);
@@ -142,42 +102,27 @@ public class GameFrame extends JFrame {
             JButton drawButton = new JButton("Draw");
             drawButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    //frame.dispose();
-                    // send information to other user
-                    // (request to opponent and not spectators)
-                    // ^^ first 2 ClientHandlers of a room (HashMap) will be the players
-                    // so we can differentiate sending data this way
-                    // new ();    new frame here
+                    new ConfirmFrame(frame, false);
                 }
             });
-            drawButton.setBounds(52,  50, 175, 29);
+            drawButton.setBounds(52, 50, 267, 29);
             contentPane.add(drawButton);
 
             JButton surrenderButton = new JButton("Surrender");
             surrenderButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    new ConfirmFrame(frame);
+                    new ConfirmFrame(frame, true);
                 }
             });
-            surrenderButton.setBounds(237,  50, 175, 29);
+            surrenderButton.setBounds(343, 50, 267, 29);
             contentPane.add(surrenderButton);
 
-            JButton boardFlipButton = new JButton("Flip Board");
-            boardFlipButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                }
-            });
-            boardFlipButton.setBounds(426,  50, 175, 29);
-            contentPane.add(boardFlipButton);
         } else {
 
             JButton flipButton = new JButton("Flip board");
             flipButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-
-//                frame.dispose();
-                    // remove the user from game (if player, do the same thing as surrender)
-                    // new ();    new frame here
+                    client.flipBoard();
                 }
             });
             flipButton.setBounds(343, 50, 267, 29);
@@ -186,7 +131,7 @@ public class GameFrame extends JFrame {
             JButton leaveButton = new JButton("Leave");
             leaveButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    new ConfirmFrame(frame);
+                    new ConfirmFrame(frame, true);
                 }
             });
             leaveButton.setBounds(52, 50, 267, 29);
@@ -195,9 +140,20 @@ public class GameFrame extends JFrame {
         }
         frame.setVisible(true);
     }
+
     public Client getClient() {
         return client;
     }
+
+    public void addMessage(String text) {
+        textArea.append(text + "\n");
+    }
+
+    public void addMove(String move) {
+        movesArea.append(move + "\n");
+        movesArea.setCaretPosition(movesArea.getDocument().getLength());
+    }
+
     class GamePanel extends JPanel implements MouseListener {
 
         private Spot source = null;
@@ -205,20 +161,15 @@ public class GameFrame extends JFrame {
 
         public GamePanel(boolean isPlayer) {
             this.isPlayer = isPlayer;
-            //JPanel board = new JPanel();
-            //board.setBounds(0,0, 576, 576); // 576/8 = 72
             setPreferredSize(new Dimension(576, 576));
             addMouseListener(this);
             setFocusable(true);
-            //requestFocusInWindow();
         }
 
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             game.getBoard().draw(g);
             client.displayCaptured(g);
-//            p1.displayCaptured(g);
-//            p2.displayCaptured(g);
             repaint();
         }
 
@@ -255,27 +206,17 @@ public class GameFrame extends JFrame {
             }
         }
 
-
         @Override
         public void mousePressed(MouseEvent e) {
         }
-
-
         @Override
         public void mouseReleased(MouseEvent e) {
         }
-
-
         @Override
         public void mouseEntered(MouseEvent e) {
         }
-
-
         @Override
         public void mouseExited(MouseEvent e) {
         }
-
     }
-
-
 }

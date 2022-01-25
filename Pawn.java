@@ -11,8 +11,8 @@ public class Pawn extends Piece {
 	private boolean enPassant;
 	private boolean forward;
 
-	public Pawn(boolean w, boolean m, int p, char s, int r, int c, boolean f) {
-		super(w, m, p, s, r, c);
+	public Pawn(boolean w, int p, char s, int r, int c, boolean f) {
+		super(w, p, s, r, c);
 		this.forward = f;
 	}
 
@@ -36,11 +36,11 @@ public class Pawn extends Piece {
 		validMoves.clear();
 		Spot curSpot;
 
-		if(forward){
+		if(forward && row > 0){
 			curSpot= board[row-1][col];
 			if(curSpot.getPiece() == null){
 				validMoves.add(curSpot);
-				if(!getMoved() && (board[row-2][col].getPiece()== null)){
+				if(row==6 && (board[row-2][col].getPiece()== null)){
 					validMoves.add(board[row-2][col]);
 					setEnPassant(true);
 				}
@@ -74,12 +74,11 @@ public class Pawn extends Piece {
 				}
 			}
 
-		}
-		else{
+		} else if (!forward && row <7){
 			curSpot= board[row+1][col];
 			if(curSpot.getPiece() == null){
 				validMoves.add(curSpot);
-				if(!getMoved() && (board[row+2][col].getPiece()== null)){
+				if(row==1 && (board[row+2][col].getPiece()== null)){
 					validMoves.add(board[row+2][col]);
 					setEnPassant(true);
 				}
@@ -125,4 +124,9 @@ public class Pawn extends Piece {
 	public void setEnPassant(boolean b) {
 		this.enPassant = b;
 	}
+
+	public boolean getForward() {
+		return this.forward;
+	}
+
 }

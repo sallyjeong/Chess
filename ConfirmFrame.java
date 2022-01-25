@@ -5,38 +5,18 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JButton;
 import java.awt.Color;
 
 public class ConfirmFrame extends JFrame {
 
     private JPanel contentPane;
-//	public static String leave = "unconfirmed";
-
-    /**
-     * Launch the application.
-     */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-////					ConfirmFrame frame = new ConfirmFrame();
-//					//frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
     /**
      * Create the frame.
      */
-    public ConfirmFrame(GameFrame currentGameFrame) {
+    public ConfirmFrame(GameFrame currentGameFrame, boolean leave) {
         JFrame frame = this;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 292, 200);
@@ -45,7 +25,12 @@ public class ConfirmFrame extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JLabel lblNewLabel = new JLabel("Leave current game");
+        JLabel lblNewLabel;
+        if (leave) {
+            lblNewLabel = new JLabel("Leave current game");
+        } else {
+            lblNewLabel = new JLabel("Request draw");
+        }
         lblNewLabel.setBounds(81, 52, 122, 16);
         contentPane.add(lblNewLabel);
 
@@ -53,8 +38,17 @@ public class ConfirmFrame extends JFrame {
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                currentGameFrame.dispose();
-                currentGameFrame.getClient().leaveRoom();
+                if (leave) {
+                    // surrender or leave button
+                    currentGameFrame.dispose();
+                    currentGameFrame.getClient().leaveRoom();
+                    HomeFrame.roomNames = currentGameFrame.getClient().getRoomNames();
+                    HomeFrame.list.setListData(HomeFrame.roomNames.toArray());
+                } else {
+                    // draw
+                    currentGameFrame.addMessage("*** DRAW REQUEST SENT ***");
+                    currentGameFrame.getClient().sendData(Constants.DRAW_DATA + Constants.REQUEST);
+                }
             }
         });
         confirmButton.setForeground(new Color(0, 100, 0));
@@ -65,8 +59,6 @@ public class ConfirmFrame extends JFrame {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                //frame.dispose();
-                //client.leaveRoom();
             }
         });
         cancelButton.setForeground(new Color(220, 20, 60));

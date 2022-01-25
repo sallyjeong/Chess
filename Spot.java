@@ -71,6 +71,9 @@ public class Spot implements Drawable {
 
 	public void addPiece(Piece p) {
 		this.piece = p;
+		if(p!=null) {
+			p.setRow(row); p.setCol(column);
+		}
 	}
 
 	public Piece removePiece() {
