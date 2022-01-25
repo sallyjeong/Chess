@@ -10,9 +10,10 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import java.awt.Color;
+
 /** [EnterDataFrame.java]
  * The JFrame that opens when the client needs to enter information (e.g. username)
- * @author Rachel Liu
+ * @author Rachel Liu, Katherine Liu
  * @version 1.0 Jan 25, 2021
  */
 public class EnterDataFrame extends JFrame {
