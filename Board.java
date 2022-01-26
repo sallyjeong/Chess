@@ -79,7 +79,7 @@ public class Board implements Drawable {
 			{-5,  0,  0,  0,  0,  0,  0, -5},
 			{-5,  0,  0,  0,  0,  0,  0, -5},
 			{0,  0,  0,  5,  5,  0,  0,  0}};
-	private int[][] arrCenterManhattanDistance = {
+	private int[][] centerManhattanDistance = {
 			{6, 5, 4, 3, 3, 4, 5, 6},
 			{5, 4, 3, 2, 2, 3, 4, 5},
 			{4, 3, 2, 1, 1, 2, 3, 4},
@@ -99,7 +99,7 @@ public class Board implements Drawable {
 
 	/**
 	 * constructs the board for a person v person match
-	 * @param white: if the computer is playing white or black
+	 * @param :
 	 */
 	public Board(Client player) {
 		this.player = player;
@@ -122,7 +122,7 @@ public class Board implements Drawable {
 	 * @param computerGame: true if it's a player vs computer match
 	 */
 	private void create(boolean computerGame) {
-		Color whiteSquare = new Color(23Constants.BOARD_SIZE, 232, 170), blackSquare = new Color(139, 69, 19);
+		Color whiteSquare = new Color(238, 232, 170), blackSquare = new Color(139, 69, 19);
 		board = new Spot[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
 		String tempId;
 		//values to be able to build the board for both povs
@@ -695,7 +695,7 @@ public class Board implements Drawable {
 		int lR= losingKing.getRow(); int lC= losingKing.getCol();
 		int wR= winningKing.getRow(); int wC= winningKing.getCol();
 
-		int CMD= arrCenterManhattanDistance[lR][lC];
+		int CMD= centerManhattanDistance[lR][lC];
 		int MD= Math.abs(wR- lR)+ Math.abs(wC- lC);
 
 		return (int)(4.7 * CMD + 1.6 * (14 - MD));
