@@ -670,7 +670,7 @@ public class Board implements Drawable {
 	 * An End Game is defined as both sides not having a total of more than 4 minor pieces or queen(s) and 2 minor pieces
 	 * @return boolean returns true if the position is in end game
 	 */
-	private boolean inEndGame() {
+	public boolean inEndGame() {
 		int qcount = 0, minorPieceCount = 0;
 		for(int i=0; i<Constants.BOARD_SIZE; i++) {
 			for(int j=0; j<Constants.BOARD_SIZE; j++) {
@@ -708,7 +708,7 @@ public class Board implements Drawable {
 	  * @param white A boolean that contains if a piece is white
 	  * @return boolean returns true if it is a king and pawn endgame
 	  */
-	 private boolean kingPawnEndgame(boolean white) {
+	 public boolean kingPawnEndgame(boolean white) {
 	     for(int i=0; i<Constants.BOARD_SIZE; i++) {
 		 for(int j=0; j<Constants.BOARD_SIZE; j++) {
 		     Piece piece = board[i][j].getPiece();
@@ -829,7 +829,7 @@ public class Board implements Drawable {
 	 * @param white A boolean that contains what color is being evaluated for
 	 * @return boolean returns true if the position is a rook and king endgame
 	 */
-	private boolean inRKEndgame(boolean white) {
+	public boolean inRKEndgame(boolean white) {
 
 		int rCount = 0;
 		for(int i=0; i<Constants.BOARD_SIZE; i++) {
