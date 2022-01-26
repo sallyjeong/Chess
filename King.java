@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 /** [King.java]
  * Represents each King on the board
  * @author
- * @version 1.0 Jan 25, 2021
+ * @version 1.0 Jan 25, 2022
  */
 public class King extends Piece {
 	private boolean castled;
