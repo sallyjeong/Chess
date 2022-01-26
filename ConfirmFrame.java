@@ -51,8 +51,10 @@ public class ConfirmFrame extends JFrame {
                     currentGameFrame.dispose();
                     //getting and sending message that client has left the game
                     String colour = currentGameFrame.getClient().getColour().toUpperCase();
-                    String message = Constants.CHAT_DATA + "*** " + colour + " PLAYER HAS LEFT GAME ***";
-                    currentGameFrame.getClient().sendData(message);
+                    if (currentGameFrame.getClient().getIsPlayer()) {
+                        String message = Constants.CHAT_DATA + "*** " + colour + " PLAYER HAS LEFT GAME ***";
+                        currentGameFrame.getClient().sendData(message);
+                    }
                     currentGameFrame.getClient().leaveRoom();
 
                     HomeFrame.roomNames = currentGameFrame.getClient().getRoomNames();
