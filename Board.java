@@ -697,14 +697,16 @@ public class Board implements Drawable {
 	 * @param losingKing A King object that contains the king that has the rook
 	 * @return int returns a value for the current position
 	 */
-	private int kingRookPositionEval(King winningKing, King losingKing){
-		int lR= losingKing.getRow(); int lC= losingKing.getCol();
-		int wR= winningKing.getRow(); int wC= winningKing.getCol();
+		private int kingRookPositionEval(King winningKing, King losingKing){
+		int lKRow= losingKing.getRow(); int lKCol= losingKing.getCol();
+		int wKRow= winningKing.getRow(); int wKCol= winningKing.getCol();
 
-		int CMD= centerManhattanDistance[lR][lC];
-		int MD= Math.abs(wR- lR)+ Math.abs(wC- lC);
+		int centerManhattanDist= centerManhattanDistance[lKRow][lKCol]; 
+		//determines the center manhattan distance of the losing king (the manhattan distance from the 'center' of the board)
+		int manhattanDist= Math.abs(wKRow- lKRow)+ Math.abs(wKCol- lKCol);
+		//determines the manhattan distance between the 2 kings.
 
-		return (int)(4.7 * CMD + 1.6 * (14 - MD));
+		return (int)(4.7 * centerManhattanDist + 1.6 * (14 - manhattanDist)); //determines the value of the positions by applying a mop-up evaluation
 
 	}
 
