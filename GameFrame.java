@@ -279,7 +279,9 @@ public class GameFrame extends JFrame {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             game.getBoard().draw(g);
-            player.displayCaptured(g);
+            if(!computerGame) {
+                player.displayCaptured(g);
+            }
             repaint();
         }
 
