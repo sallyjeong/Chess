@@ -2,10 +2,14 @@ package chessproject;
 
 //imports for network communication
 import java.io.IOException;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
+// imports for data types
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -13,11 +17,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
+/** [Server.java]
+ * Multi-threaded Server
+ * Inner class contains code for network communication
+ * among various Clients running our chess program
+ * Accepts and handles connections to individual clients on a new thread
+ * @author Katherine Liu, Sally Jeong
+ * @version 1.0 Jan 25, 2022
+ */
 public class Server {
     public ServerSocket serverSocket;
     public Set<ClientHandler> clientHandlers = new HashSet<>();
@@ -26,6 +36,15 @@ public class Server {
     public static ArrayList<String> roomNames = new ArrayList<>();
     public BlockingQueue<ClientHandler> quickMatch = new LinkedBlockingQueue<>();
 
+    public static void main(String[] args) {
+        Server server = new Server();
+    }
+
+    /**
+     * Server
+     * This constructor creates a ServerSocket and waits for Client connections
+     * Creates a new Thread to handle each connection
+     */
     public Server() {
         try {
             serverSocket = new ServerSocket(Constants.PORT);
@@ -43,19 +62,31 @@ public class Server {
         }
     }
 
-    public static void main(String[] args) {
-        Server server = new Server();
-    }
-
+    /** [ClientHandler.java]
+     * Inner class that handles each Client on a new thread
+     * Stores data specific to each Client
+     * Various methods for receiving and sending data out to different Clients
+     * @author Katherine Liu, Sally Jeong
+     * @version 1.0 Jan 25, 2021
+     */
     private class ClientHandler implements Runnable {
+        // variables for Client identification
         private String username = " ";
         private String colour;
         private String room = "";
+        private boolean priv; //in private room or not
+
+        // variables for network communication
         private Socket socket;
         private BufferedReader dataIn;
         private BufferedWriter dataOut;
-        private boolean priv; //in private room or not
 
+        /**
+         * ClientHandler
+         * This constructor is used to connect the ClientHandler to the correct socket
+         * and establish the BufferedReader and BufferedWriter
+         * @param socket is the Socket used for sending and receiving data
+         */
         public ClientHandler(Socket socket) {
             try {
                 this.socket = socket;
@@ -68,6 +99,12 @@ public class Server {
             }
         }
 
+        /**
+         * run
+         * Overrides method since this class implements runnable
+         * This allows the ClientHandler to consistently receive data
+         * and decide what to do/how to send it
+         */
         @Override
         public void run() {
             while (!socket.isClosed() && socket.isConnected()) {
@@ -124,7 +161,12 @@ public class Server {
         METHODS FOR SENDING DATA
          */
 
-        // sends information to everyone else in the same room as the origin
+        /**
+         * broadcastMessage
+         * This method sends information to everyone else
+         * in the same room as the Client the data was received from (excluding the sender)
+         * @param msg is the String that should be sent
+         */
         public void broadcastMessage(String msg) {
             ArrayList<ClientHandler> roomMembers;
             if (priv) {
@@ -135,15 +177,19 @@ public class Server {
 
             if (roomMembers!= null && roomMembers.size() > 1) {
                 for (ClientHandler member : roomMembers) {
-
                     if ((!member.username.equals(username)) && (!member.username.equals(" "))) {
                         member.writeData(msg);
                     }
-
                 }
             }
         }
 
+        /**
+         * writeData
+         * Writes the data specified back to the Client
+         * When this method is called, the type (from Constants) is always the first character
+         * @param data is the String holding the data type and actual information
+         */
         public void writeData(String data) {
             try {
                 dataOut.write(data);
@@ -154,7 +200,12 @@ public class Server {
             }
         }
 
-        // sends information to everyone connected to the server
+        /**
+         * broadcastMessageToAll
+         * This method sends information to everyone connected to the server
+         * Used when updating public room list
+         * @param msg is the String that should be sent
+         */
         public void broadcastMessageToAll(String msg) {
             for (ClientHandler clientHandler : clientHandlers) {
                 if ((!clientHandler.username.equals(username)) && (!clientHandler.username.equals(" "))) {
@@ -166,43 +217,68 @@ public class Server {
         /*
         METHODS FOR JOINING GAMES
          */
-        public void addUsername(String input) {
-            if (validUsername(input)) {
-                username = input;
+
+        /**
+         * addUsername
+         * Checks if the username is valid and sends back either a "success" or "error" message
+         * @param user is the String with the username
+         */
+        public void addUsername(String user) {
+            if (validUsername(user)) {
+                username = user;
                 writeData("success. welcome " + username);
             } else {
                 writeData(Constants.USERNAME_ERROR);
             }
         }
 
+        /**
+         * validUsername
+         * Checks if the username is valid
+         * @param user is the String with the username
+         * @return true if the username is unique and only contains characters, false otherwise
+         */
         public boolean validUsername(String user){
-            for (ClientHandler clientHandler : clientHandlers){
+            for (ClientHandler clientHandler : clientHandlers){ // already exists
                 if (clientHandler.username.equals(user)){
                     return false;
                 }
             }
-            if (!user.matches("[a-zA-Z0-9]*")){
+            if (!user.matches("[a-zA-Z0-9]*")){ // special characters
                 return false;
             }
-            if ((user.equals("")) || (user.equals(null))){
+            if ((user.equals("")) || (user.equals(null))){ // empty
                 return false;
             }
             return true;
         }
 
-        public void createRoom(String input) {
+        /**
+         * createRoom
+         * Creates a new room and adds to the Map holding rooms and corresponding ClientHandlers
+         * Sends back a verificaton message
+         * @param roomCode the String with the room code for the room created
+         */
+        public void createRoom(String roomCode) {
             priv = true;
-            room = input;
-            privateRooms.put(input, new ArrayList<ClientHandler>());
-            privateRooms.get(input).add(this);
-            writeData(Constants.CREATE_ROOM_DATA + "room [" + input + "] created successfully");
+            room = roomCode;
+            privateRooms.put(roomCode, new ArrayList<ClientHandler>());
+            privateRooms.get(roomCode).add(this);
+            writeData(Constants.CREATE_ROOM_DATA + "room [" + roomCode + "] created successfully");
         }
 
-        public void joinPrivateRoom(String input) {
-            if (privateRooms.containsKey(input)) {
+        /**
+         * joinPrivateRoom
+         * Checks if the room code is valid
+         * Adds current ClientHandler to Map holding rooms and corresponding ClientHandlers if valid
+         * Sends back a verification or error message
+         * @param roomCode the String with the room code for the room created
+         */
+        public void joinPrivateRoom(String roomCode) {
+            if (privateRooms.containsKey(roomCode)) {
                 priv = true;
-                room = input;
-                privateRooms.get(input).add(this);
+                room = roomCode;
+                privateRooms.get(roomCode).add(this);
                 writeData("success. welcome " + username);
                 broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has joined the room ***");
                 if (privateRooms.get(room).size() == 2) {
@@ -255,6 +331,15 @@ public class Server {
             broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
         }
 
+        /**
+         * addColour
+         * Determines the colour for the Clients in the room
+         * 1) Stores the colour sent from room creator
+         * 2) Sets the colour of the 2nd player to opposite of the first
+         * 3) Sends only COLOUR_DATA so we know to ask spectator for a colour upon reception
+         * Sends verification message containing assigned colour
+         * @param input is the String holding the colour ("white" or "black")
+         */
         public void addColour(String input) {
             // first player (room creator)
             if (input.equals("black") || input.equals("white")) {
@@ -280,6 +365,13 @@ public class Server {
             }
         }
 
+        /**
+         * shareBoard
+         * Receives and sends either requests for sending board data, or actual board data
+         * @param input is the String being sent ("request" or piece data)
+         *              piece data format: [username] + " " + [row][col][piece symbol][b/w]
+         *              example: chess 00Rw would mean to send the "chess" user "00Rw"
+         */
         public void shareBoard(String input) {
             Map<String, ArrayList<ClientHandler>> rooms;
             if (priv) {
@@ -300,15 +392,11 @@ public class Server {
 
                 // player sending board data back to spectator that requested it
             } else {
-                // input format: username + " " + [row][col][piece symbol][b/w])
-                // example: chess 00Pw
                 String sendToUser = input.substring(0, input.indexOf(" "));
                 for (ClientHandler spectator : rooms.get(room)) {
                     if (spectator.username.equals(sendToUser)) {
                         spectator.writeData(Constants.BOARD_DATA + input.substring(input.indexOf(" ")+1));
-
                     }
-
                 }
             }
         }
@@ -324,6 +412,11 @@ public class Server {
         METHODS FOR ENDING GAMES
          */
 
+        /**
+         * sendDraw
+         * Receives draw information from one player and sends it to their opponent
+         * @param input is the String indicating the request of rejection of a draw ("!request" or "denied")
+         */
         public void sendDraw(String input) {
             // input is either "!request" or "denied"
             Map<String, ArrayList<ClientHandler>> rooms;
@@ -346,6 +439,13 @@ public class Server {
 
         }
 
+        /**
+         * leaveRoom
+         * Relays information to other users in the room
+         * Removes the room from list of rooms if a player left
+         * Sends message in chat if a spectator left
+         * @param input is the String ("true" or "false") indicating if the user who left is a player
+         */
         public void leaveRoom(String input) {
             Map<String, ArrayList<ClientHandler>> rooms;
             if (priv){
@@ -373,10 +473,14 @@ public class Server {
                 if (rooms.get(room) != null) {
                     rooms.get(room).remove(username);
                 }
-                broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has left the chat ***");
+                broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has left the room ***");
             }
         }
 
+        /**
+         * closeConnection
+         * Disconnects the ClientHandler from the Socket
+         */
         public void closeConnection() {
             clientHandlers.remove(this);
             try {
