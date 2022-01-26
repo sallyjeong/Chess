@@ -475,7 +475,9 @@ public class Board implements Drawable {
 				Piece piece = board[i][j].getPiece();
 				if(piece!=null && piece.isWhite()) {
 					cnt+=piece.getPoints();
-					cnt+=piece.getMoveList().size()*MOBILITY_BONUS;
+					if (!kingPawnEndgame(piece.isWhite())) {
+					     cnt+=piece.getMoveList().size()*MOBILITY_BONUS;
+					}
 					cnt+=positionEval(piece, i, j);
 				}
 			}
@@ -504,7 +506,9 @@ public class Board implements Drawable {
 				Piece piece = board[i][j].getPiece();
 				if(piece!=null && !piece.isWhite()) {
 					cnt+=piece.getPoints();
-					cnt+=piece.getMoveList().size()*MOBILITY_BONUS;
+					if (!kingPawnEndgame(piece.isWhite())) {
+					    cnt+=piece.getMoveList().size()*MOBILITY_BONUS;
+					}
 					cnt+=positionEval(piece, i, j);
 				}
 			}
