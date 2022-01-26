@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /** [Game.java]
  * Represents the Game being played, holds player(s) and chess board
- * @author Peter Gao, Katherine Liu, Robert Jin, Stanley Wang
+ * @author Peter Gao, Katherine Liu, Robert Jin
  * @version 1.0 Jan 25, 2022
  */
 public class Game {
@@ -25,11 +25,11 @@ public class Game {
 	 */
 	public Game(Client player) {
 		this.player = player;
-		gameFrame = player.getGameFrame();
 		board = new Board(player);
 		player.setGame(this);
 		pastMoves = new ArrayList<Move>();
 		computerGame = false;
+		gameFrame = player.getGameFrame();
 	}
 
 
@@ -112,11 +112,9 @@ public class Game {
 			((King) sourcePiece).setMoved();
 		}
 
-
-		//actually moves the Piece
 		Piece destPiece = move.getEnd().removePiece();
 		if(destPiece!=null) {
-			temp.getCaptured().add(destPiece);  //captures the piece if it exists there
+			temp.getCaptured().add(destPiece);
 		}
 		move.getStart().getPiece().displayValidMoves(false);
 		move.getEnd().addPiece(sourcePiece);
@@ -132,7 +130,7 @@ public class Game {
 		// checking for promotion
 		if (computerGame || (player.getIsPlayer())) {
 			if(move.isPromotionMove()) {
-				if(!(temp instanceof ComputerPlayer)) {
+				if(!computerGame) {
 					PromotionFrame p = new PromotionFrame((Pawn)sourcePiece, board, move, gameFrame);
 				}else {
 					move.getEnd().addPiece(new Queen(move.getEnd().getPiece().isWhite(), 900, 'Q', 0, 0));
@@ -161,8 +159,8 @@ public class Game {
 			Piece rook = movingRook.removePiece();
 			board.getBoard()[row][col].addPiece(rook);
 			((King)move.getEnd().getPiece()).setCastled(true);
-
-			// checking en passant
+		
+		// checking en passant	
 		}else if(move.isEnPassantMove()) {
 			Spot above = board.getBoard()[move.getEnd().getRow()-1][move.getEnd().getColumn()];
 			if(above.getPiece() instanceof Pawn && ((Pawn)above.getPiece()).getEnPassant()) {
@@ -172,7 +170,7 @@ public class Game {
 			}
 		}
 
-		// for online games, send move data over to users in the room
+		// for online games, send move data over to users in the room 
 		if (temp instanceof Client) {
 			pastMoves.add(move);
 
@@ -245,7 +243,7 @@ public class Game {
 		return true;
 
 	}
-
+	
 	/*
 	GETTERS AND SETTERS
 	 */
