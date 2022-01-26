@@ -9,7 +9,7 @@ import java.util.HashSet;
  * [Board.java]
  * This class represents a chess board
  * Used to keep track of pieces, find valid moves, and evaluate positions
- * @author Peter Gao, Katherine Liu, Robert Jin
+ * @author Peter Gao, Katherine Liu, Robert Jin, Stanley Wang
  * @version 1.0 Jan 25, 2022
  */
 public class Board implements Drawable {
@@ -21,7 +21,7 @@ public class Board implements Drawable {
 	private King whiteKing, blackKing;
 	private boolean white;
 	private Client player;
-	
+
 	//piece square table values
 	private int qEval[][] = {{-20,-10,-10, -5, -5,-10,-10,-20},
 			{-10,  0,  0,  0,  0,  0,  0,-10},
@@ -106,7 +106,7 @@ public class Board implements Drawable {
 		this.white = player.isWhite();
 		this.create(false);
 	}
-	
+
 	/**
 	 * constructs the board for a person v computer match
 	 * @param white: true if board is in white's pov, false if black's
@@ -122,8 +122,8 @@ public class Board implements Drawable {
 	 * @param computerGame: true if it's a player vs computer match
 	 */
 	private void create(boolean computerGame) {
-		Color whiteSquare = new Color(238, 232, 170), blackSquare = new Color(139, 69, 19);
-		board = new Spot[8][8];
+		Color whiteSquare = new Color(23Constants.BOARD_SIZE, 232, 170), blackSquare = new Color(139, 69, 19);
+		board = new Spot[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
 		String tempId;
 		//values to be able to build the board for both povs
 		int whiteRow, blackRow;
@@ -132,7 +132,7 @@ public class Board implements Drawable {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[0].length; j++) {
 				if (white) {
-					tempId = (char) ('a' + j) + ((8 - i) + "");
+					tempId = (char) ('a' + j) + ((Constants.BOARD_SIZE - i) + "");
 				} else {
 					tempId = (char) ('a' + (7 - j)) + ((i + 1) + "");
 				}
@@ -157,7 +157,7 @@ public class Board implements Drawable {
 					// black pawns
 					board[blackRow + 1][i].addPiece(new Pawn(false, 100, '\u0000', blackRow + 1, i, !white));
 				}
-			//black pov pawns
+				//black pov pawns
 			} else {
 				whiteRow = 0;
 				blackRow = 7;
@@ -204,12 +204,12 @@ public class Board implements Drawable {
 
 	/**
 	 * create
-	 * method that loops through every piece on the board and updates its move set 
+	 * method that loops through every piece on the board and updates its move set
 	 */
 	public void getLegal() {
 		Set<Spot> validM;
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				if(board[i][j].getPiece()!=null) {
 					//get all pseudolegal moves
 					validM = board[i][j].getPiece().validMoves(this);
@@ -251,8 +251,8 @@ public class Board implements Drawable {
 	 */
 	public Set<Move> getCompleteMoveSet(boolean w) {
 		Set<Move> completeSet = new HashSet<Move>();
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				if(board[i][j].getPiece()!=null && board[i][j].getPiece().isWhite()== w) {
 					Set<Spot> s = board[i][j].getPiece().getMoveList();
 					for(Spot spot: s) {
@@ -273,8 +273,8 @@ public class Board implements Drawable {
 	 */
 	public boolean isInsufficientMat() { //method doesn't check if the bishops are on the same colour squares or not: 2 bishops of same colored diagonals cannot checkmate
 		int wKnights = 0, wBishops = 0, bBishops = 0, bKnights = 0;
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				Piece p = board[i][j].getPiece();
 				if(p!=null) {
 					if(p instanceof Knight) {
@@ -308,8 +308,8 @@ public class Board implements Drawable {
 	 * @return 0 if not checkmate or stalemate, 1 if checkmate, 2 if stalemate
 	 */
 	public int isCheckmateOrStalemate(boolean w) {
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				Piece piece = board[i][j].getPiece();
 				if(piece!=null && piece.isWhite()==w && !piece.getMoveList().isEmpty()) {
 					return 0;
@@ -355,8 +355,8 @@ public class Board implements Drawable {
 	 * @return true if the king is in check, false if not
 	 */
 	public void setEnPassant(boolean white) {
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				if(board[i][j].getPiece() instanceof Pawn && board[i][j].getPiece().isWhite()==white) {
 					((Pawn)board[i][j].getPiece()).setEnPassant(false);
 				}
@@ -373,7 +373,7 @@ public class Board implements Drawable {
 	public boolean isThreatenedSpot(boolean whiteThreatened, Spot threatenedSpot) {
 
 		int knightDirections[] = {2,1,2,-1,-2,1,-2,-1,1,2,1,-2,-1,2,-1,-2};
-		//8 directions, -1, -1 is northwest diag, -1, 0 north, -1, 1 northeast, 0, -1 west
+		//Constants.BOARD_SIZE directions, -1, -1 is northwest diag, -1, 0 north, -1, 1 northeast, 0, -1 west
 		int[] rowDirections = {-1, -1, -1, 0, 0, 1, 1, 1};
 		int[] colDirections = {-1, 0, 1, -1, 1, -1, 0, 1};
 		boolean bishopThreats[] = {true, false, true, false, false, true, false, true};
@@ -400,7 +400,7 @@ public class Board implements Drawable {
 			}
 		}
 
-		for(int direction=0; direction<8; direction++) {
+		for(int direction=0; direction<Constants.BOARD_SIZE; direction++) {
 			int nrow = row+rowDirections[direction], ncol = column+colDirections[direction];
 			if(isRCValid(nrow, ncol)) {
 				Piece piece = board[nrow][ncol].getPiece();
@@ -414,7 +414,7 @@ public class Board implements Drawable {
 			}
 		}
 
-		for(int direction=0; direction<8; direction++) {
+		for(int direction=0; direction<Constants.BOARD_SIZE; direction++) {
 			row = threatenedSpot.getRow(); column = threatenedSpot.getColumn();
 			int rowIncrement = rowDirections[direction], columnIncrement = colDirections[direction];
 			row+=rowIncrement; column+=columnIncrement;
@@ -437,11 +437,11 @@ public class Board implements Drawable {
 	}
 
 	/* isRCValid()
-         * Checks if a Row, Column exists
-         * @param row An integer that contains the row
-         * @param col An integer that contains the column
-         * @return boolean returns true if the row, column pair exists within the chessboard
-         */
+	 * Checks if a Row, Column exists
+	 * @param row An integer that contains the row
+	 * @param col An integer that contains the column
+	 * @return boolean returns true if the row, column pair exists within the chessboard
+	 */
 	private boolean isRCValid(int row, int col) {
 		if(row<0 || row>7 || col<0 || col>7) {
 			return false;
@@ -450,28 +450,28 @@ public class Board implements Drawable {
 	}
 
 	/* draw()
-         * Draws the board
-         * @param g A Graphics object
-         */
+	 * Draws the board
+	 * @param g A Graphics object
+	 */
 	@Override
 	public void draw(Graphics g) {
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				board[i][j].draw(g);
 			}
 		}
 	}
 
 	/* evaluateWhite()
-         * Evaluates the position for white pieces
-         * The value of a position depends on the value of each piece, which is variable depending on each position
-         * @param depth A integer that checks how far checkmate is
-         * @return int returns a value for the current position
-         */
+	 * Evaluates the position for white pieces
+	 * The value of a position depends on the value of each piece, which is variable depending on each position
+	 * @param depth A integer that checks how far checkmate is
+	 * @return int returns a value for the current position
+	 */
 	public int evaluateWhite(int depth) {
 		int cnt = 0;
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				Piece piece = board[i][j].getPiece();
 				if(piece!=null && piece.isWhite()) {
 					cnt+=piece.getPoints();
@@ -492,15 +492,15 @@ public class Board implements Drawable {
 	}
 
 	/* evaluateBlack()
-         * Evaluates the position for black pieces
-         * The value of a position depends on the value of each piece, which is variable depending on each position
-         * @param depth A integer that checks how far checkmate is
-         * @return int returns a value for the current position
-         */
+	 * Evaluates the position for black pieces
+	 * The value of a position depends on the value of each piece, which is variable depending on each position
+	 * @param depth A integer that checks how far checkmate is
+	 * @return int returns a value for the current position
+	 */
 	public int evaluateBlack(int depth) {
 		int cnt = 0;
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				Piece piece = board[i][j].getPiece();
 				if(piece!=null && !piece.isWhite()) {
 					cnt+=piece.getPoints();
@@ -521,13 +521,13 @@ public class Board implements Drawable {
 	}
 
 	/* positionEval()
-         * Returns a numerical evaluation for a piece
-         * The value of a position depends on the value of each piece, which is variable depending on each position
-         * @param piece A Piece object that contains the pawn to be checked
-         * @param i An integer that contains the location the piece is in, in the 2d array (piece square tables)
-         * @param j An integer that contains the location the piece is in, in the 2d array (piece square tables)
-         * @return int returns a value for how good a piece is
-         */
+	 * Returns a numerical evaluation for a piece
+	 * The value of a position depends on the value of each piece, which is variable depending on each position
+	 * @param piece A Piece object that contains the pawn to be checked
+	 * @param i An integer that contains the location the piece is in, in the 2d array (piece square tables)
+	 * @param j An integer that contains the location the piece is in, in the 2d array (piece square tables)
+	 * @return int returns a value for how good a piece is
+	 */
 	private int positionEval(Piece piece, int i, int j) {
 		int cnt = 0;
 		//forward pieces
@@ -609,11 +609,11 @@ public class Board implements Drawable {
 	}
 
 	/* passedPawn()
-         * Checks if a pawn is considered a passed pawn and returns a value
-         * A Passed Pawn is defined as a pawn that has no opposing pawns in the same column as it and not in front of it in the two columns next to it
-         * @param pawn A Pawn object that contains the pawn to be checked
-         * @return int returns a value for how passed a pawn is
-         */
+	 * Checks if a pawn is considered a passed pawn and returns a value
+	 * A Passed Pawn is defined as a pawn that has no opposing pawns in the same column as it and not in front of it in the two columns next to it
+	 * @param pawn A Pawn object that contains the pawn to be checked
+	 * @return int returns a value for how passed a pawn is
+	 */
 	private int passedPawn(Piece pawn) {
 		int passed = 0;
 		for (int i = 0; i < board.length; i++) {
@@ -672,8 +672,8 @@ public class Board implements Drawable {
 	 */
 	private boolean inEndGame() {
 		int qcount = 0, minorPieceCount = 0;
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				Piece piece = board[i][j].getPiece();
 				if(piece!=null && piece instanceof Queen) {
 					qcount++;
@@ -686,11 +686,11 @@ public class Board implements Drawable {
 	}
 
 	/* kingRookPositionEval()
-         * Moves the winning king towards losing king
-         * @param winningKing A King object that contains the king that does not have a rook
-         * @param losingKing A King object that contains the king that has the rook
-         * @return int returns a value for the current position
-         */
+	 * Moves the winning king towards losing king
+	 * @param winningKing A King object that contains the king that does not have a rook
+	 * @param losingKing A King object that contains the king that has the rook
+	 * @return int returns a value for the current position
+	 */
 	private int kingRookPositionEval(King winningKing, King losingKing){
 		int lR= losingKing.getRow(); int lC= losingKing.getCol();
 		int wR= winningKing.getRow(); int wC= winningKing.getCol();
@@ -703,14 +703,14 @@ public class Board implements Drawable {
 	}
 
 	/* kingPawnEndgame()
-         * Evaluates the position to check if it is a king and pawn endgame
-         * A King and Pawn Endgame is defined as one side having a King and pawns
-         * @param currentP A Piece object that contains a piece to be checked for its color
-         * @return boolean returns true if it is a king and pawn endgame
-         */
+	 * Evaluates the position to check if it is a king and pawn endgame
+	 * A King and Pawn Endgame is defined as one side having a King and pawns
+	 * @param currentP A Piece object that contains a piece to be checked for its color
+	 * @return boolean returns true if it is a king and pawn endgame
+	 */
 	private boolean kingPawnEndgame(Piece currentP) {
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				Piece piece = board[i][j].getPiece();
 				if(piece != null) {
 					if (currentP.isWhite() == piece.isWhite()) {
@@ -725,14 +725,14 @@ public class Board implements Drawable {
 	}
 
 	/* kingPositionKPEnding()
-         * Evaluates a king's positioning in a king and pawn endgame
-         * A good King positioning in a King and Pawn Endgame is defined as being able to control key squares in front of passing pawns (2 rows in front or 1 row in front)
-         * @param king A Piece object that contains a piece to be checked
-         * @return int returns an integer value that represents how good a king's position is in a king and pawn endgame
-         */
+	 * Evaluates a king's positioning in a king and pawn endgame
+	 * A good King positioning in a King and Pawn Endgame is defined as being able to control key squares in front of passing pawns (2 rows in front or 1 row in front)
+	 * @param king A Piece object that contains a piece to be checked
+	 * @return int returns an integer value that represents how good a king's position is in a king and pawn endgame
+	 */
 	private int kingPositionKPEnding(Piece king) {
 		int positioned = 0;
-		if (king.isWhite()) { 
+		if (king.isWhite()) {
 			if (isRCValid(king.getRow()-2, king.getCol())) {
 				if (board[king.getRow() - 2][king.getCol()].getPiece() instanceof Pawn) {
 					if (passedPawn(board[king.getRow() - 2][king.getCol()].getPiece()) > 30) {
@@ -796,15 +796,15 @@ public class Board implements Drawable {
 	}
 
 	/* inKQEndgame()
-         * Checks if the position is in a queen and king endgame
-         * A King and Queen ending is defined as one side having a King and Queen and the other side only having a King
-         * @param white A boolean that contains what color is being evaluated for
-         * @return boolean returns true if the position is a queen and king endgame
-         */
+	 * Checks if the position is in a queen and king endgame
+	 * A King and Queen ending is defined as one side having a King and Queen and the other side only having a King
+	 * @param white A boolean that contains what color is being evaluated for
+	 * @return boolean returns true if the position is a queen and king endgame
+	 */
 	public boolean inKQEndGame(boolean white) {
 		int qCount = 0;
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				Piece p = board[i][j].getPiece();
 				if(p!=null && p.isWhite()==white) {
 					if(p instanceof Queen) {
@@ -824,16 +824,16 @@ public class Board implements Drawable {
 	}
 
 	/* inRKEndgame()
-         * Checks if the position is in a rook and king endgame
-         * A King and Rook ending is defined as one side having a King and Rook and the other side only having a King
-         * @param white A boolean that contains what color is being evaluated for
-         * @return boolean returns true if the position is a rook and king endgame
-         */
+	 * Checks if the position is in a rook and king endgame
+	 * A King and Rook ending is defined as one side having a King and Rook and the other side only having a King
+	 * @param white A boolean that contains what color is being evaluated for
+	 * @return boolean returns true if the position is a rook and king endgame
+	 */
 	private boolean inRKEndgame(boolean white) {
 
 		int rCount = 0;
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				Piece p = board[i][j].getPiece();
 				if(p!=null && p.isWhite()==white) {
 					if(p instanceof Rook) {
@@ -853,13 +853,13 @@ public class Board implements Drawable {
 	}
 
 	/* flipEval()
-         * Flips a 2d arraylist of integers around so as to make the the first index in the first array the last index of the second array
-         * @return int[][] A 2d array of the flipped values
-         */
+	 * Flips a 2d arraylist of integers around so as to make the the first index in the first array the last index of the second array
+	 * @return int[][] A 2d array of the flipped values
+	 */
 	private int[][] flipEval(int eval[][]) {
-		int flipped[][] = new int[8][8];
-		for(int i=0; i<8; i++) {
-			for(int j=0; j<8; j++) {
+		int flipped[][] = new int[Constants.BOARD_SIZE][Constants.BOARD_SIZE];
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				flipped[i][j] = eval[7-i][j];
 			}
 		}
@@ -867,41 +867,41 @@ public class Board implements Drawable {
 	}
 
 	/* getBoard()
-         * Returns a 2-d array of Spot objects
-         * @return Spot[][] A 2d array of Spot objects
-         */
+	 * Returns a 2-d array of Spot objects
+	 * @return Spot[][] A 2d array of Spot objects
+	 */
 	public Spot[][] getBoard() {
 		return this.board;
 	}
 
 	/* setWhiteKingChecked()
-         * Sets the boolean in the whiteKing object
-         * @param b A Boolean value
-         */
+	 * Sets the boolean in the whiteKing object
+	 * @param b A Boolean value
+	 */
 	public void setWhiteKingChecked(boolean b) {
 		board[whiteKing.getRow()][whiteKing.getCol()].setChecked(b);
 	}
 
 	/* setBlackKingChecked()
-         * Sets the boolean in the blackKing object
-         * @param b A Boolean value
-         */
+	 * Sets the boolean in the blackKing object
+	 * @param b A Boolean value
+	 */
 	public void setBlackKingChecked(boolean b) {
 		board[blackKing.getRow()][blackKing.getCol()].setChecked(b);
 	}
-	
+
 	/* setWhiteKing()
-         * Sets the whiteKing object
-         * @param whiteKing A King object
-         */
+	 * Sets the whiteKing object
+	 * @param whiteKing A King object
+	 */
 	public void setWhiteKing(King whiteKing) {
 		this.whiteKing = whiteKing;
 	}
 
 	/* setBlackKing()
-         * Sets the blackKing object
-         * @param blackKing A King object
-         */
+	 * Sets the blackKing object
+	 * @param blackKing A King object
+	 */
 	public void setBlackKing(King blackKing) {
 		this.blackKing = blackKing;
 	}
