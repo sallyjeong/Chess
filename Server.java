@@ -2,14 +2,10 @@ package chessproject;
 
 //imports for network communication
 import java.io.IOException;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-
-// imports for data types
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.LinkedHashMap;
@@ -17,8 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 /** [Server.java]
  * Multi-threaded Server
@@ -28,6 +26,7 @@ import java.util.concurrent.BlockingQueue;
  * @author Katherine Liu, Sally Jeong
  * @version 1.0 Jan 25, 2022
  */
+
 public class Server {
     public ServerSocket serverSocket;
     public Set<ClientHandler> clientHandlers = new HashSet<>();
@@ -36,9 +35,6 @@ public class Server {
     public static ArrayList<String> roomNames = new ArrayList<>();
     public BlockingQueue<ClientHandler> quickMatch = new LinkedBlockingQueue<>();
 
-    public static void main(String[] args) {
-        Server server = new Server();
-    }
 
     /**
      * Server
@@ -62,6 +58,10 @@ public class Server {
         }
     }
 
+    public static void main(String[] args) {
+        Server server = new Server();
+    }
+
     /** [ClientHandler.java]
      * Inner class that handles each Client on a new thread
      * Stores data specific to each Client
@@ -70,16 +70,13 @@ public class Server {
      * @version 1.0 Jan 25, 2022
      */
     private class ClientHandler implements Runnable {
-        // variables for Client identification
         private String username = " ";
         private String colour;
         private String room = "";
-        private boolean priv; //in private room or not
-
-        // variables for network communication
         private Socket socket;
         private BufferedReader dataIn;
         private BufferedWriter dataOut;
+        private boolean priv; //in private room or not
 
         /**
          * ClientHandler
@@ -128,7 +125,7 @@ public class Server {
                         } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
                             joinPrivateRoom(input);
                         } else if (type == Constants.QUICK_MATCH_DATA) {
-                            startMatchmaking(input);
+                            startMatchmaking();
                         } else if (type == Constants.JOIN_PUB_ROOM_DATA) {
                             joinPublicRoom(input);
                         } else if (type == Constants.COLOUR_DATA) {
@@ -136,7 +133,7 @@ public class Server {
                         } else if (type == Constants.BOARD_DATA) {
                             shareBoard(input);
                         } else if (type==Constants.ROOM_NAMES_DATA) {
-                            sendRoomNames(input);
+                            sendRoomNames();
 
                             // end game data
                         } else if (type == Constants.LEAVE_ROOM_DATA) {
@@ -148,6 +145,7 @@ public class Server {
                             broadcastMessage(Constants.LEAVE_ROOM_DATA + "true"); // mimics player leaving room
                         } else if (type == Constants.QUIT_DATA) {
                             closeConnection();
+                            System.out.println("CLIENT HANDLER " + username + " CLOSED");
                         }
                     }
                 } catch (IOException e) {
@@ -160,6 +158,8 @@ public class Server {
         /*
         METHODS FOR SENDING DATA
          */
+
+
 
         /**
          * broadcastMessage
@@ -177,12 +177,15 @@ public class Server {
 
             if (roomMembers!= null && roomMembers.size() > 1) {
                 for (ClientHandler member : roomMembers) {
+
                     if ((!member.username.equals(username)) && (!member.username.equals(" "))) {
                         member.writeData(msg);
                     }
+
                 }
             }
         }
+
 
         /**
          * writeData
@@ -206,6 +209,8 @@ public class Server {
          * Used when updating public room list
          * @param msg is the String that should be sent
          */
+
+        // sends information to everyone connected to the server
         public void broadcastMessageToAll(String msg) {
             for (ClientHandler clientHandler : clientHandlers) {
                 if ((!clientHandler.username.equals(username)) && (!clientHandler.username.equals(" "))) {
@@ -239,15 +244,15 @@ public class Server {
          * @return true if the username is unique and only contains characters, false otherwise
          */
         public boolean validUsername(String user){
-            for (ClientHandler clientHandler : clientHandlers){ // already exists
+            for (ClientHandler clientHandler : clientHandlers){
                 if (clientHandler.username.equals(user)){
                     return false;
                 }
             }
-            if (!user.matches("[a-zA-Z0-9]*")){ // special characters
+            if (!user.matches("[a-zA-Z0-9]*")){
                 return false;
             }
-            if ((user.equals("")) || (user.equals(null))){ // empty
+            if ((user.equals("")) || (user.equals(null))){
                 return false;
             }
             return true;
@@ -289,12 +294,18 @@ public class Server {
             }
         }
 
-        public void startMatchmaking(String input) {
+        /**
+         * startMatchmaking
+         * Sends to client wait
+         * Once a client joins, add them to quickMatch ArrayList and assign a colour and room code
+         * Once there are 2 or more players in the quickMatch ArrayList, add both clients to the public room and update the roomName
+         * Sends joined status, room, and colour information back to the client
+         */
+        public void startMatchmaking() {
             writeData(Constants.QUICK_MATCH_WAIT);
             quickMatch.add(this);
 
             if (quickMatch.size()%2==1){
-                System.out.println("after while");
                 room = CodeGenerator.generateCode();
                 publicRooms.put(room, new ArrayList<ClientHandler>());
                 colour="white";
@@ -303,30 +314,41 @@ public class Server {
                     // waiting for another user to click matchmaking
                 }
             } else {
-                System.out.println("quick match:"+quickMatch);
                 room = quickMatch.peek().getRoom();
                 colour="black";
+                publicRooms.get(room).add(this);
+                writeData(Constants.QUICK_MATCH_JOINED);
                 quickMatch.poll();
                 quickMatch.poll();
-                broadcastMessageToAll(Constants.UPDATE_LIST+"");
-
             }
-            priv = false;
-            publicRooms.get(room).add(this);
-            writeData(Constants.QUICK_MATCH_JOINED);
-            writeData(room);
-            writeData(colour);
 
-            if (colour.equals("black")) { // only adds the roomName once per quick match
+            if (colour.equals("white")){
+                publicRooms.get(room).add(this);
+                writeData(Constants.QUICK_MATCH_JOINED);
                 String roomName = publicRooms.get(room).get(0).username +" vs "+ publicRooms.get(room).get(1).username;
                 roomNames.add(roomName);
             }
+
+            priv = false;
+            writeData(room);
+            writeData(colour);
         }
 
-        public void joinPublicRoom(String input) {
+
+        /**
+         * joinPublicRoom
+         * Gets the room code that corresponds with the room name
+         * Add current ClientHandler the publicRoom ArrayList
+         * @param roomName the String with the room name for the room created
+         */
+        public void joinPublicRoom(String roomName) {
             List<String> keys = new ArrayList<String>(publicRooms.keySet());
-            String room = keys.get((roomNames.indexOf(input)));
+            String room = keys.get((roomNames.indexOf(roomName)));
+            System.out.println(room);
+            System.out.println("room names: "+roomNames+ "    \n room:"+room);
+            System.out.println(publicRooms);
             publicRooms.get(room).add(this);
+            priv = false;
 
             broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
         }
@@ -392,16 +414,24 @@ public class Server {
 
                 // player sending board data back to spectator that requested it
             } else {
+                // input format: username + " " + [row][col][piece symbol][b/w])
+                // example: chess 00Pw
                 String sendToUser = input.substring(0, input.indexOf(" "));
                 for (ClientHandler spectator : rooms.get(room)) {
                     if (spectator.username.equals(sendToUser)) {
                         spectator.writeData(Constants.BOARD_DATA + input.substring(input.indexOf(" ")+1));
+
                     }
+
                 }
             }
         }
 
-        public void sendRoomNames(String input) {
+        /**
+         * sendRoomNames
+         * Sends the length of the roomNames array and all the room names as a string
+         */
+        public void sendRoomNames() {
             writeData(""+roomNames.size());
             for (String roomName: roomNames){
                 writeData(roomName);
@@ -463,7 +493,6 @@ public class Server {
                     if (roomNames.contains(roomName)){
                         roomNames.remove(roomName);
                         publicRooms.remove(roomName);
-                        System.out.println("room removed       " + rooms.get(room).get(0).username + " vs " + rooms.get(room).get(1).username);
                     }
 
                     broadcastMessageToAll(Constants.UPDATE_LIST + "");
@@ -473,7 +502,7 @@ public class Server {
                 if (rooms.get(room) != null) {
                     rooms.get(room).remove(username);
                 }
-                broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has left the room ***");
+                broadcastMessage(Constants.CHAT_DATA + "*** " + username + " has left the chat ***");
             }
         }
 
@@ -499,10 +528,6 @@ public class Server {
         }
         public String getRoom() {
             return room;
-        }
-
-        public ArrayList getGetRoomNames() {
-            return roomNames;
         }
 
     }
