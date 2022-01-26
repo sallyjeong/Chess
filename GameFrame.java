@@ -1,5 +1,3 @@
-package chessproject;
-
 // imports
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -47,7 +45,6 @@ public class GameFrame extends JFrame {
      */
     public GameFrame(Client client, boolean isPlayer) {
         this.client = client;
-        client.setGameFrame(this);
         computerGame = false;
         GamePanel board = new GamePanel(isPlayer);
         game = new Game(client);
@@ -296,12 +293,14 @@ public class GameFrame extends JFrame {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (computerGame || (isPlayer && client.getTurn()))  {
+                //must be within bounds
                 if (e.getX() < 8 * game.getBoard().LENGTH && e.getY() < 8 * game.getBoard().LENGTH) {
                     Spot spot = game.getBoard().getBoard()[e.getY() / game.getBoard().LENGTH][e.getX() / game.getBoard().LENGTH];
                     if (source == null) {
                         if (spot.getPiece() == null) {
                             return;
                         } else {
+                            //displays the valid moves with a green dot.
                             if (player.isWhite() == spot.getPiece().isWhite()) {
                                 spot.setClicked(true);
                                 spot.getPiece().displayValidMoves(true);
@@ -311,7 +310,7 @@ public class GameFrame extends JFrame {
                     } else {
                         if (spot.equals(source)) {
                             source.setClicked(false);
-                            spot.getPiece().displayValidMoves(false);
+                            spot.getPiece().displayValidMoves(false); //once you 'un'-select the spot, we stop displaying the moves.
                             source = null;
                         } else if (source.getPiece().getMoveList().contains(spot)) {
                             if (!computerGame) {
@@ -319,6 +318,7 @@ public class GameFrame extends JFrame {
                             } else {
                                 if (game.playerMove(p2, source, spot) && !game.getBoard().isGameOver()) {
                                     Move m = ((ComputerPlayer) p1).makeMove(game.getBoard(), determineDepth());
+                                    //AI does its move if we're doing Player vs AI
                                     game.playerMove(p1, m.getStart(), m.getEnd());
                                 }
 
