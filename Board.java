@@ -9,7 +9,7 @@ import java.util.HashSet;
  * [Board.java]
  * This class represents a chess board
  * Used to keep track of pieces, find valid moves, and evaluate positions
- * @author Peter Gao
+ * @author Peter Gao, Katherine Liu
  * @version 1.0 Jan 25, 2022
  */
 public class Board implements Drawable {
