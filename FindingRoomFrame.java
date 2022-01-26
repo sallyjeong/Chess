@@ -9,7 +9,7 @@ import java.awt.Color;
 /** [FindingRoomFrame.java]
  * The JFrame that opens when the client is waiting to enter a public lobby
  * @author Rachel Liu
- * @version 1.0 Jan 25, 2021
+ * @version 1.0 Jan 25, 22022
  */
 public class FindingRoomFrame extends JFrame {
 
