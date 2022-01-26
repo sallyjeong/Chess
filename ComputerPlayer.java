@@ -26,8 +26,8 @@ public class ComputerPlayer extends Player {
      */
     public Move makeMove(Board board, int depth) {
         Move bestMove;
-        //for King Queen King endgame, we push the engine to search for a checkmate with a higher depth level
-        if (board.inKQEndGame(isWhite()) || board.kingPawnEndgame(isWhite()) || board.RKEndgame(isWhite())) {
+        //for Endgames, we push the engine to search for a checkmate with a higher depth level
+        if (board.inKQEndGame(isWhite()) || board.kingPawnEndgame(isWhite()) || board.inRKEndgame(isWhite())) {
             bestMove = minimax(board, depth*2-1, Integer.MIN_VALUE, Integer.MAX_VALUE, true).move;
         } else if (board.inEndGame()) {
             bestMove = minimax(board, depth+1, Integer.MIN_VALUE, Integer.MAX_VALUE, true).move;
