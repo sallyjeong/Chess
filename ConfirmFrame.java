@@ -13,7 +13,7 @@ import java.awt.Color;
 /** [ConfirmFrame.java]
  * The JFrame that opens when clients need to confirm an action
  * @author Rachel Liu, Katherine Liu
- * @version 1.0 Jan 25, 2021
+ * @version 1.0 Jan 25, 2022
  */
 public class ConfirmFrame extends JFrame {
 
