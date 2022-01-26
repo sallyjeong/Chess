@@ -571,18 +571,14 @@ public class Client extends Player {
 			}else {
 				if (isWhite()) {
 					if (castle.equals(Constants.CASTLE_1)) {
-						System.out.println("yo");
 						castle("right", false);
 					} else {
-						System.out.println("yoo");
 						castle("left", false);
 					}
 				} else if (!isWhite()) {
 					if (castle.equals(Constants.CASTLE_1)) {
-						System.out.println("yooo");
 						castle("left", false);
 					} else {
-						System.out.println("yoooo");
 						castle("right", false);
 					}
 				}

@@ -236,7 +236,6 @@ public class HomeFrame extends JFrame {
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 roomNames = thisClient.getRoomNames();
-                System.out.println(roomNames);
                 list.setListData(roomNames);
 
             }
