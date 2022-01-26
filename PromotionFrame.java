@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
  * [PromotionFrame.java]
  * Creates the frame that user uses to promote the current pawn once it reaches the farthest rank from its original square.
  *  @author Stanley Wang
- *  @version 1.0 Jan 25, 2021
+ *  @version 1.0 Jan 25, 2022
  */
 public class PromotionFrame extends JFrame{
 
