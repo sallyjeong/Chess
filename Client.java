@@ -12,7 +12,7 @@ import java.net.SocketException;
 /** [Client.java]
  * Represents each person joining the chess program
  * Connects to the server and has the ability to play a chess game
- * @author Katherine Liu, Sally Jeong, Peter Gao
+ * @author Katherine Liu, Sally Jeong
  * @version 1.0 Jan 25, 2022
  */
 public class Client extends Player {
@@ -132,13 +132,13 @@ public class Client extends Player {
 			do {
 				pause();
 				username = enterDataFrame.getDataEntered();
-			} while (enterDataFrame.isClosed()==false);
+			} while (!enterDataFrame.isClosed());
 
 		} else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
 			do {
 				pause();
 				room = enterDataFrame.getDataEntered();
-			} while (enterDataFrame.isClosed()==false);
+			} while (!enterDataFrame.isClosed());
 		}
 	}
 
@@ -170,8 +170,8 @@ public class Client extends Player {
 		room = roomFrame.getCode();
 		do {
 			pause();
-			colour = roomFrame.getColourChosen();;
-		} while (roomFrame.isClosed()==false);
+			colour = roomFrame.getColourChosen();
+		} while (!roomFrame.isClosed());
 
 		if (colour.equals("random")) {
 			randomizeColour();
@@ -228,7 +228,7 @@ public class Client extends Player {
 		do {
 			pause();
 			colour = colourChoice.getDataEntered().toLowerCase();
-		} while (colourChoice.isClosed() == false);
+		} while (!colourChoice.isClosed());
 
 		if (!(colour.equals("white") || colour.equals("black"))) {
 			randomizeColour();
@@ -338,22 +338,22 @@ public class Client extends Player {
 	}
 
 	/**
-	 * spectate
-	 * Allows the user to spectate a public room
-	 * @param roomName is the name of the public room displayed on the Home Frame
-	 */
-	public void spectate(String roomName) {
-		pickSpectateColour();
-		verifyData(Constants.COLOUR_DATA);
-		sendData(Constants.JOIN_PUB_ROOM_DATA + roomName);
-		try {
-			room = dataIn.readLine();
-		}catch(IOException e){
-			e.printStackTrace();
-		}
-		isPlayer = false;
-		startGame();
-	}
+     * spectate
+     * Allows the user to spectate a public room
+     * @param roomName is the name of the public room displayed on the Home Frame
+     */
+    public void spectate(String roomName) {
+        pickSpectateColour();
+        verifyData(Constants.COLOUR_DATA);
+        sendData(Constants.JOIN_PUB_ROOM_DATA + roomName);
+        try {
+            room = dataIn.readLine();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        isPlayer = false;
+        startGame();
+    }
 
 	/*
     IN GAME METHODS
@@ -411,6 +411,7 @@ public class Client extends Player {
 								try {
 									Thread.sleep(2000);
 								} catch (InterruptedException ex) {
+									ex.printStackTrace();
 								}
 								if (data.equals("true")) { // a player has surrendered the game
 									leaveRoom(); // everyone else must leave
@@ -422,6 +423,7 @@ public class Client extends Player {
 								new EndFrame(gameFrame, winner, score);
 							}
 						} catch (SocketException e) {
+							e.printStackTrace();
 						}
 					} catch (IOException e) {
 						break;
@@ -451,23 +453,17 @@ public class Client extends Player {
 			// check
 			if ((data.charAt(data.length()-1)+"").equals(Constants.CHECK)) {
 				endId = data.substring(data.length() - 3, data.length() - 1);
-				if(isPlayer) {
-					if (isWhite()) {
-						board.setWhiteKingChecked(true);
-					} else {
-						board.setBlackKingChecked(true);
-					}
+				if (isWhite()) {
+					board.setWhiteKingChecked(true);
+				} else {
+					board.setBlackKingChecked(true);
 				}
 
 			} else {
-				if(isPlayer) {
-					if (!isWhite()) {
-						board.setWhiteKingChecked(false);
-						board.setBlackKingChecked(false);
-					} else {
-						board.setBlackKingChecked(false);
-						board.setWhiteKingChecked(false);
-					}
+				if (!isWhite()) {
+					board.setWhiteKingChecked(false);
+				} else {
+					board.setBlackKingChecked(false);
 				}
 
 				// pawn promotion
@@ -647,7 +643,7 @@ public class Client extends Player {
 				temp[0][col+2].addPiece(king);
 				temp[0][col+2-1].addPiece(rook);
 			}
-			//bottom pov
+		//bottom pov
 		}else {
 			if (temp[7][3].getPiece() instanceof King) {
 				kingSpot = temp[7][3];
@@ -657,7 +653,7 @@ public class Client extends Player {
 				col = 4;
 			}
 			king = kingSpot.removePiece();
-
+			
 			// moving rook and king on the board
 			if (direction.equals("left")) {
 				rook = temp[7][0].removePiece();
@@ -781,9 +777,7 @@ public class Client extends Player {
 	 *              example: 00Rw would mean a white Rook at index [0][0]
 	 */
 	public void receiveBoard(String piece) {
-		if (piece.equals(Constants.DONE)) {
-
-		} else {
+		if (!piece.equals(Constants.DONE)) {
 			// storing the piece data sent over
 			int i = Character.getNumericValue(piece.charAt(0));
 			int j = Character.getNumericValue(piece.charAt(1));
