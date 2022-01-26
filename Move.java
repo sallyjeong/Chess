@@ -40,7 +40,7 @@ public class Move {
      * @return boolean returns true if move is an en passant move
      */
     public boolean isEnPassantMove() {
-        if(sourcePiece.getRow()>0 && sourcePiece.getRow()<7){
+        if(sourcePiece.getRow()>0 && sourcePiece.getRow()<Constants.BOARD_SIZE-1){
             if(sourcePiece instanceof Pawn && Math.abs(end.getColumn()-start.getColumn())==1 && Math.abs(end.getRow()-start.getRow())==1 && capturedPiece==null) {
                 return true;
             }
@@ -54,7 +54,7 @@ public class Move {
      */
     public boolean isPromotionMove() {
         if(sourcePiece instanceof Pawn) {
-            if(end.getRow()==0 || end.getRow()==7) {
+            if(end.getRow()==0 || end.getRow()==Constants.BOARD_SIZE-1) {
                 return true;
             }
         }
@@ -67,7 +67,7 @@ public class Move {
      */
     public String toString() {
         if(isCastlingMove()) {
-            if(end.getColumn()==1 || end.getColumn()==6) {
+            if(end.getColumn()==1 || end.getColumn()==Constants.BOARD_SIZE-2) {
                 return Constants.CASTLE_1;
             } else {
                 return Constants.CASTLE_2;
