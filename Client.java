@@ -10,8 +10,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
-/**
- * [Client.java]
+/** [Client.java]
  * Represents each person joining the chess program
  * Connects to the server and has the ability to play a chess game
  * @author Katherine Liu, Sally Jeong
@@ -155,9 +154,7 @@ public class Client extends Player {
             if (result.equals(Constants.USERNAME_ERROR)) {
                 messageFrame = new MessageFrame(result);
             }
-
             waitTillClosed(messageFrame);
-
         } while (result.equals(Constants.USERNAME_ERROR));
     }
 
@@ -266,6 +263,7 @@ public class Client extends Player {
             }
         }
     }
+
     /**
      * pause
      * Stops the main thread for a small portion of time
@@ -278,6 +276,7 @@ public class Client extends Player {
             e.printStackTrace();
         }
     }
+
 
     /*
     METHODS FOR PUBLIC ROOMS
@@ -445,7 +444,7 @@ public class Client extends Player {
             String endId;
 
             // check
-            if ((data.charAt(data.length()-1)+"") == Constants.CHECK) {
+            if ((data.charAt(data.length()-1)+"").equals(Constants.CHECK)) {
                 endId = data.substring(data.length() - 3, data.length() - 1);
                 if (isWhite()) {
                     board.setWhiteKingChecked(true);
@@ -461,7 +460,7 @@ public class Client extends Player {
                 }
 
                 // pawn promotion
-                if ((data.charAt(data.length()-2)+"") == Constants.PROMOTE) {
+                if ((data.charAt(data.length()-2)+"").equals(Constants.PROMOTE)) {
                     endId = data.substring(data.length() - 4, data.length() - 2);
                     char symbol = data.charAt(data.length() - 1);
                     promotePawn(startId, endId, symbol);
@@ -474,7 +473,7 @@ public class Client extends Player {
             }
 
             if (!pawnPromotion) {
-                if ((data.charAt(0)+"") == Constants.PAWN_INDICATOR) { // checks for en passant
+                if ((data.charAt(0)+"").equals(Constants.PAWN_INDICATOR)) { // checks for en passant
                     receiveMove(startId, endId, true);
                     data = " " + data.substring(1);
                 } else {
@@ -521,7 +520,7 @@ public class Client extends Player {
 
                     // special indexing for en passant
                     if (enPassant) {
-                        temp[i-1][j].removePiece();
+                        System.out.println(temp[i-1][j].removePiece());
                     }
                 }
             }
@@ -535,7 +534,7 @@ public class Client extends Player {
      * receiveMove
      * Modifies the Client's in-Game board based on opponent's move
      * Called when a castling move is received
-     * @param castle is the String holding the castling move (either CASTLE_1 or CASTLE_1 from Constants)
+     * @param castle is the String holding the castling move (either CASTLE_1 or CASTLE_2 from Constants)
      */
     public void receiveMove(String castle) {
         if (isWhite()) {
@@ -704,7 +703,6 @@ public class Client extends Player {
             // storing the piece data sent over
             int i = Character.getNumericValue(piece.charAt(0));
             int j = Character.getNumericValue(piece.charAt(1));
-
             char symbol = piece.charAt(2);
             char pieceColour = piece.charAt(3);
             boolean whitePiece = false;
@@ -877,5 +875,8 @@ public class Client extends Player {
     }
     public GameFrame getGameFrame() {
         return gameFrame;
+    }
+    public void setGameFrame(GameFrame gameFrame) {
+        this.gameFrame = gameFrame;
     }
 }
