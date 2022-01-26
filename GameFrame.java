@@ -128,11 +128,13 @@ public class GameFrame extends JFrame {
             sendButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     String text = userInputField.getText();
-                    client.sendData(Constants.CHAT_DATA + client.getUsername() + ": " + text);
-                    textArea.append("you: " + text + "\n");
-                    // sets so the chat box shows the most recent text inputs
-                    textArea.setCaretPosition(textArea.getDocument().getLength());
-                    userInputField.setText("");
+                    if ((text!=null) && (!text.equals(""))) {
+                        client.sendData(Constants.CHAT_DATA + client.getUsername() + ": " + text);
+                        textArea.append("you: " + text + "\n");
+                        // sets so the chat box shows the most recent text inputs
+                        textArea.setCaretPosition(textArea.getDocument().getLength());
+                        userInputField.setText("");
+                    }
                 }
             });
             sendButton.setBounds(441, 201, 117, 29);
