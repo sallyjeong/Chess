@@ -12,8 +12,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * [PromotionFrame.java]
- *  Creates the frame that user uses to promote the current pawn 
- *  once it reaches the farthest rank from its original square.
+ * Creates the frame that user uses to promote the current pawn once it reaches the farthest rank from its original square.
  *  @author Stanley Wang
  *  @version 1.0 Jan 25, 2021
  */
@@ -23,6 +22,8 @@ public class PromotionFrame extends JFrame{
     private Board board;
     private Piece piece;
     private GameFrame mainFrame;
+    private Color DARK_GREEN= new Color(0 ,100 ,0);
+    private Color BEIGE= new Color(245, 245, 220);
 
 
     /**
@@ -51,27 +52,24 @@ public class PromotionFrame extends JFrame{
         //text that instructs users to promote
         JLabel promoText1 = new JLabel("Promote y");
         promoText1.setOpaque(true);
-        promoText1.setBackground(new Color(0 ,100 ,0));
-        promoText1.setForeground(new Color(245, 245, 220));
+        promoText1.setBackground(DARK_GREEN);
+        promoText1.setForeground(BEIGE);
         promoText1.setFont(new Font("Trebuchet MS", Font.BOLD , 30));
         promoText1.setHorizontalAlignment(SwingConstants.RIGHT);
         contentPane.add(promoText1);
         JLabel promoText2 = new JLabel("our Pawn!");
-        promoText2.setForeground(new Color(245, 245, 220));
+        promoText2.setForeground(BEIGE);
         promoText2.setHorizontalAlignment(SwingConstants.LEFT);
-        promoText2.setBackground(new Color(0 ,100 ,0));
+        promoText2.setBackground(DARK_GREEN);
         promoText2.setFont(new Font("Trebuchet MS", Font.BOLD , 30));
         promoText2.setOpaque(true);
         contentPane.add(promoText2);
 
         //queen promotion button
-        JButton queenPromoBtn = new JButton(new ImageIcon
-                (new ImageIcon("06_classic2/w-queen2.png").getImage()
-                                .getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
+        JButton queenPromoBtn = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-queen2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
         queenPromoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Queen(isWhite, 9, 'Q', 
-                        piece.getRow(), piece.getCol())); //promotes the pawn to a queen
+                move.getEnd().addPiece(new Queen(isWhite, 9, 'Q', piece.getRow(), piece.getCol())); //promotes the pawn to a queen
                 choosePiece(move);
             }
         });
@@ -80,13 +78,10 @@ public class PromotionFrame extends JFrame{
         contentPane.add(queenPromoBtn);
 
         //rook promotion button
-        JButton rookPromoBtn = new JButton(new ImageIcon
-                (new ImageIcon("06_classic2/w-rook2.png").getImage()
-                        .getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
+        JButton rookPromoBtn = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-rook2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
         rookPromoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Rook(isWhite, 5 , 'R',
-                        piece.getRow(), piece.getCol())); //promotes the pawn to a rook
+                move.getEnd().addPiece(new Rook(isWhite, 5 , 'R', piece.getRow(), piece.getCol())); //promotes the pawn to a rook
                 choosePiece(move);
             }
         });
@@ -95,13 +90,10 @@ public class PromotionFrame extends JFrame{
         contentPane.add(rookPromoBtn);
 
         //bishop promotion button
-        JButton bishopPromoBtn = new JButton(new ImageIcon
-                (new ImageIcon("06_classic2/w-bishop2.png").getImage()
-                        .getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
+        JButton bishopPromoBtn = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-bishop2.png").getImage().getScaledInstance(90, 80, Image.SCALE_DEFAULT)));
         bishopPromoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Bishop(isWhite, 3, 'B',
-                        piece.getRow(), piece.getCol())); //promotes the pawn to a bishop
+                move.getEnd().addPiece(new Bishop(isWhite, 3, 'B', piece.getRow(), piece.getCol())); //promotes the pawn to a bishop
                 choosePiece(move);
             }
         });
@@ -110,13 +102,10 @@ public class PromotionFrame extends JFrame{
         contentPane.add(bishopPromoBtn);
 
         //knight promotion button
-        JButton knightPromoBtn = new JButton(new ImageIcon
-                (new ImageIcon("06_classic2/w-knight2.png").getImage()
-                        .getScaledInstance(90 , 80, Image.SCALE_DEFAULT)));
+        JButton knightPromoBtn = new JButton(new ImageIcon(new ImageIcon("06_classic2/w-knight2.png").getImage().getScaledInstance(90 , 80, Image.SCALE_DEFAULT)));
         knightPromoBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                move.getEnd().addPiece(new Knight(isWhite, 3, 'N',
-                        piece.getRow(), piece.getCol())); //promotes the pawn to a knight
+                move.getEnd().addPiece(new Knight(isWhite, 3, 'N', piece.getRow(), piece.getCol())); //promotes the pawn to a knight
                 choosePiece(move);
             }
         });
