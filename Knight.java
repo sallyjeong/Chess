@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 /** [Knight.java]
  * Represents each Knight on the board
  * @author
- * @version 1.0 Jan 25, 2021
+ * @version 1.0 Jan 25, 2022
  */
 public class Knight extends Piece {
 
