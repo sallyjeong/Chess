@@ -10,7 +10,7 @@ import java.awt.Color;
 /** [EndFrame.java]
  * The JFrame that opens when the game ends
  * @author Rachel Liu, Katherine Liu
- * @version 1.0 Jan 25, 2021
+ * @version 1.0 Jan 25, 2022
  */
 public class EndFrame extends JFrame {
 
