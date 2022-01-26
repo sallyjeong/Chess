@@ -18,6 +18,7 @@ import javax.swing.JSeparator;
 import javax.swing.JScrollPane;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /** [HomeFrame.java]
  * The JFrame that opens when the game is first launched (holds the options for the game)
@@ -212,10 +213,10 @@ public class HomeFrame extends JFrame {
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // letting client spectate game
-//                roomNames = thisClient.getRoomNames();
-//                list.setListData(roomNames);
                 String roomName = (String) list.getSelectedValue();
-                if (roomName != null) {
+                roomNames = thisClient.getRoomNames();
+                list.setListData(roomNames);
+                if ((roomName != null) && (Arrays.asList(roomNames).contains(roomName))) {
                     frame.dispose();
 
                     new Thread(new Runnable() {
