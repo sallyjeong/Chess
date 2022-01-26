@@ -561,8 +561,9 @@ public class Board implements Drawable {
 				if(inEndGame()) {
 					if (kingPawnEndgame(piece.isWhite())) {
 						cnt += kingPositionKPEnding(piece);
+					} else {
+						cnt+=kEvalEnd[i][j];
 					}
-					cnt+=kEvalEnd[i][j];
 				}else {
 					cnt+=kEvalMid[i][j];
 				}
@@ -598,8 +599,9 @@ public class Board implements Drawable {
 				if(inEndGame()) {
 					if (kingPawnEndgame(piece.isWhite())) {
 						cnt += kingPositionKPEnding(piece);
+					} else {
+						cnt+=flipEval(kEvalEnd)[i][j];
 					}
-					cnt+=flipEval(kEvalEnd)[i][j];
 				}else {
 					cnt+=flipEval(kEvalMid)[i][j];
 				}
