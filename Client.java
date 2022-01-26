@@ -10,7 +10,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
-/** [Client.java]
+/**
+ * [Client.java]
  * Represents each person joining the chess program
  * Connects to the server and has the ability to play a chess game
  * @author Katherine Liu, Sally Jeong
@@ -154,7 +155,9 @@ public class Client extends Player {
             if (result.equals(Constants.USERNAME_ERROR)) {
                 messageFrame = new MessageFrame(result);
             }
+
             waitTillClosed(messageFrame);
+
         } while (result.equals(Constants.USERNAME_ERROR));
     }
 
@@ -263,7 +266,6 @@ public class Client extends Player {
             }
         }
     }
-
     /**
      * pause
      * Stops the main thread for a small portion of time
@@ -277,7 +279,6 @@ public class Client extends Player {
         }
     }
 
-
     /*
     METHODS FOR PUBLIC ROOMS
      */
@@ -285,15 +286,20 @@ public class Client extends Player {
     /**
      * getRoomNames
      * Used to update the list of public rooms on the Home Frame
-     * @return an ArrayList of Strings, each holding the name of a room
+     * @return an Array of Strings, each holding the name of a room
      */
-    public ArrayList<String> getRoomNames(){
-        ArrayList <String> roomNames = new ArrayList<>();
+    public String[] getRoomNames(){
         sendData(Constants.ROOM_NAMES_DATA+"");
+        int size =0;
         try {
-            int size = Integer.parseInt(dataIn.readLine());
+            size = Integer.parseInt(dataIn.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String [] roomNames = new String[size];
+        try {
             for (int i = 0; i<size; i++){
-                roomNames.add(dataIn.readLine());
+                roomNames[i]=dataIn.readLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -387,7 +393,7 @@ public class Client extends Player {
                                 readMove(data);
                             } else if (type == Constants.UPDATE_LIST) {
                                 HomeFrame.roomNames = getRoomNames();
-                                HomeFrame.list.setListData(HomeFrame.returnRoomNames());
+                                HomeFrame.list.setListData(HomeFrame.roomNames);
                             } else if (type == Constants.BOARD_DATA) {
                                 if (isPlayer) {
                                     sendBoard(data);
@@ -439,7 +445,7 @@ public class Client extends Player {
             String endId;
 
             // check
-            if ((data.charAt(data.length()-1)+"").equals(Constants.CHECK)) {
+            if ((data.charAt(data.length()-1)+"") == Constants.CHECK) {
                 endId = data.substring(data.length() - 3, data.length() - 1);
                 if (isWhite()) {
                     board.setWhiteKingChecked(true);
@@ -455,7 +461,7 @@ public class Client extends Player {
                 }
 
                 // pawn promotion
-                if ((data.charAt(data.length()-2)+"").equals(Constants.PROMOTE)) {
+                if ((data.charAt(data.length()-2)+"") == Constants.PROMOTE) {
                     endId = data.substring(data.length() - 4, data.length() - 2);
                     char symbol = data.charAt(data.length() - 1);
                     promotePawn(startId, endId, symbol);
@@ -468,7 +474,7 @@ public class Client extends Player {
             }
 
             if (!pawnPromotion) {
-                if ((data.charAt(0)+"").equals(Constants.PAWN_INDICATOR)) { // checks for en passant
+                if ((data.charAt(0)+"") == Constants.PAWN_INDICATOR) { // checks for en passant
                     receiveMove(startId, endId, true);
                     data = " " + data.substring(1);
                 } else {
@@ -515,7 +521,7 @@ public class Client extends Player {
 
                     // special indexing for en passant
                     if (enPassant) {
-                        System.out.println(temp[i-1][j].removePiece());
+                        temp[i-1][j].removePiece();
                     }
                 }
             }
@@ -698,6 +704,7 @@ public class Client extends Player {
             // storing the piece data sent over
             int i = Character.getNumericValue(piece.charAt(0));
             int j = Character.getNumericValue(piece.charAt(1));
+
             char symbol = piece.charAt(2);
             char pieceColour = piece.charAt(3);
             boolean whitePiece = false;
@@ -870,8 +877,5 @@ public class Client extends Player {
     }
     public GameFrame getGameFrame() {
         return gameFrame;
-    }
-    public void setGameFrame(GameFrame gameFrame) {
-        this.gameFrame = gameFrame;
     }
 }

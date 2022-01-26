@@ -28,8 +28,8 @@ public class HomeFrame extends JFrame {
 
     private JPanel contentPane;
     private Client thisClient;
-    public static ArrayList<String> roomNames = new ArrayList<>();
-    public static JList list;
+    public static String[] roomNames;
+    public static JList<String> list;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -201,7 +201,7 @@ public class HomeFrame extends JFrame {
         roomNames = thisClient.getRoomNames();
 
         //list of all public lobbies
-        list = new JList(roomNames.toArray());
+        list = new JList(roomNames);
         scrollPane.setViewportView(list);
 
         JLabel lblNewLabel = new JLabel("Spectate public lobbies");
@@ -213,7 +213,7 @@ public class HomeFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // letting client spectate game
                 roomNames = thisClient.getRoomNames();
-                list.setListData(returnRoomNames());
+                list.setListData(roomNames);
                 String roomName = (String) list.getSelectedValue();
                 if (roomName != null) {
                     frame.dispose();
@@ -237,7 +237,8 @@ public class HomeFrame extends JFrame {
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 roomNames = thisClient.getRoomNames();
-                list.setListData(roomNames.toArray());
+                System.out.println(roomNames);
+                list.setListData(roomNames);
 
             }
         });
@@ -247,16 +248,4 @@ public class HomeFrame extends JFrame {
         setVisible(true);
     }
 
-    /**
-     * returnRoomNames
-     * Converts the String ArrayList into a String array
-     * @return a String array holding the list of public rooms
-     */
-    public static String[] returnRoomNames() {
-        String[] rooms = new String[roomNames.size()];
-        for (int i = 0; i<roomNames.size(); i++) {
-            rooms[i] = roomNames.get(i);
-        }
-        return rooms;
-    }
 }

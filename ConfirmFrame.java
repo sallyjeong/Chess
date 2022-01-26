@@ -12,7 +12,7 @@ import java.awt.Color;
 
 /** [ConfirmFrame.java]
  * The JFrame that opens when clients need to confirm an action
- * @author Rachel Liu, Katherine Liu
+ * @author Rachel Liu, Katherine Liu, Sally Jeong
  * @version 1.0 Jan 25, 2022
  */
 public class ConfirmFrame extends JFrame {
@@ -58,7 +58,7 @@ public class ConfirmFrame extends JFrame {
                     currentGameFrame.getClient().leaveRoom();
 
                     HomeFrame.roomNames = currentGameFrame.getClient().getRoomNames();
-                    HomeFrame.list.setListData(HomeFrame.returnRoomNames());
+                    HomeFrame.list.setListData(HomeFrame.roomNames);
                 } else {
                     // sending data that the client wants to draw
                     currentGameFrame.addMessage("*** DRAW REQUEST SENT ***");
