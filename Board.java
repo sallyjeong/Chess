@@ -475,9 +475,7 @@ public class Board implements Drawable {
 				Piece piece = board[i][j].getPiece();
 				if(piece!=null && piece.isWhite()) {
 					cnt+=piece.getPoints();
-					if (!kingPawnEndgame(piece.isWhite())) {
-					     cnt+=piece.getMoveList().size()*MOBILITY_BONUS;
-					}
+					cnt+=piece.getMoveList().size()*MOBILITY_BONUS;
 					cnt+=positionEval(piece, i, j);
 				}
 			}
@@ -506,9 +504,7 @@ public class Board implements Drawable {
 				Piece piece = board[i][j].getPiece();
 				if(piece!=null && !piece.isWhite()) {
 					cnt+=piece.getPoints();
-					if (!kingPawnEndgame(piece.isWhite())) {
-					    cnt+=piece.getMoveList().size()*MOBILITY_BONUS;
-					}
+					cnt+=piece.getMoveList().size()*MOBILITY_BONUS;
 					cnt+=positionEval(piece, i, j);
 				}
 			}
@@ -563,11 +559,10 @@ public class Board implements Drawable {
 				cnt+=qEval[i][j];
 			}else if (piece instanceof King) {
 				if(inEndGame()) {
-					if (kingPawnEndgame(piece.isWhite())) {
+					if (kingPawnEndgame(piece)) {
 						cnt += kingPositionKPEnding(piece);
-					} else {
-						cnt+=kEvalEnd[i][j];
 					}
+					cnt+=kEvalEnd[i][j];
 				}else {
 					cnt+=kEvalMid[i][j];
 				}
@@ -601,11 +596,10 @@ public class Board implements Drawable {
 				cnt+=flipEval(qEval)[i][j];
 			}else if (piece instanceof King) {
 				if(inEndGame()) {
-					if (kingPawnEndgame(piece.isWhite())) {
+					if (kingPawnEndgame(piece)) {
 						cnt += kingPositionKPEnding(piece);
-					} else {
-						cnt+=flipEval(kEvalEnd)[i][j];
 					}
+					cnt+=flipEval(kEvalEnd)[i][j];
 				}else {
 					cnt+=flipEval(kEvalMid)[i][j];
 				}
@@ -676,7 +670,7 @@ public class Board implements Drawable {
 	 * An End Game is defined as both sides not having a total of more than 4 minor pieces or queen(s) and 2 minor pieces
 	 * @return boolean returns true if the position is in end game
 	 */
-	public boolean inEndGame() {
+	private boolean inEndGame() {
 		int qcount = 0, minorPieceCount = 0;
 		for(int i=0; i<Constants.BOARD_SIZE; i++) {
 			for(int j=0; j<Constants.BOARD_SIZE; j++) {
@@ -697,31 +691,29 @@ public class Board implements Drawable {
 	 * @param losingKing A King object that contains the king that has the rook
 	 * @return int returns a value for the current position
 	 */
-		private int kingRookPositionEval(King winningKing, King losingKing){
-		int lKRow= losingKing.getRow(); int lKCol= losingKing.getCol();
-		int wKRow= winningKing.getRow(); int wKCol= winningKing.getCol();
+	private int kingRookPositionEval(King winningKing, King losingKing){
+		int lR= losingKing.getRow(); int lC= losingKing.getCol();
+		int wR= winningKing.getRow(); int wC= winningKing.getCol();
 
-		int centerManhattanDist= centerManhattanDistance[lKRow][lKCol]; 
-		//determines the center manhattan distance of the losing king (the manhattan distance from the 'center' of the board)
-		int manhattanDist= Math.abs(wKRow- lKRow)+ Math.abs(wKCol- lKCol);
-		//determines the manhattan distance between the 2 kings.
+		int CMD= centerManhattanDistance[lR][lC];
+		int MD= Math.abs(wR- lR)+ Math.abs(wC- lC);
 
-		return (int)(4.7 * centerManhattanDist + 1.6 * (14 - manhattanDist)); //determines the value of the positions by applying a mop-up evaluation
+		return (int)(4.7 * CMD + 1.6 * (14 - MD));
 
 	}
 
 	/* kingPawnEndgame()
 	 * Evaluates the position to check if it is a king and pawn endgame
 	 * A King and Pawn Endgame is defined as one side having a King and pawns
-	 * @param white A boolean that contains if a piece is white
+	 * @param currentP A Piece object that contains a piece to be checked for its color
 	 * @return boolean returns true if it is a king and pawn endgame
 	 */
-	public boolean kingPawnEndgame(boolean white) {
+	private boolean kingPawnEndgame(Piece currentP) {
 		for(int i=0; i<Constants.BOARD_SIZE; i++) {
 			for(int j=0; j<Constants.BOARD_SIZE; j++) {
 				Piece piece = board[i][j].getPiece();
 				if(piece != null) {
-					if (white == piece.isWhite()) {
+					if (currentP.isWhite() == piece.isWhite()) {
 						if (piece instanceof Knight || piece instanceof Bishop || piece instanceof Rook || piece instanceof Queen) {
 							return false;
 						}
@@ -739,105 +731,105 @@ public class Board implements Drawable {
 	 * @return int returns an integer value that represents how good a king's position is in a king and pawn endgame
 	 */
 	private int kingPositionKPEnding(Piece king) {
-        int positioned = 0;
-        if (king.isWhite()) {
-            if (isRCValid(king.getRow()-2, king.getCol())) {
-                if (board[king.getRow() - 2][king.getCol()].getPiece() instanceof Pawn && board[king.getRow() - 2][king.getCol()].getPiece().isWhite() == king.isWhite()) {
-                    if (passedPawn(board[king.getRow() - 2][king.getCol()].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-            if (isRCValid(king.getRow()-2, king.getCol()-1)) {
-                if (board[king.getRow() - 2][king.getCol()-1].getPiece() instanceof Pawn && board[king.getRow() - 2][king.getCol()-1].getPiece().isWhite() == king.isWhite()) {
-                    if (passedPawn(board[king.getRow() - 2][king.getCol()-1].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-            if (isRCValid(king.getRow()-2, king.getCol()+1)) {
-                if (board[king.getRow() - 2][king.getCol()+1].getPiece() instanceof Pawn && board[king.getRow() - 2][king.getCol()+1].getPiece().isWhite() == king.isWhite()) {
-                    if (passedPawn(board[king.getRow() - 2][king.getCol()+1].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-                
-            }
-            if (isRCValid(king.getRow()-1, king.getCol())) {
-                if (board[king.getRow() - 1][king.getCol()].getPiece() instanceof Pawn && board[king.getRow() - 1][king.getCol()].getPiece().isWhite() == king.isWhite()) {
-                    if (passedPawn(board[king.getRow() - 1][king.getCol()].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-        } else {
-            if (isRCValid(king.getRow()+2, king.getCol())) {
-                if (board[king.getRow() + 2][king.getCol()].getPiece() instanceof Pawn && board[king.getRow() + 2][king.getCol()].getPiece().isWhite() == king.isWhite()) {
-                    if (passedPawn (board[king.getRow() + 2][king.getCol()].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-            if (isRCValid(king.getRow()+2, king.getCol()-1)) {
-                if (board[king.getRow() + 2][king.getCol()-1].getPiece() instanceof Pawn && board[king.getRow() + 2][king.getCol()-1].getPiece().isWhite() == king.isWhite()){
-                    if (passedPawn (board[king.getRow() + 2][king.getCol()-1].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-            if (isRCValid(king.getRow()+2, king.getCol()+1)) {
-                if (board[king.getRow() + 2][king.getCol()+1].getPiece() instanceof Pawn && board[king.getRow() + 2][king.getCol()+1].getPiece().isWhite() == king.isWhite()) {
-                    if (passedPawn (board[king.getRow() + 2][king.getCol()+1].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-            if (isRCValid(king.getRow()+1, king.getCol())) {
-                if (board[king.getRow() +1][king.getCol()].getPiece() instanceof Pawn && board[king.getRow() + 1][king.getCol()].getPiece().isWhite() == king.isWhite()) {
-                    if (passedPawn (board[king.getRow() + 1][king.getCol()].getPiece()) > 30) {
-                        positioned += KINGPOSITIONAL_BONUS;
-                    }
-                }
-            }
-        }
-        return positioned;
-    }
-	
+		int positioned = 0;
+		if (king.isWhite()) {
+			if (isRCValid(king.getRow()-2, king.getCol())) {
+				if (board[king.getRow() - 2][king.getCol()].getPiece() instanceof Pawn) {
+					if (passedPawn(board[king.getRow() - 2][king.getCol()].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+			if (isRCValid(king.getRow()-2, king.getCol()-1)) {
+				if (board[king.getRow() - 2][king.getCol()-1].getPiece() instanceof Pawn) {
+					if (passedPawn(board[king.getRow() - 2][king.getCol()-1].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+			if (isRCValid(king.getRow()-2, king.getCol()+1)) {
+				if (board[king.getRow() - 2][king.getCol()+1].getPiece() instanceof Pawn) {
+					if (passedPawn(board[king.getRow() - 2][king.getCol()+1].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+
+			}
+			if (isRCValid(king.getRow()-1, king.getCol())) {
+				if (board[king.getRow() - 1][king.getCol()].getPiece() instanceof Pawn) {
+					if (passedPawn(board[king.getRow() - 1][king.getCol()].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+		} else {
+			if (isRCValid(king.getRow()+2, king.getCol())) {
+				if (board[king.getRow() + 2][king.getCol()].getPiece() instanceof Pawn) {
+					if (passedPawn (board[king.getRow() + 2][king.getCol()].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+			if (isRCValid(king.getRow()+2, king.getCol()-1)) {
+				if (board[king.getRow() + 2][king.getCol()-1].getPiece() instanceof Pawn){
+					if (passedPawn (board[king.getRow() + 2][king.getCol()-1].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+			if (isRCValid(king.getRow()-2, king.getCol()+1)) {
+				if (board[king.getRow() - 2][king.getCol()+1].getPiece() instanceof Pawn) {
+					if (passedPawn (board[king.getRow() - 2][king.getCol()+1].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+			if (isRCValid(king.getRow()+1, king.getCol())) {
+				if (board[king.getRow() +1][king.getCol()].getPiece() instanceof Pawn) {
+					if (passedPawn (board[king.getRow() + 1][king.getCol()].getPiece()) > 30) {
+						positioned += KINGPOSITIONAL_BONUS;
+					}
+				}
+			}
+		}
+		return positioned;
+	}
+
 	/* inKQEndgame()
-     * Checks if the position is in a queen and king endgame
-     * A King and Queen ending is defined as one side having a King and Queen and the other side only having a King
-     * @param white A boolean that contains what color is being evaluated for
-     * @return boolean returns true if the position is a queen and king endgame
-     */
-    public boolean inKQEndGame(boolean white) {
-        int qCount = 0;
-        for(int i=0; i<Constants.BOARD_SIZE; i++) {
-            for(int j=0; j<Constants.BOARD_SIZE; j++) {
-                Piece p = board[i][j].getPiece();
-                if(p!=null && p.isWhite()==white) {
-                    if(p instanceof Queen) {
-                        qCount++;
-                    }else if(!(p instanceof King)) {
-                        return false;
-                    }
-                }else if(p!=null && !(p instanceof King)) {
-                    return false;
-                }
-            }
-        }
-        if(qCount==1 ) {
-            return true;
-        }
-        return false;
-    }
-	
+	 * Checks if the position is in a queen and king endgame
+	 * A King and Queen ending is defined as one side having a King and Queen and the other side only having a King
+	 * @param white A boolean that contains what color is being evaluated for
+	 * @return boolean returns true if the position is a queen and king endgame
+	 */
+	public boolean inKQEndGame(boolean white) {
+		int qCount = 0;
+		for(int i=0; i<Constants.BOARD_SIZE; i++) {
+			for(int j=0; j<Constants.BOARD_SIZE; j++) {
+				Piece p = board[i][j].getPiece();
+				if(p!=null && p.isWhite()==white) {
+					if(p instanceof Queen) {
+						qCount++;
+					}else if(!(p instanceof King)) {
+						return false;
+					}
+				}else if(p!=null && !(p instanceof King)) {
+					return false;
+				}
+			}
+		}
+		if(qCount==1 ) {
+			return true;
+		}
+		return false;
+	}
+
 	/* inRKEndgame()
 	 * Checks if the position is in a rook and king endgame
 	 * A King and Rook ending is defined as one side having a King and Rook and the other side only having a King
 	 * @param white A boolean that contains what color is being evaluated for
 	 * @return boolean returns true if the position is a rook and king endgame
 	 */
-	public boolean inRKEndgame(boolean white) {
+	private boolean inRKEndgame(boolean white) {
 
 		int rCount = 0;
 		for(int i=0; i<Constants.BOARD_SIZE; i++) {

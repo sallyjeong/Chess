@@ -343,11 +343,13 @@ public class Server {
          */
         public void joinPublicRoom(String roomName) {
             List<String> keys = new ArrayList<String>(publicRooms.keySet());
-            String room = keys.get((roomNames.indexOf(roomName)));
-            System.out.println(room);
-            System.out.println("room names: "+roomNames+ "    \n room:"+room);
+            String roomCode = keys.get((roomNames.indexOf(roomName)));
+            System.out.println(roomCode);
+            System.out.println("room names: "+roomNames+ "    \n room:"+roomCode);
             System.out.println(publicRooms);
-            publicRooms.get(room).add(this);
+            room = roomCode;
+            writeData(room);
+            publicRooms.get(roomCode).add(this);
             priv = false;
 
             broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
@@ -404,6 +406,8 @@ public class Server {
 
             // spectator sends request to copy board from player of the same colour POV
             if (input.equals(Constants.REQUEST)) {
+                System.out.println(rooms.get(room));
+                System.out.println("LINE 407 COLOUR: "+rooms.get(room).get(0).colour);
                 if (rooms.get(room).get(0).colour.equals(colour)) { //colour chosen matches first player
                     rooms.get(room).get(0).writeData(Constants.BOARD_DATA + username);
 
@@ -490,10 +494,10 @@ public class Server {
                     rooms.remove(room);
                 } else {
                     String roomName =  rooms.get(room).get(0).username + " vs " + rooms.get(room).get(1).username;
-                    if (roomNames.contains(roomName)){
+                  //  if (roomNames.contains(roomName)){
                         roomNames.remove(roomName);
-                        publicRooms.remove(roomName);
-                    }
+                        rooms.remove(room);
+               //     }
 
                     broadcastMessageToAll(Constants.UPDATE_LIST + "");
                 }
