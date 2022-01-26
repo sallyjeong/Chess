@@ -5,7 +5,7 @@ import java.util.Random;
 /** [CodeGenerator.java]
  * Randomly generates a 5 letter code for rooms
  * @author Katherine Liu, Rachel Liu, Sally Jeong
- * @version 1.0 Jan 25, 2021
+ * @version 1.0 Jan 25, 2022
  */
 public class CodeGenerator {
     public static String generateCode () {
