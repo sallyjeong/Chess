@@ -159,8 +159,6 @@ public class Server {
         METHODS FOR SENDING DATA
          */
 
-
-
         /**
          * broadcastMessage
          * This method sends information to everyone else
@@ -344,13 +342,10 @@ public class Server {
         public void joinPublicRoom(String roomName) {
             List<String> keys = new ArrayList<String>(publicRooms.keySet());
             String roomCode = keys.get((roomNames.indexOf(roomName)));
-            System.out.println(roomCode);
-            System.out.println("room names: "+roomNames+ "    \n room:"+roomCode);
-            System.out.println(publicRooms);
+            priv = false;
             room = roomCode;
             writeData(room);
             publicRooms.get(roomCode).add(this);
-            priv = false;
 
             broadcastMessage(Constants.CHAT_DATA + username + " has joined the chat");
         }
@@ -406,15 +401,13 @@ public class Server {
 
             // spectator sends request to copy board from player of the same colour POV
             if (input.equals(Constants.REQUEST)) {
-                System.out.println(rooms.get(room));
-                System.out.println("LINE 407 COLOUR: "+rooms.get(room).get(0).colour);
+
                 if (rooms.get(room).get(0).colour.equals(colour)) { //colour chosen matches first player
                     rooms.get(room).get(0).writeData(Constants.BOARD_DATA + username);
 
                 } else { //colour matches second player
                     rooms.get(room).get(1).writeData(Constants.BOARD_DATA + username);
                 }
-
 
                 // player sending board data back to spectator that requested it
             } else {
@@ -460,7 +453,6 @@ public class Server {
                 rooms = publicRooms;
             }
 
-
             if (rooms.get(room).size() > 1) {
                 // sending draw request or result to opponent
                 if (rooms.get(room).get(0).username.equals(username)) {
@@ -490,17 +482,12 @@ public class Server {
 
             if (input.equals("true")) { // player has left the room
                 broadcastMessage(Constants.LEAVE_ROOM_DATA + input);
-                if (priv) {
-                    rooms.remove(room);
-                } else {
+                if (!priv) {
                     String roomName =  rooms.get(room).get(0).username + " vs " + rooms.get(room).get(1).username;
-                  //  if (roomNames.contains(roomName)){
-                        roomNames.remove(roomName);
-                        rooms.remove(room);
-               //     }
-
-                    broadcastMessageToAll(Constants.UPDATE_LIST + "");
+                    roomNames.remove(roomName);
                 }
+                rooms.remove(room);
+                broadcastMessageToAll(Constants.UPDATE_LIST + "");
 
             } else { // spectator leaves room
                 if (rooms.get(room) != null) {
