@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 /** [Rook.java]
  * Represents each Rook on the gameBoard
  * @author
- * @version 1.0 Jan 25, 2021
+ * @version 1.0 Jan 25, 2022
  */
 public class Rook extends Piece {
 
