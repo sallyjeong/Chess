@@ -1,20 +1,28 @@
 package chessproject;
-
+//imports
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashSet;
-
+/**
+ * [Board.java]
+ * This class represents a chess board
+ * Used to keep track of pieces, find valid moves, and evaluate positions
+ * @author Peter Gao
+ * @version 1.0 Jan 25, 2022
+ */
 public class Board implements Drawable {
 
 	final int LENGTH = 72;
 
 	private Spot[][] board;
+	//to keep track of both kings at all times
 	private King whiteKing, blackKing;
 	private boolean white;
 	private Client player;
 	
+	//piece square table values
 	private int qEval[][] = {{-20,-10,-10, -5, -5,-10,-10,-20},
 			{-10,  0,  0,  0,  0,  0,  0,-10},
 			{-10,  0,  5,  5,  5,  5,  0,-10},
@@ -81,7 +89,7 @@ public class Board implements Drawable {
 			{5, 4, 3, 2, 2, 3, 4, 5},
 			{6, 5, 4, 3, 3, 4, 5, 6}};
 
-
+	//constants for evaluation purposes
 	private final int CHECKMATE_BONUS = 10000;
 	private final int DEPTH_BONUS = 100;
 	private final int CASTLE_BONUS = 60;
@@ -89,24 +97,38 @@ public class Board implements Drawable {
 	private final int PASSEDPAWN_BONUS = 10;
 	private final int KINGPOSITIONAL_BONUS = 30;
 
+	/**
+	 * constructs the board for a person v person match
+	 * @param white: if the computer is playing white or black
+	 */
 	public Board(Client player) {
 		this.player = player;
 		this.white = player.isWhite();
 		this.create(false);
 	}
 	
+	/**
+	 * constructs the board for a person v computer match
+	 * @param white: true if board is in white's pov, false if black's
+	 */
 	public Board(boolean white) {
 		this.white = white;
 		this.create(true);
 	}
 
-	public void create(boolean computerGame) {
+	/**
+	 * create
+	 * method called in the constructor to create the board and place pieces on their starting spots
+	 * @param computerGame: true if it's a player vs computer match
+	 */
+	private void create(boolean computerGame) {
 		Color whiteSquare = new Color(238, 232, 170), blackSquare = new Color(139, 69, 19);
 		board = new Spot[8][8];
 		String tempId;
+		//values to be able to build the board for both povs
 		int whiteRow, blackRow;
 		int kingCol, queenCol;
-
+		//create spots
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[0].length; j++) {
 				if (white) {
@@ -123,6 +145,7 @@ public class Board implements Drawable {
 		}
 
 		if ((!computerGame && player.getIsPlayer()) || (computerGame)) {
+			//white pov pawns
 			if (white) {
 				whiteRow = 7;
 				blackRow = 0;
@@ -134,6 +157,7 @@ public class Board implements Drawable {
 					// black pawns
 					board[blackRow + 1][i].addPiece(new Pawn(false, 100, '\u0000', blackRow + 1, i, !white));
 				}
+			//black pov pawns
 			} else {
 				whiteRow = 0;
 				blackRow = 7;
@@ -169,28 +193,40 @@ public class Board implements Drawable {
 			board[blackRow][6].addPiece(new Knight(false, 320, 'N', blackRow, 6));
 			board[blackRow][7].addPiece(new Rook(false, 500, 'R', blackRow, 7));
 
+			//for all pieces in the board, find legal moves
 			getLegal();
 
 		} else {
 			// request for copying a player's current board
-			player.sendData(Constants.BOARD_DATA + "!request");
+			player.sendData(Constants.BOARD_DATA + Constants.REQUEST);
 		}
 	}
 
-
-
+	/**
+	 * create
+	 * method that loops through every piece on the board and updates its move set 
+	 */
 	public void getLegal() {
 		Set<Spot> validM;
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
 				if(board[i][j].getPiece()!=null) {
+					//get all pseudolegal moves
 					validM = board[i][j].getPiece().validMoves(this);
+					//filter out illegal moves
 					filterPseudoLegalMoves(board[i][j].getPiece().isWhite(), validM, board[i][j]);
 				}
 			}
 		}
 	}
 
+	/**
+	 * filterPseudoLegalMoves
+	 * method that filters out illegal moves by temporarily making the move, seeing if it leaves own king is in check, then unmaking it if true
+	 * @param w: if the current piece is white
+	 * @param validMoves: the set of moves being filtered
+	 * @param originalS: the original spot of the piece
+	 */
 	private void filterPseudoLegalMoves(boolean w, Set<Spot> validMoves, Spot originalS){
 		Iterator<Spot> itr= validMoves.iterator();
 
@@ -207,6 +243,12 @@ public class Board implements Drawable {
 
 	}
 
+	/**
+	 * getCompleteMoveSet
+	 * method that combines the movesets of all pieces on one side
+	 * @param w: true if white's moveset is being returned, false if black
+	 * @return Set<Move> the complete move set
+	 */
 	public Set<Move> getCompleteMoveSet(boolean w) {
 		Set<Move> completeSet = new HashSet<Move>();
 		for(int i=0; i<8; i++) {
@@ -214,6 +256,7 @@ public class Board implements Drawable {
 				if(board[i][j].getPiece()!=null && board[i][j].getPiece().isWhite()== w) {
 					Set<Spot> s = board[i][j].getPiece().getMoveList();
 					for(Spot spot: s) {
+						//convert from spot to move
 						Move m = new Move(board[i][j], spot);
 						completeSet.add(m);
 					}
@@ -223,6 +266,11 @@ public class Board implements Drawable {
 		return completeSet;
 	}
 
+	/**
+	 * isInsufficientMat
+	 * method that detects if the game will be a draw due to insufficient material
+	 * @return true if there's insufficient material
+	 */
 	public boolean isInsufficientMat() { //method doesn't check if the bishops are on the same colour squares or not: 2 bishops of same colored diagonals cannot checkmate
 		int wKnights = 0, wBishops = 0, bBishops = 0, bKnights = 0;
 		for(int i=0; i<8; i++) {
@@ -253,8 +301,11 @@ public class Board implements Drawable {
 		return false;
 	}
 
-	/*0 is not stalemate or checkmate, 1 is checkmate, 2 is stalemate.
-	 * Function is created as such because checkmate and stalemate checks are the same.
+	/**
+	 * isCheckmateOrStalemate
+	 * method that detects if one side is in checkmate or stalemate
+	 * @param w: true if the white side is being checked, false if black
+	 * @return 0 if not checkmate or stalemate, 1 if checkmate, 2 if stalemate
 	 */
 	public int isCheckmateOrStalemate(boolean w) {
 		for(int i=0; i<8; i++) {
@@ -272,10 +323,21 @@ public class Board implements Drawable {
 		}
 	}
 
+	/**
+	 * isGameOver
+	 * method that detects if the game is over due to checkmate or stalemate
+	 * @return true if checkmate or stalemate
+	 */
 	public boolean isGameOver() {
 		return this.isCheckmateOrStalemate(true)>0 || this.isCheckmateOrStalemate(false)>0;
 	}
 
+	/**
+	 * kingInCheck
+	 * method that detects if a king of a certain color is in check
+	 * @param w: true if the white king, false if the black king
+	 * @return true if the king is in check, false if not
+	 */
 	public boolean kingInCheck(boolean w){
 		if(w){
 			return isThreatenedSpot(w, board[whiteKing.getRow()][whiteKing.getCol()]);
@@ -285,6 +347,13 @@ public class Board implements Drawable {
 		}
 	}
 
+	/**
+	 * setEnPassant
+	 * method that sets all pawns of one side to not be eligible for enpassant capture
+	 * opponents have 1 chance to capture enpassant, if they don't do it that next turn the pawns aren't eligible anymore
+	 * @param w: true if the white king, false if the black king
+	 * @return true if the king is in check, false if not
+	 */
 	public void setEnPassant(boolean white) {
 		for(int i=0; i<8; i++) {
 			for(int j=0; j<8; j++) {
@@ -648,7 +717,7 @@ public class Board implements Drawable {
 			}
 			if (isRCValid(king.getRow()-2, king.getCol()+1)) {
 				if (board[king.getRow() - 2][king.getCol()+1].getPiece() instanceof Pawn) {
-					if (passedPawn (board[king.getRow() + 2][king.getCol()+1].getPiece()) > 30) {
+					if (passedPawn (board[king.getRow() - 2][king.getCol()+1].getPiece()) > 30) {
 						positioned += KINGPOSITIONAL_BONUS;
 					}
 				}
