@@ -3,27 +3,27 @@ package chessproject;
 import java.util.Set;
 /**
  * [ComputerPlayer.java]
- * This class represents a computer that plays chess 
+ * This class represents a computer that plays chess
  * @author Peter Gao
  * @version 1.0 Jan 25, 2022
  */
 public class ComputerPlayer extends Player {
 
-	/**
-	 * constructs the Computer player
-	 * @param white: if the computer is playing white or black
-	 */
+    /**
+     * constructs the Computer player
+     * @param white: if the computer is playing white or black
+     */
     public ComputerPlayer(boolean white) {
         super(white);
     }
 
     /**
      * makeMove
-	 * method called to perform search of best move
-	 * @param board: the current board
-	 * @param depth: an integer representing how deep the minimax search will go
-	 * @return the best move that can be made
-	 */
+     * method called to perform search of best move
+     * @param board: the current board
+     * @param depth: an integer representing how deep the minimax search will go
+     * @return the best move that can be made
+     */
     public Move makeMove(Board board, int depth) {
         Move bestMove;
         //for King Queen King endgame, we push the engine to search for a checkmate with a higher depth level
@@ -34,7 +34,7 @@ public class ComputerPlayer extends Player {
         }
         return bestMove;
     }
-    
+
     /**
      * [MoveAndEval.java]
      * This private inner class represents a pair of a move and the int evaluation for it
@@ -51,15 +51,15 @@ public class ComputerPlayer extends Player {
 
     /**
      * minimax
-	 * recursive decision making algorithm to find the next move in a turn based, zero-sum game.
-	 * uses alpha-beta pruning to optimize the search
-	 * @param board: the current board
-	 * @param depth: the current depth level
-	 * @param alpha: current alpha value
-	 * @param beta: current beta value
-	 * @param maximizing: true if the current player is maximizing, false if current player is minimizing
-	 * @return a move and evaluation
-	 */
+     * recursive decision making algorithm to find the next move in a turn based, zero-sum game.
+     * uses alpha-beta pruning to optimize the search
+     * @param board: the current board
+     * @param depth: the current depth level
+     * @param alpha: current alpha value
+     * @param beta: current beta value
+     * @param maximizing: true if the current player is maximizing, false if current player is minimizing
+     * @return a move and evaluation
+     */
     public MoveAndEval minimax(Board board, int depth, int alpha, int beta, boolean maximizing) {
         if(depth==0 || board.isGameOver()) {
             return new MoveAndEval(null, evaluate(board, depth));
@@ -113,11 +113,11 @@ public class ComputerPlayer extends Player {
 
     /**
      * evaluate
-	 * private method used by the minimax search to evaluate how good a position is for the computer
-	 * @param board: the current board
-	 * @param depth: the current depth level
-	 * @return integer representing how good the position is for the computer, positive if good, 0 if neutral, negative if bad
-	 */
+     * private method used by the minimax search to evaluate how good a position is for the computer
+     * @param board: the current board
+     * @param depth: the current depth level
+     * @return integer representing how good the position is for the computer, positive if good, 0 if neutral, negative if bad
+     */
     private int evaluate(Board board, int depth) {
         if(isWhite()) {
             return board.evaluateWhite(depth)-board.evaluateBlack(depth);
@@ -125,15 +125,15 @@ public class ComputerPlayer extends Player {
             return board.evaluateBlack(depth)-board.evaluateWhite(depth);
         }
     }
-    
+
     /**
      * makeTempMove
-	 * private method used by the minimax search to temporarily make a move
-	 * @param m: the move to be made
-	 * @param board: the current board
-	 * @return a Piece in case a piece is captured, used to unmake move later
-	 */
-    private Piece makeTempMove(Move m, Board b) {
+     * private method used by the minimax search to temporarily make a move
+     * @param m: the move to be made
+     * @param board: the current board
+     * @return a Piece in case a piece is captured, used to unmake move later
+     */
+    private Piece makeTempMove(Move m, Board board) {
         Piece capturedPiece = null;
         Spot start = m.getStart(), end = m.getEnd();
         Piece movingPiece = start.removePiece();
@@ -150,18 +150,18 @@ public class ComputerPlayer extends Player {
             end.addPiece(movingPiece);
         }
 
-        b.getLegal();
+        board.getLegal();
         return capturedPiece;
     }
 
     /**
      * unmakeMove
-	 * private method used by the minimax search to unmake a temporarily made move
-	 * @param m: the move to be unmade
-	 * @param board: the current board
-	 * @param captured: the piece that was captured
-	 */
-    private void unmakeMove(Move m, Board b, Piece captured) {
+     * private method used by the minimax search to unmake a temporarily made move
+     * @param m: the move to be unmade
+     * @param board: the current board
+     * @param captured: the piece that was captured
+     */
+    private void unmakeMove(Move m, Board board, Piece captured) {
         Spot start = m.getStart(), end = m.getEnd();
         Piece movingPiece = end.removePiece();
         if(m.isCastlingMove()) {
