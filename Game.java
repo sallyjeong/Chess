@@ -2,6 +2,11 @@ package chessproject;
 
 import java.util.ArrayList;
 
+/** [Game.java]
+ * Represents the Game being played, holds player(s) and chess board
+ * @author Peter Gao, Katherine Liu
+ * @version 1.0 Jan 25, 2021
+ */
 public class Game {
 	private ArrayList<Move> pastMoves;
 	private Board board;
@@ -12,7 +17,12 @@ public class Game {
 	private boolean computerGame;
 	private boolean whiteFirstMove = false;
 
-	// for playing someone online
+	/**
+	 * Game
+	 * This constructor is used for users playing an online game
+	 * Alters the necessary variables and creates the right board
+	 * @param player is the Client that has connected to the server
+	 */
 	public Game(Client player) {
 		this.player = player;
 		board = new Board(player);
@@ -22,7 +32,16 @@ public class Game {
 		gameFrame = player.getGameFrame();
 	}
 
-	// for playing a computer game (p1 = computer)
+
+	/**
+	 * Game
+	 * This constructor is used for users playing a game against the AI
+	 * Alters the necessary variables and creates the proper board
+	 * @param white is true if p2 (the human player) is playing white, false for black
+	 * @param p1 is the ComputerPlayer
+	 * @param p2 is the human Player
+	 * @param gameFrame is the GameFrame the frame the game is played on/board is displayed
+	 */
 	public Game(boolean white, Player p1, Player p2, GameFrame gameFrame) {
 		this.gameFrame = gameFrame;
 
@@ -45,19 +64,39 @@ public class Game {
 		}
 	}
 
-	public boolean playerMove(Client player, Spot start, Spot end) {
+	/**
+	 * playerMove
+	 * This method is used for users playing an online game
+	 * @param start the origin Spot of the moved piece
+	 * @param end the ending Spot of the moved piece
+	 * @return true once the move was successfully made
+	 */
+	public boolean playerMove(Client client, Spot start, Spot end) {
 		Move move = new Move(start, end);
 		return makeMove(move);
 	}
 
+	/**
+	 * playerMove
+	 * This method is used for users playing an online game
+	 * @param player the Client that is making a mode
+	 * @param start the origin Spot of the moved piece
+	 * @param end the ending Spot of the moved piece
+	 * @return true once the move was successfully made
+	 */
 	public boolean playerMove(Player player, Spot start, Spot end) {
 		Move move = new Move(start, end);
-		if(player!=turn) {
+		if (player!=turn) {
 			return false;
 		}
 		return makeMove(move);
 	}
 
+	/**
+	 * makeMove
+	 * This method is used to make the move and edit the board accordingly
+	 * @return true once the move was successfully made
+	 */
 	private boolean makeMove(Move move) {
 		Player temp;
 		if (!computerGame) {
@@ -81,26 +120,29 @@ public class Game {
 		move.getEnd().addPiece(sourcePiece);
 		move.getStart().removePiece();
 
+		// resetting check
 		if(temp.isWhite()) {
 			board.setWhiteKingChecked(false);
 		}else {
 			board.setBlackKingChecked(false);
 		}
 
+		// checking for promotion
 		if (computerGame || (player.getIsPlayer())) {
 			if (sourcePiece instanceof Pawn) {
 				if (((Pawn) sourcePiece).getForward()) {
 					if (sourcePiece.getRow() == 0) {
-						 new PromotionFrame((Pawn)sourcePiece, board, move, gameFrame);
+						new PromotionFrame((Pawn)sourcePiece, board, move, gameFrame);
 					}
 				} else {
 					if (sourcePiece.getRow() == 7) {
-						 new PromotionFrame((Pawn)sourcePiece, board, move, gameFrame);
+						new PromotionFrame((Pawn)sourcePiece, board, move, gameFrame);
 					}
 				}
 			}
 		}
 
+		// checking castling
 		if(move.isCastlingMove()) {
 			Spot movingRook;
 			int row = move.getEnd().getPiece().getRow();
@@ -121,6 +163,8 @@ public class Game {
 			Piece rook = movingRook.removePiece();
 			board.getBoard()[row][col].addPiece(rook);
 			((King)move.getEnd().getPiece()).setCastled(true);
+		
+		// checking en passant	
 		}else if(move.isEnPassantMove()) {
 			Spot above = board.getBoard()[move.getEnd().getRow()-1][move.getEnd().getColumn()];
 			if(above.getPiece() instanceof Pawn && ((Pawn)above.getPiece()).getEnPassant()) {
@@ -130,10 +174,11 @@ public class Game {
 			}
 		}
 
+		// for online games, send move data over to users in the room 
 		if (temp instanceof Client) {
 			pastMoves.add(move);
 
-			//checking
+			// checking check
 			if (board.kingInCheck(!player.isWhite())) {
 				if (player.isWhite()) {
 					board.setBlackKingChecked(true);
@@ -196,12 +241,16 @@ public class Game {
 			if (whiteFirstMove) {
 				whiteFirstMove = false;
 			} else {
-				gameFrame.addMove(move.toString());
+				gameFrame.addMove(move.toString()); // display the move in moves
 			}
 		}
 		return true;
 
 	}
+	
+	/*
+	GETTERS AND SETTERS
+	 */
 	public Board getBoard() {
 		return this.board;
 	}
