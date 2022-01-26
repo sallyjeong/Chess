@@ -37,11 +37,13 @@ public abstract class Piece {
 	}
 
 	/**
+	 * loadImage
 	 * abstract method that loads our current sprite.
 	 */
 	public abstract void loadImage();
 
 	/**
+	 * validMoves
 	 * abstract method that determines all valid psuedolegal moves
 	 * @param board
 	 * @return
@@ -49,6 +51,7 @@ public abstract class Piece {
 	public abstract Set<Spot> validMoves(Board board);
 
 	/**
+	 * checkCol
 	 * Method to be used by subclasses, determines the pseudo legal moves along the current column.
 	 * @param board: the current board
 	 */
@@ -85,6 +88,7 @@ public abstract class Piece {
 	}
 
 	/**
+	 * checkRow
 	 * Method to be used by subclasses, determines the pseudo legal moves along the current row.
 	 * @param board: the current board
 	 */
@@ -120,6 +124,7 @@ public abstract class Piece {
 	}
 
 	/**
+	 * checkDiags
 	 * Method to be used by subclasses, determines the pseudo legal moves along both diagonals.
 	 * @param board: the current board
 	 */
@@ -129,6 +134,7 @@ public abstract class Piece {
 	}
 
 	/**
+	 * checkMajorDiag
 	 * Helper method that determines the pseudo legal moves along the major diagonal.
 	 * @param board: the current board
 	 */
@@ -169,6 +175,7 @@ public abstract class Piece {
 	}
 
 	/**
+	 * checkMinorDiag
 	 * Helper method that determines the pseudo legal moves along the minor diagonal.
 	 * @param board: the current board
 	 */
@@ -208,6 +215,7 @@ public abstract class Piece {
 	}
 
 	/**
+	 * displayValidMoves
 	 * highlights all pseudo legal moves
 	 * @param highlighted:
 	 */
