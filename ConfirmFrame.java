@@ -56,7 +56,7 @@ public class ConfirmFrame extends JFrame {
                     currentGameFrame.getClient().leaveRoom();
 
                     HomeFrame.roomNames = currentGameFrame.getClient().getRoomNames();
-                    HomeFrame.list.setListData(HomeFrame.roomNames.toArray());
+                    HomeFrame.list.setListData(HomeFrame.returnRoomNames());
                 } else {
                     // sending data that the client wants to draw
                     currentGameFrame.addMessage("*** DRAW REQUEST SENT ***");
