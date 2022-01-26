@@ -14,7 +14,7 @@ import java.awt.Color;
 /** [DrawFrame.java]
  * The JFrame that opens when the client receives opponent's draw request
  * @author Katherine Liu, Rachel Liu
- * @version 1.0 Jan 25, 2021
+ * @version 1.0 Jan 25, 2022
  */
 public class DrawFrame extends JFrame {
 
