@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 /** [Queen.java]
  * Represents each Queen on the gameBoard
  * @author
- * @version 1.0 Jan 25, 2021
+ * @version 1.0 Jan 25, 2022
  */
 public class Queen extends Piece {
 
