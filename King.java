@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 /** [King.java]
  * Represents each King on the board
- * @author Stanley Wang
+ * @author Peter Gao, Stanley Wang, Robert Jin
  * @version 1.0 Jan 25, 2022
  */
 public class King extends Piece {

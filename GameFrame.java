@@ -22,7 +22,7 @@ import java.awt.Color;
 /** [GameFrame.java]
  * Main JFrama during gameplay
  * Includes chess board, display of past moves, chat box
- * @author Rachel Liu, Katherine Liu
+ * @author Rachel Liu, Katherine Liu, Sally Jeong
  * @version 1.0 Jan 25, 2022
  */
 public class GameFrame extends JFrame {

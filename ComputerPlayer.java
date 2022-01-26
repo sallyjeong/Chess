@@ -4,7 +4,7 @@ import java.util.Set;
 /**
  * [ComputerPlayer.java]
  * This class represents a computer that plays chess
- * @author Peter Gao, Stanley Wang
+ * @author Peter Gao, Stanley Wang, Robert Jin
  * @version 1.0 Jan 25, 2022
  */
 public class ComputerPlayer extends Player {

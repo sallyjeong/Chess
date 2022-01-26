@@ -1,12 +1,18 @@
 package chessproject;
 
+/** [Client.java]
+ * Represents each person joining the chess program
+ * Connects to the server and has the ability to play a chess game
+ * @author Peter Gao, Katherine Liu
+ * @version 1.0 Jan 25, 2022
+ */
 import java.awt.Color;
 import java.awt.Graphics;
 
 /** [Spot.java]
  * Represents each person joining the chess program
  * Connects to the server and has the ability to play a chess game
- * @author Katherine Liu, Sally Jeong, Stanley Wang
+ * @author Katherine Liu, Sally Jeong
  * @version 1.0 Jan 25, 2021
  */
 public class Spot implements Drawable {

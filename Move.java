@@ -2,7 +2,7 @@ package chessproject;
 
 /* [Move.java]
  * Represent a move that is made, contains functions to specify what type of move made
- * @author Robert Jin
+ * @author Robert Jin, Peter Gao
  * @version 1.0, Jan 25, 2022
  */
 public class Move {
@@ -40,7 +40,7 @@ public class Move {
      * @return boolean returns true if move is an en passant move
      */
     public boolean isEnPassantMove() {
-        if(sourcePiece.getRow()>0 && sourcePiece.getRow()<Constants.BOARD_SIZE-1){
+        if(sourcePiece.getRow()>0 && sourcePiece.getRow()<7){
             if(sourcePiece instanceof Pawn && Math.abs(end.getColumn()-start.getColumn())==1 && Math.abs(end.getRow()-start.getRow())==1 && capturedPiece==null) {
                 return true;
             }
@@ -54,7 +54,7 @@ public class Move {
      */
     public boolean isPromotionMove() {
         if(sourcePiece instanceof Pawn) {
-            if(end.getRow()==0 || end.getRow()==Constants.BOARD_SIZE-1) {
+            if(end.getRow()==0 || end.getRow()==7) {
                 return true;
             }
         }
@@ -67,7 +67,7 @@ public class Move {
      */
     public String toString() {
         if(isCastlingMove()) {
-            if(end.getColumn()==1 || end.getColumn()==Constants.BOARD_SIZE-2) {
+            if(end.getColumn()==1 || end.getColumn()==6) {
                 return Constants.CASTLE_1;
             } else {
                 return Constants.CASTLE_2;

@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 /** [Bishop.java]
  * Represents each Bishop on the board
- * @author Stanley Wang
+ * @author Peter Gao, Stanley Wang
  * @version 1.0 Jan 25, 2022
  */
 public class Bishop extends Piece {

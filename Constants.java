@@ -7,7 +7,7 @@ package chessproject;
  */
 public class Constants {
     // networking
-    public static final String HOST = "35.183.5.5";
+    public static final String HOST = "35.183.5.5"; //35.183.5.5
     public static final int PORT = 6000;
 
     // responses

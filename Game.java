@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /** [Game.java]
  * Represents the Game being played, holds player(s) and chess board
- * @author Peter Gao, Katherine Liu, Robert Jin
+ * @author Peter Gao, Katherine Liu, Robert Jin, Stanley Wang
  * @version 1.0 Jan 25, 2022
  */
 public class Game {

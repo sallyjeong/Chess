@@ -44,6 +44,7 @@ public class DrawFrame extends JFrame {
         agreeButton = new JButton("Agree");
         agreeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	System.out.println("yo");
                 gameFrame.setEnabled(true);
                 result = "confirmed";
             }
@@ -55,6 +56,7 @@ public class DrawFrame extends JFrame {
         JButton rejectButton = new JButton("Reject");
         rejectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	System.out.println("yoo");
                 gameFrame.setEnabled(true);
                 result = "denied";
             }

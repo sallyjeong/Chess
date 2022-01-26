@@ -17,7 +17,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.JSeparator;
 import javax.swing.JScrollPane;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /** [HomeFrame.java]
@@ -37,7 +36,6 @@ public class HomeFrame extends JFrame {
             public void run() {
                 try {
                     HomeFrame frame = new HomeFrame();
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

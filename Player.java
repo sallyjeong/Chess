@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 /** [Player.java]
  * Represents a player in a chess game, can be human or computer
- * @author 
+ * @author Peter Gao, Robert Jin
  * @version 1.0 Jan 25, 2022
  */
 public class Player {

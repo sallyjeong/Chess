@@ -8,12 +8,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.ArrayList;
 
 /** [Client.java]
  * Represents each person joining the chess program
  * Connects to the server and has the ability to play a chess game
- * @author Katherine Liu, Sally Jeong
+ * @author Katherine Liu, Sally Jeong, Peter Gao
  * @version 1.0 Jan 25, 2022
  */
 public class Client extends Player {
@@ -339,22 +338,22 @@ public class Client extends Player {
 	}
 
 	/**
-     * spectate
-     * Allows the user to spectate a public room
-     * @param roomName is the name of the public room displayed on the Home Frame
-     */
-    public void spectate(String roomName) {
-        pickSpectateColour();
-        verifyData(Constants.COLOUR_DATA);
-        sendData(Constants.JOIN_PUB_ROOM_DATA + roomName);
-        try {
-            room = dataIn.readLine();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        isPlayer = false;
-        startGame();
-    }
+	 * spectate
+	 * Allows the user to spectate a public room
+	 * @param roomName is the name of the public room displayed on the Home Frame
+	 */
+	public void spectate(String roomName) {
+		pickSpectateColour();
+		verifyData(Constants.COLOUR_DATA);
+		sendData(Constants.JOIN_PUB_ROOM_DATA + roomName);
+		try {
+			room = dataIn.readLine();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		isPlayer = false;
+		startGame();
+	}
 
 	/*
     IN GAME METHODS
@@ -452,17 +451,23 @@ public class Client extends Player {
 			// check
 			if ((data.charAt(data.length()-1)+"").equals(Constants.CHECK)) {
 				endId = data.substring(data.length() - 3, data.length() - 1);
-				if (isWhite()) {
-					board.setWhiteKingChecked(true);
-				} else {
-					board.setBlackKingChecked(true);
+				if(isPlayer) {
+					if (isWhite()) {
+						board.setWhiteKingChecked(true);
+					} else {
+						board.setBlackKingChecked(true);
+					}
 				}
 
 			} else {
-				if (!isWhite()) {
-					board.setWhiteKingChecked(false);
-				} else {
-					board.setBlackKingChecked(false);
+				if(isPlayer) {
+					if (!isWhite()) {
+						board.setWhiteKingChecked(false);
+						board.setBlackKingChecked(false);
+					} else {
+						board.setBlackKingChecked(false);
+						board.setWhiteKingChecked(false);
+					}
 				}
 
 				// pawn promotion
@@ -642,7 +647,7 @@ public class Client extends Player {
 				temp[0][col+2].addPiece(king);
 				temp[0][col+2-1].addPiece(rook);
 			}
-		//bottom pov
+			//bottom pov
 		}else {
 			if (temp[7][3].getPiece() instanceof King) {
 				kingSpot = temp[7][3];
@@ -652,7 +657,7 @@ public class Client extends Player {
 				col = 4;
 			}
 			king = kingSpot.removePiece();
-			
+
 			// moving rook and king on the board
 			if (direction.equals("left")) {
 				rook = temp[7][0].removePiece();
