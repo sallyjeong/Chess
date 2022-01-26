@@ -22,7 +22,7 @@ import java.util.ArrayList;
 /** [HomeFrame.java]
  * The JFrame that opens when the game is first launched (holds the options for the game)
  * @author Rachel Liu, Katherine Liu, Sally Jeong
- * @version 1.0 Jan 25, 2021
+ * @version 1.0 Jan 25, 2022
  */
 public class HomeFrame extends JFrame {
 
