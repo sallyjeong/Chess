@@ -129,11 +129,13 @@ public class Client extends Player {
 
         if (type == Constants.USERNAME_DATA) {
             do {
+                pause();
                 username = enterDataFrame.getDataEntered();
             } while (enterDataFrame.isClosed()==false);
 
         } else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
             do {
+                pause();
                 room = enterDataFrame.getDataEntered();
             } while (enterDataFrame.isClosed()==false);
         }
@@ -152,9 +154,7 @@ public class Client extends Player {
             if (result.equals(Constants.USERNAME_ERROR)) {
                 messageFrame = new MessageFrame(result);
             }
-
             waitTillClosed(messageFrame);
-
         } while (result.equals(Constants.USERNAME_ERROR));
     }
 
@@ -168,6 +168,7 @@ public class Client extends Player {
         CreatePrivateRoomFrame roomFrame = new CreatePrivateRoomFrame(this);
         room = roomFrame.getCode();
         do {
+            pause();
             colour = roomFrame.getColourChosen();;
         } while (roomFrame.isClosed()==false);
 
@@ -224,6 +225,7 @@ public class Client extends Player {
     public void pickSpectateColour() {
         EnterDataFrame colourChoice = new EnterDataFrame(Constants.COLOUR_DATA, this);
         do {
+            pause();
             colour = colourChoice.getDataEntered().toLowerCase();
         } while (colourChoice.isClosed() == false);
 
@@ -261,6 +263,20 @@ public class Client extends Player {
             }
         }
     }
+
+    /**
+     * pause
+     * Stops the main thread for a small portion of time
+     * to avoid
+     */
+    public void pause() {
+        try {
+            Thread.sleep(0, 1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /*
     METHODS FOR PUBLIC ROOMS
@@ -676,6 +692,9 @@ public class Client extends Player {
      *              example: 00Rw would mean a white Rook at index [0][0]
      */
     public void receiveBoard(String piece) {
+        if (piece.equals(Constants.DONE)) {
+
+        } else {
             // storing the piece data sent over
             int i = Character.getNumericValue(piece.charAt(0));
             int j = Character.getNumericValue(piece.charAt(1));
@@ -688,25 +707,26 @@ public class Client extends Player {
             }
 
             // creating a new Piece based on data interpreted
-            if ((symbol+"").equals(Constants.PAWN_INDICATOR)) {
-                newPiece = new Pawn(whitePiece,  1, '\u0000', i, j, whitePiece);
+            if ((symbol + "").equals(Constants.PAWN_INDICATOR)) {
+                newPiece = new Pawn(whitePiece, 1, '\u0000', i, j, whitePiece);
             } else if (symbol == 'R') {
-                newPiece = new Rook(whitePiece,  5, symbol, i, j);
+                newPiece = new Rook(whitePiece, 5, symbol, i, j);
             } else if (symbol == 'N') {
-                newPiece = new Knight(whitePiece,  3, symbol, i, j);
+                newPiece = new Knight(whitePiece, 3, symbol, i, j);
             } else if (symbol == 'B') {
-                newPiece = new Bishop(whitePiece,  3, symbol, i, j);
+                newPiece = new Bishop(whitePiece, 3, symbol, i, j);
             } else if (symbol == 'Q') {
-                newPiece = new Queen(whitePiece,  9, symbol, i, j);
+                newPiece = new Queen(whitePiece, 9, symbol, i, j);
             } else if (symbol == 'K') {
-                newPiece = new King(whitePiece,  1000, symbol, i, j);
+                newPiece = new King(whitePiece, 1000, symbol, i, j);
                 if (whitePiece) {
-                    board.setWhiteKing((King)newPiece);
+                    board.setWhiteKing((King) newPiece);
                 } else {
-                    board.setBlackKing((King)newPiece);
+                    board.setBlackKing((King) newPiece);
                 }
             }
             board.getBoard()[i][j].addPiece(newPiece); // adding the new Piece to the correct Spot on the board
+        }
     }
 
     /**
