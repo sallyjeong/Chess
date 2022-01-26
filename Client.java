@@ -371,7 +371,7 @@ public class Client extends Player {
                                 readMove(data);
                             } else if (type == Constants.UPDATE_LIST) {
                                 HomeFrame.roomNames = getRoomNames();
-                                HomeFrame.list.setListData(HomeFrame.roomNames.toArray());
+                                HomeFrame.list.setListData(HomeFrame.returnRoomNames());
                             } else if (type == Constants.BOARD_DATA) {
                                 if (isPlayer) {
                                     sendBoard(data);

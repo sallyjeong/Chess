@@ -213,7 +213,7 @@ public class HomeFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // letting client spectate game
                 roomNames = thisClient.getRoomNames();
-                list.setListData(roomNames.toArray());
+                list.setListData(returnRoomNames());
                 String roomName = (String) list.getSelectedValue();
                 if (roomName != null) {
                     frame.dispose();
@@ -245,5 +245,18 @@ public class HomeFrame extends JFrame {
         lobbyPanel.add(reloadButton);
 
         setVisible(true);
+    }
+
+    /**
+     * returnRoomNames
+     * Converts the String ArrayList into a String array
+     * @return a String array holding the list of public rooms
+     */
+    public static String[] returnRoomNames() {
+        String[] rooms = new String[roomNames.size()];
+        for (int i = 0; i<roomNames.size(); i++) {
+            rooms[i] = roomNames.get(i);
+        }
+        return rooms;
     }
 }
