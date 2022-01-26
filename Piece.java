@@ -8,7 +8,7 @@ import java.util.Set;
  * [Piece.java]
  * Abstract class that represents each piece on the board.
  *  @author Stanley Wang
- *  @version 1.0 Jan 25, 2021
+ *  @version 1.0 Jan 25, 2022
  */
 public abstract class Piece {
 	private boolean isWhite; //boolean representing if the current piece is white
