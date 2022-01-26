@@ -3,7 +3,7 @@ package chessproject;
 /** [Constants.java]
  * Used to store Constant variables that are shared among various classes
  * @author Katherine Liu, Sally Jeong
- * @version 1.0 Jan 25, 2021
+ * @version 1.0 Jan 25, 2022
  */
 public class Constants {
     // networking
