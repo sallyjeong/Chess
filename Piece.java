@@ -217,7 +217,7 @@ public abstract class Piece {
 	/**
 	 * displayValidMoves
 	 * highlights all pseudo legal moves
-	 * @param highlighted:
+	 * @param highlighted: determines if we want to highlight the current spot with a green dot.
 	 */
 	public void displayValidMoves(boolean highlighted) {
 		for(Spot s: pseudoLegalMoves){
