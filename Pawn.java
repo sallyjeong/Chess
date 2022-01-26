@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 /** [Pawn.java]
  * Represents each Pawn on the board
- * @author
+ * @author Stanley Wang
  * @version 1.0 Jan 25, 2022
  */
 public class Pawn extends Piece {
