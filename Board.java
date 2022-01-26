@@ -99,7 +99,7 @@ public class Board implements Drawable {
 
 	/**
 	 * constructs the board for a person v person match
-	 * @param :
+	 * @param player: the current player
 	 */
 	public Board(Client player) {
 		this.player = player;
@@ -351,7 +351,7 @@ public class Board implements Drawable {
 	 * setEnPassant
 	 * method that sets all pawns of one side to not be eligible for enpassant capture
 	 * opponents have 1 chance to capture enpassant, if they don't do it that next turn the pawns aren't eligible anymore
-	 * @param w: true if the white king, false if the black king
+	 * @param white: true if the white king, false if the black king
 	 * @return true if the king is in check, false if not
 	 */
 	public void setEnPassant(boolean white) {
