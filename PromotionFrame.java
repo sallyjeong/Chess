@@ -116,6 +116,7 @@ public class PromotionFrame extends JFrame{
     }
 
     /**
+     * ChoosePiece
      * method that performs the necessary actions required after the user has chosen the promotion piece.
      * @param move: our current move
      */
