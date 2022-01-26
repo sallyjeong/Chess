@@ -802,6 +802,35 @@ public class Board implements Drawable {
         }
         return positioned;
     }
+	
+	/* inKQEndgame()
+     * Checks if the position is in a queen and king endgame
+     * A King and Queen ending is defined as one side having a King and Queen and the other side only having a King
+     * @param white A boolean that contains what color is being evaluated for
+     * @return boolean returns true if the position is a queen and king endgame
+     */
+    public boolean inKQEndGame(boolean white) {
+        int qCount = 0;
+        for(int i=0; i<Constants.BOARD_SIZE; i++) {
+            for(int j=0; j<Constants.BOARD_SIZE; j++) {
+                Piece p = board[i][j].getPiece();
+                if(p!=null && p.isWhite()==white) {
+                    if(p instanceof Queen) {
+                        qCount++;
+                    }else if(!(p instanceof King)) {
+                        return false;
+                    }
+                }else if(p!=null && !(p instanceof King)) {
+                    return false;
+                }
+            }
+        }
+        if(qCount==1 ) {
+            return true;
+        }
+        return false;
+    }
+	
 	/* inRKEndgame()
 	 * Checks if the position is in a rook and king endgame
 	 * A King and Rook ending is defined as one side having a King and Rook and the other side only having a King
