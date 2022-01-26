@@ -444,6 +444,7 @@ public class Client extends Player {
 		// castling moves
 		if (data.substring(1).equals(Constants.CASTLE_1) || data.substring(1).equals(Constants.CASTLE_2)) {
 			receiveMove(data);
+			data = data.substring(1);
 		} else {
 			String startId = data.substring(1, 3);
 			String endId;

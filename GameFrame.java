@@ -47,7 +47,6 @@ public class GameFrame extends JFrame {
      */
     public GameFrame(Client client, boolean isPlayer) {
         this.client = client;
-        client.setGameFrame(this);
         computerGame = false;
         GamePanel board = new GamePanel(isPlayer);
         game = new Game(client);
@@ -129,13 +128,11 @@ public class GameFrame extends JFrame {
             sendButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     String text = userInputField.getText();
-                    if ((text!=null) && (!text.equals(""))) {
-                        client.sendData(Constants.CHAT_DATA + client.getUsername() + ": " + text);
-                        textArea.append("you: " + text + "\n");
-                        // sets so the chat box shows the most recent text inputs
-                        textArea.setCaretPosition(textArea.getDocument().getLength());
-                        userInputField.setText("");
-                    }
+                    client.sendData(Constants.CHAT_DATA + client.getUsername() + ": " + text);
+                    textArea.append("you: " + text + "\n");
+                    // sets so the chat box shows the most recent text inputs
+                    textArea.setCaretPosition(textArea.getDocument().getLength());
+                    userInputField.setText("");
                 }
             });
             sendButton.setBounds(441, 201, 117, 29);
@@ -282,9 +279,7 @@ public class GameFrame extends JFrame {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             game.getBoard().draw(g);
-            if(!computerGame) {
-                player.displayCaptured(g);
-            }
+            player.displayCaptured(g);
             repaint();
         }
 
