@@ -212,8 +212,8 @@ public class HomeFrame extends JFrame {
         confirmButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // letting client spectate game
-                roomNames = thisClient.getRoomNames();
-                list.setListData(roomNames);
+//                roomNames = thisClient.getRoomNames();
+//                list.setListData(roomNames);
                 String roomName = (String) list.getSelectedValue();
                 if (roomName != null) {
                     frame.dispose();
