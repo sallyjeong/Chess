@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /** [Game.java]
  * Represents the Game being played, holds player(s) and chess board
- * @author Peter Gao, Katherine Liu, Robert Jin
+ * @author Peter Gao, Katherine Liu, Robert Jin, Stanley Wang
  * @version 1.0 Jan 25, 2022
  */
 public class Game {
@@ -112,9 +112,11 @@ public class Game {
 			((King) sourcePiece).setMoved();
 		}
 
+
+		//actually moves the Piece
 		Piece destPiece = move.getEnd().removePiece();
 		if(destPiece!=null) {
-			temp.getCaptured().add(destPiece);
+			temp.getCaptured().add(destPiece);  //captures the piece if it exists there
 		}
 		move.getStart().getPiece().displayValidMoves(false);
 		move.getEnd().addPiece(sourcePiece);
@@ -159,8 +161,8 @@ public class Game {
 			Piece rook = movingRook.removePiece();
 			board.getBoard()[row][col].addPiece(rook);
 			((King)move.getEnd().getPiece()).setCastled(true);
-		
-		// checking en passant	
+
+			// checking en passant
 		}else if(move.isEnPassantMove()) {
 			Spot above = board.getBoard()[move.getEnd().getRow()-1][move.getEnd().getColumn()];
 			if(above.getPiece() instanceof Pawn && ((Pawn)above.getPiece()).getEnPassant()) {
@@ -170,7 +172,7 @@ public class Game {
 			}
 		}
 
-		// for online games, send move data over to users in the room 
+		// for online games, send move data over to users in the room
 		if (temp instanceof Client) {
 			pastMoves.add(move);
 
@@ -243,7 +245,7 @@ public class Game {
 		return true;
 
 	}
-	
+
 	/*
 	GETTERS AND SETTERS
 	 */
