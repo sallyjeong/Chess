@@ -129,15 +129,11 @@ public class Game {
 
 		// checking for promotion
 		if (computerGame || (player.getIsPlayer())) {
-			if (sourcePiece instanceof Pawn) {
-				if (((Pawn) sourcePiece).getForward()) {
-					if (sourcePiece.getRow() == 0) {
-						new PromotionFrame((Pawn)sourcePiece, board, move, gameFrame);
-					}
-				} else {
-					if (sourcePiece.getRow() == 7) {
-						new PromotionFrame((Pawn)sourcePiece, board, move, gameFrame);
-					}
+			if(move.isPromotionMove()) {
+				if(!(temp instanceof ComputerPlayer)) {
+					PromotionFrame p = new PromotionFrame((Pawn)sourcePiece, board, move, gameFrame);
+				}else {
+					move.getEnd().addPiece(new Queen(move.getEnd().getPiece().isWhite(), 900, 'Q', 0, 0));
 				}
 			}
 		}
