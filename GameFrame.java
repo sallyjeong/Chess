@@ -47,6 +47,7 @@ public class GameFrame extends JFrame {
      */
     public GameFrame(Client client, boolean isPlayer) {
         this.client = client;
+        client.setGameFrame(this);
         computerGame = false;
         GamePanel board = new GamePanel(isPlayer);
         game = new Game(client);
@@ -279,7 +280,9 @@ public class GameFrame extends JFrame {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             game.getBoard().draw(g);
-            player.displayCaptured(g);
+            if(!computerGame) {
+                player.displayCaptured(g);
+            }
             repaint();
         }
 

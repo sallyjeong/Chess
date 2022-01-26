@@ -29,7 +29,7 @@ public class HomeFrame extends JFrame {
     private JPanel contentPane;
     private Client thisClient;
     public static ArrayList<String> roomNames = new ArrayList<>();
-    public static JList<String> list;
+    public static JList list;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -201,7 +201,7 @@ public class HomeFrame extends JFrame {
         roomNames = thisClient.getRoomNames();
 
         //list of all public lobbies
-        list = new JList<String>(returnRoomNames());
+        list = new JList(roomNames.toArray());
         scrollPane.setViewportView(list);
 
         JLabel lblNewLabel = new JLabel("Spectate public lobbies");
@@ -237,7 +237,7 @@ public class HomeFrame extends JFrame {
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 roomNames = thisClient.getRoomNames();
-                list.setListData(returnRoomNames());
+                list.setListData(roomNames.toArray());
 
             }
         });
@@ -246,7 +246,7 @@ public class HomeFrame extends JFrame {
 
         setVisible(true);
     }
-    
+
     /**
      * returnRoomNames
      * Converts the String ArrayList into a String array

@@ -423,7 +423,7 @@ public class Client extends Player {
             String endId;
 
             // check
-            if ((data.charAt(data.length()-1)+"") == Constants.CHECK) {
+            if ((data.charAt(data.length()-1)+"").equals(Constants.CHECK)) {
                 endId = data.substring(data.length() - 3, data.length() - 1);
                 if (isWhite()) {
                     board.setWhiteKingChecked(true);
@@ -439,7 +439,7 @@ public class Client extends Player {
                 }
 
                 // pawn promotion
-                if ((data.charAt(data.length()-2)+"") == Constants.PROMOTE) {
+                if ((data.charAt(data.length()-2)+"").equals(Constants.PROMOTE)) {
                     endId = data.substring(data.length() - 4, data.length() - 2);
                     char symbol = data.charAt(data.length() - 1);
                     promotePawn(startId, endId, symbol);
@@ -452,7 +452,7 @@ public class Client extends Player {
             }
 
             if (!pawnPromotion) {
-                if ((data.charAt(0)+"") == Constants.PAWN_INDICATOR) { // checks for en passant
+                if ((data.charAt(0)+"").equals(Constants.PAWN_INDICATOR)) { // checks for en passant
                     receiveMove(startId, endId, true);
                     data = " " + data.substring(1);
                 } else {
@@ -499,7 +499,7 @@ public class Client extends Player {
 
                     // special indexing for en passant
                     if (enPassant) {
-                        temp[i-1][j].removePiece();
+                        System.out.println(temp[i-1][j].removePiece());
                     }
                 }
             }
@@ -850,5 +850,8 @@ public class Client extends Player {
     }
     public GameFrame getGameFrame() {
         return gameFrame;
+    }
+    public void setGameFrame(GameFrame gameFrame) {
+        this.gameFrame = gameFrame;
     }
 }
