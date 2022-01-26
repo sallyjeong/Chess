@@ -111,7 +111,7 @@ public class GameFrame extends JFrame {
         if (!computerGame) { // for non-computer AI games
             // panel for chat box
             JPanel chatPanel = new JPanel();
-            chatPanel.setBorder(new TitledBorder(null, "Chat", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+            chatPanel.setBorder(new TitledBorder(null, "Room", TitledBorder.CENTER, TitledBorder.TOP, null, null));
             chatPanel.setBounds(52, 395, 564, 237);
             contentPane.add(chatPanel);
             textArea = new JTextArea(10, 43);
