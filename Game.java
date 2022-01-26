@@ -188,8 +188,14 @@ public class Game {
 			if (erase != null) {
 				erase.setLeft(false);
 			}
-
-			if (!move.isPromotionMove()) {
+			
+			if(move.isCastlingMove()) {
+				if(player.isWhite()) {
+					player.sendData(Constants.MOVE_DATA + "w" + move.toString());
+				}else {
+					player.sendData(Constants.MOVE_DATA + "y" + move.toString());
+				}
+			}else if (!move.isPromotionMove()) {
 				player.sendData(Constants.MOVE_DATA + move.toString());
 			}
 			player.setTurn(false);
