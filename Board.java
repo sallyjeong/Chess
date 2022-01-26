@@ -559,7 +559,7 @@ public class Board implements Drawable {
 				cnt+=qEval[i][j];
 			}else if (piece instanceof King) {
 				if(inEndGame()) {
-					if (kingPawnEndgame(piece)) {
+					if (kingPawnEndgame(piece.isWhite())) {
 						cnt += kingPositionKPEnding(piece);
 					}
 					cnt+=kEvalEnd[i][j];
@@ -596,7 +596,7 @@ public class Board implements Drawable {
 				cnt+=flipEval(qEval)[i][j];
 			}else if (piece instanceof King) {
 				if(inEndGame()) {
-					if (kingPawnEndgame(piece)) {
+					if (kingPawnEndgame(piece.isWhite())) {
 						cnt += kingPositionKPEnding(piece);
 					}
 					cnt+=flipEval(kEvalEnd)[i][j];
@@ -702,28 +702,28 @@ public class Board implements Drawable {
 
 	}
 
-	/* kingPawnEndgame()
-	 * Evaluates the position to check if it is a king and pawn endgame
-	 * A King and Pawn Endgame is defined as one side having a King and pawns
-	 * @param currentP A Piece object that contains a piece to be checked for its color
-	 * @return boolean returns true if it is a king and pawn endgame
-	 */
-	private boolean kingPawnEndgame(Piece currentP) {
-		for(int i=0; i<Constants.BOARD_SIZE; i++) {
-			for(int j=0; j<Constants.BOARD_SIZE; j++) {
-				Piece piece = board[i][j].getPiece();
-				if(piece != null) {
-					if (currentP.isWhite() == piece.isWhite()) {
-						if (piece instanceof Knight || piece instanceof Bishop || piece instanceof Rook || piece instanceof Queen) {
-							return false;
-						}
-					}
-				}
-			}
-		}
-		return true;
-	}
-
+	 /* kingPawnEndgame()
+	  * Evaluates the position to check if it is a king and pawn endgame
+	  * A King and Pawn Endgame is defined as one side having a King and pawns
+	  * @param white A boolean that contains if a piece is white
+	  * @return boolean returns true if it is a king and pawn endgame
+	  */
+	 private boolean kingPawnEndgame(boolean white) {
+	     for(int i=0; i<Constants.BOARD_SIZE; i++) {
+		 for(int j=0; j<Constants.BOARD_SIZE; j++) {
+		     Piece piece = board[i][j].getPiece();
+		     if(piece != null) {
+			 if (white == piece.isWhite()) {
+			     if (piece instanceof Knight || piece instanceof Bishop || piece instanceof Rook || piece instanceof Queen) {
+				 return false;
+			     }
+			 }
+		     }
+		 }
+	     }
+	     return true;
+	 }
+	
 	/* kingPositionKPEnding()
 	 * Evaluates a king's positioning in a king and pawn endgame
 	 * A good King positioning in a King and Pawn Endgame is defined as being able to control key squares in front of passing pawns (2 rows in front or 1 row in front)
