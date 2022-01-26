@@ -67,7 +67,7 @@ public class Server {
      * Stores data specific to each Client
      * Various methods for receiving and sending data out to different Clients
      * @author Katherine Liu, Sally Jeong
-     * @version 1.0 Jan 25, 2021
+     * @version 1.0 Jan 25, 2022
      */
     private class ClientHandler implements Runnable {
         // variables for Client identification
