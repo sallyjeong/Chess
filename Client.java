@@ -12,7 +12,7 @@ import java.net.SocketException;
 /** [Client.java]
  * Represents each person joining the chess program
  * Connects to the server and has the ability to play a chess game
- * @author Katherine Liu, Sally Jeong
+ * @author Katherine Liu, Sally Jeong, Peter Gao
  * @version 1.0 Jan 25, 2022
  */
 public class Client extends Player {
@@ -132,13 +132,13 @@ public class Client extends Player {
 			do {
 				pause();
 				username = enterDataFrame.getDataEntered();
-			} while (!enterDataFrame.isClosed());
+			} while (enterDataFrame.isClosed()==false);
 
 		} else if (type == Constants.JOIN_PRIV_ROOM_DATA) {
 			do {
 				pause();
 				room = enterDataFrame.getDataEntered();
-			} while (!enterDataFrame.isClosed());
+			} while (enterDataFrame.isClosed()==false);
 		}
 	}
 
@@ -170,8 +170,8 @@ public class Client extends Player {
 		room = roomFrame.getCode();
 		do {
 			pause();
-			colour = roomFrame.getColourChosen();
-		} while (!roomFrame.isClosed());
+			colour = roomFrame.getColourChosen();;
+		} while (roomFrame.isClosed()==false);
 
 		if (colour.equals("random")) {
 			randomizeColour();
@@ -228,7 +228,7 @@ public class Client extends Player {
 		do {
 			pause();
 			colour = colourChoice.getDataEntered().toLowerCase();
-		} while (!colourChoice.isClosed());
+		} while (colourChoice.isClosed() == false);
 
 		if (!(colour.equals("white") || colour.equals("black"))) {
 			randomizeColour();
@@ -338,22 +338,22 @@ public class Client extends Player {
 	}
 
 	/**
-     * spectate
-     * Allows the user to spectate a public room
-     * @param roomName is the name of the public room displayed on the Home Frame
-     */
-    public void spectate(String roomName) {
-        pickSpectateColour();
-        verifyData(Constants.COLOUR_DATA);
-        sendData(Constants.JOIN_PUB_ROOM_DATA + roomName);
-        try {
-            room = dataIn.readLine();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        isPlayer = false;
-        startGame();
-    }
+	 * spectate
+	 * Allows the user to spectate a public room
+	 * @param roomName is the name of the public room displayed on the Home Frame
+	 */
+	public void spectate(String roomName) {
+		pickSpectateColour();
+		verifyData(Constants.COLOUR_DATA);
+		sendData(Constants.JOIN_PUB_ROOM_DATA + roomName);
+		try {
+			room = dataIn.readLine();
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+		isPlayer = false;
+		startGame();
+	}
 
 	/*
     IN GAME METHODS
@@ -395,6 +395,19 @@ public class Client extends Player {
 								gameFrame.addMessage(data);
 							} else if (type == Constants.MOVE_DATA) {
 								readMove(data);
+								if (isPlayer) {
+									board.setEnPassant(isWhite()); // reset all pawns as not be able to be captured by enpassant
+									board.getLegal(); // calculate valid moves for each piece
+									if (!checkGameState()) { // checks endGame
+										turn = true;
+									}
+								}
+								if ((data.charAt(0)+"").equals(Constants.PAWN_INDICATOR)) {
+									data = " " + data.substring(1);
+								}else if((data.charAt(0)+"").equals("w") || (data.charAt(0)+"").equals("y")) {
+									data = data.substring(1);
+								}
+								gameFrame.addMove(data); // display the move to the screen
 							} else if (type == Constants.UPDATE_LIST) {
 								HomeFrame.roomNames = getRoomNames();
 								HomeFrame.list.setListData(HomeFrame.roomNames);
@@ -411,7 +424,6 @@ public class Client extends Player {
 								try {
 									Thread.sleep(2000);
 								} catch (InterruptedException ex) {
-									ex.printStackTrace();
 								}
 								if (data.equals("true")) { // a player has surrendered the game
 									leaveRoom(); // everyone else must leave
@@ -423,7 +435,6 @@ public class Client extends Player {
 								new EndFrame(gameFrame, winner, score);
 							}
 						} catch (SocketException e) {
-							e.printStackTrace();
 						}
 					} catch (IOException e) {
 						break;
@@ -438,65 +449,52 @@ public class Client extends Player {
 	 * Determines how to interpret the data/move
 	 * Called when a move string is received
 	 * @param data is the String representation of a move
+	 * @return true once the move type has been identified
 	 */
-	public void readMove(String data) {
-		boolean pawnPromotion = false;
+	public boolean readMove(String data) {
 
 		// castling moves
 		if (data.substring(1).equals(Constants.CASTLE_1) || data.substring(1).equals(Constants.CASTLE_2)) {
 			receiveMove(data);
-			data = data.substring(1);
-		} else {
-			String startId = data.substring(1, 3);
-			String endId;
-
-			// check
-			if ((data.charAt(data.length()-1)+"").equals(Constants.CHECK)) {
-				endId = data.substring(data.length() - 3, data.length() - 1);
+			return true;
+		}
+		String startId = data.substring(1, 3);
+		String endId;
+		// check
+		if ((data.charAt(data.length()-1)+"").equals(Constants.CHECK)) {
+			System.out.println("yo");
+			endId = data.substring(data.length() - 3, data.length() - 1);
+			if(isPlayer) {
 				if (isWhite()) {
 					board.setWhiteKingChecked(true);
 				} else {
 					board.setBlackKingChecked(true);
 				}
-
-			} else {
-				if (!isWhite()) {
-					board.setWhiteKingChecked(false);
-				} else {
-					board.setBlackKingChecked(false);
-				}
-
-				// pawn promotion
-				if ((data.charAt(data.length()-2)+"").equals(Constants.PROMOTE)) {
-					endId = data.substring(data.length() - 4, data.length() - 2);
-					char symbol = data.charAt(data.length() - 1);
-					promotePawn(startId, endId, symbol);
-					pawnPromotion = true;
-
-					// regular move
-				} else {
-					endId = data.substring(data.length() - 2);
-				}
 			}
-
-			if (!pawnPromotion) {
-				if ((data.charAt(0)+"").equals(Constants.PAWN_INDICATOR)) { // checks for en passant
-					receiveMove(startId, endId, true);
-					data = " " + data.substring(1);
-				} else {
-					receiveMove(startId, endId, false);
-				}
-			}
+			receiveMove(startId, endId, false);
+			return true;
+		}
+		if(isPlayer) {
+			board.setBlackKingChecked(false);
+			board.setWhiteKingChecked(false);
 		}
 
-		if (isPlayer) {
-			board.setEnPassant(isWhite()); // reset all pawns as not be able to be captured by enpassant
-			board.getLegal(); // calculate valid moves for each piece
-			if (!checkGameState()) { // checks endGame
-				turn = true;
-			}
+		// pawn promotion
+		if ((data.charAt(data.length()-2)+"").equals(Constants.PROMOTE)) {
+			endId = data.substring(data.length() - 4, data.length() - 2);
+			char symbol = data.charAt(data.length() - 1);
+			promotePawn(startId, endId, symbol);
+			return true;
 		}
-		gameFrame.addMove(data); // display the move to the screen
+		// regular move
+		endId = data.substring(data.length() - 2);
+		if ((data.charAt(0)+"").equals(Constants.PAWN_INDICATOR)) { // checks for en passant
+			receiveMove(startId, endId, true);
+			return true;
+		} 
+		receiveMove(startId, endId, false);
+		return true;
+
 	}
 
 	/**
@@ -571,14 +569,18 @@ public class Client extends Player {
 			}else {
 				if (isWhite()) {
 					if (castle.equals(Constants.CASTLE_1)) {
+						System.out.println("yo");
 						castle("right", false);
 					} else {
+						System.out.println("yoo");
 						castle("left", false);
 					}
 				} else if (!isWhite()) {
 					if (castle.equals(Constants.CASTLE_1)) {
+						System.out.println("yooo");
 						castle("left", false);
 					} else {
+						System.out.println("yoooo");
 						castle("right", false);
 					}
 				}
@@ -639,7 +641,7 @@ public class Client extends Player {
 				temp[0][col+2].addPiece(king);
 				temp[0][col+2-1].addPiece(rook);
 			}
-		//bottom pov
+			//bottom pov
 		}else {
 			if (temp[7][3].getPiece() instanceof King) {
 				kingSpot = temp[7][3];
@@ -649,7 +651,7 @@ public class Client extends Player {
 				col = 4;
 			}
 			king = kingSpot.removePiece();
-			
+
 			// moving rook and king on the board
 			if (direction.equals("left")) {
 				rook = temp[7][0].removePiece();
@@ -773,7 +775,9 @@ public class Client extends Player {
 	 *              example: 00Rw would mean a white Rook at index [0][0]
 	 */
 	public void receiveBoard(String piece) {
-		if (!piece.equals(Constants.DONE)) {
+		if (piece.equals(Constants.DONE)) {
+
+		} else {
 			// storing the piece data sent over
 			int i = Character.getNumericValue(piece.charAt(0));
 			int j = Character.getNumericValue(piece.charAt(1));

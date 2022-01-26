@@ -25,11 +25,11 @@ public class Game {
 	 */
 	public Game(Client player) {
 		this.player = player;
+		gameFrame = player.getGameFrame();
 		board = new Board(player);
 		player.setGame(this);
 		pastMoves = new ArrayList<Move>();
 		computerGame = false;
-		gameFrame = player.getGameFrame();
 	}
 
 

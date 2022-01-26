@@ -47,6 +47,7 @@ public class GameFrame extends JFrame {
      */
     public GameFrame(Client client, boolean isPlayer) {
         this.client = client;
+        client.setGameFrame(this);
         computerGame = false;
         GamePanel board = new GamePanel(isPlayer);
         game = new Game(client);
