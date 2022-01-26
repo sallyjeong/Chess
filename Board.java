@@ -14,7 +14,7 @@ import java.util.HashSet;
  */
 public class Board implements Drawable {
 
-	final int LENGTH = 72;
+	final int LENGTH = 65;
 
 	private Spot[][] board;
 	//to keep track of both kings at all times
